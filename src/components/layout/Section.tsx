@@ -1,22 +1,21 @@
-import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
+import React from "react";
 
-type SectionProps<T extends ElementType = "section"> = {
-  as?: T;
-  children: ReactNode;
+interface SectionProps extends React.HTMLAttributes<HTMLElement> {
+  as?: React.ElementType;
+  children: React.ReactNode;
   className?: string;
-} & Omit<ComponentPropsWithoutRef<T>, "as" | "children" | "className">;
+  id?: string;
+}
 
-export function Section<T extends ElementType = "section">({
-  as,
+export function Section({
+  as: Component = "section",
   children,
   className = "",
   ...props
-}: SectionProps<T>) {
-  const Component = as ?? "section";
-
+}: SectionProps) {
   return (
     <Component
-      className={`py-16 md:py-24 lg:py-32 ${className}`}
+      className={`py-14 sm:py-20 md:py-24 lg:py-28 ${className}`}
       {...props}
     >
       {children}

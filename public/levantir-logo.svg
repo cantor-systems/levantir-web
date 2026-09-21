@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 530 125" width="1060" height="250">
+  <defs>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700&amp;family=Playfair+Display:wght@700&amp;display=swap");
+      .wordmark {
+        font-family: "Playfair Display", Georgia, serif;
+        font-weight: 700;
+        font-size: 70px;
+        letter-spacing: 2.5px;
+        fill: #0B2D58;
+      }
+      .descriptor {
+        font-family: "Montserrat", sans-serif;
+        font-weight: 700;
+        font-size: 12.8px;
+        fill: #0B2D58;
+      }
+    </style>
+  </defs>
+  <g fill="#0B2D58">
+    <!-- Feather 1 (Topmost Blade) -->
+    <path d="M25 15 C38 13 55 9 81 5 C72 17 57 30 39 43 C31 50 28 53 26 55 C28 47 28 38 27 32 C27 25 26 20 25 15Z" />
+    <!-- Feather 2 -->
+    <path d="M30 54 C46 43 63 27 89 12 C79 26 62 42 42 57 C37 61 32 66 30 68 C31 63 31 58 30 54Z" />
+    <!-- Feather 3 -->
+    <path d="M32 70 C49 55 66 40 92 23 C82 38 65 55 44 71 C38 76 33 80 31 83 C33 78 33 74 32 70Z" />
+    <!-- Feather 4 -->
+    <path d="M32 84 C50 70 69 55 91 37 C80 53 63 70 43 85 C37 90 32 94 29 97 C31 93 32 88 32 84Z" />
+    <!-- Feather 5 (Bottom Blade) -->
+    <path d="M29 98 C45 85 62 70 82 55 C71 72 54 89 32 102 C25 106 19 108 15 108 C21 105 26 102 29 98Z" />
+    <!-- Eagle Head & Stepped Neck Plumage -->
+    <path d="M25 15 C22 16 18 19 15 20 C13 21 10 22 7 23 C10 24 13 25 15 25 C12 25.5 10 27 9 28 C11 29 14 29.5 16 29.5 C17 31 17.5 33 17.5 36 C15 40 12 44 10 47 C13 46 16 45 17 44 C16 48 14 54 11 59 C14 58 17 57 18 56 C16.5 63 13 69 9 76 C13 75 17 73 18.5 72 C17 79 13 87 8 95 C12 93 17 91 19 89 C18 95 15 101 11 106 C13 107 16 107 18 106 C23 99 26 87 27 73 C28 56 27 39 26 27 C26 21 25.5 17 25 15Z" />
+  </g>
+  <!-- Wordmark LEVANTIR -->
+  <text x="116" y="76" class="wordmark">LEVANTIR</text>
+  <!-- Descriptor -->
+  <text x="118" y="103" class="descriptor" textLength="386" lengthAdjust="spacing">SEGUROS - GESTIÓN DE RIESGOS - PROTECCIÓN PATRIMONIAL</text>
+</svg>
