@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, ReactNode, useRef } from "react";
+import React, { useState, ReactNode, useCallback } from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Lock } from "lucide-react";
 import { Container } from "../layout/Container";
@@ -63,10 +63,10 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showProductValidationWarning, setShowProductValidationWarning] = useState(false);
 
-  const contextResetRef = useRef<(() => void) | null>(null);
-  const registerContextReset = (fn: () => void) => {
-    contextResetRef.current = fn;
-  };
+  const [contextResetFn, setContextResetFn] = useState<(() => void) | null>(null);
+  const registerContextReset = useCallback((fn: () => void) => {
+    setContextResetFn(() => fn);
+  }, []);
 
   const isOtherSelected = selectedProducts.includes("other");
 
@@ -99,8 +99,8 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
     setMessage("");
     setIsSubmitted(false);
     setShowProductValidationWarning(false);
-    if (contextResetRef.current) {
-      contextResetRef.current();
+    if (contextResetFn) {
+      contextResetFn();
     }
   };
 
@@ -322,7 +322,6 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
                     )}
                   </div>
 
-                  {/* eslint-disable-next-line react-hooks/refs */}
                   {contextFields(idPrefix, registerContextReset)}
 
                   <div className="space-y-2 pt-2">
@@ -361,4 +360,7 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
     </Section>
   );
 }
+
+
+
 
