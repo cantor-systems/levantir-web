@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from 'next/link';
+import { AdvisoryLink as Link } from "@/components/ui/AdvisoryLink";
 import { ArrowRight, User, Home, Building2, Briefcase, ShieldCheck } from 'lucide-react';
 import { Container } from '../layout/Container';
 import { Section } from '../layout/Section';
@@ -123,3 +123,4 @@ export function EcosystemSection() {
     </Section>
   );
 }
+

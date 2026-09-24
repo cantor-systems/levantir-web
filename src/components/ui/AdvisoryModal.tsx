@@ -13,8 +13,13 @@ export function AdvisoryModal() {
   const defaultTopic = searchParams?.get('topic') || "No estoy seguro / Asesoría integral";
 
   const onClose = useCallback(() => {
-    router.push(pathname || '/', { scroll: false });
-  }, [router, pathname]);
+    const params = new URLSearchParams(searchParams?.toString() || '');
+    params.delete('advisory');
+    params.delete('topic');
+    const newQuery = params.toString();
+    const href = `${pathname || '/'}${newQuery ? `?${newQuery}` : ''}`;
+    router.push(href, { scroll: false });
+  }, [router, pathname, searchParams]);
 
   const [topic, setTopic] = useState(defaultTopic);
   const [name, setName] = useState("");
@@ -248,3 +253,4 @@ export function AdvisoryModal() {
     </div>
   );
 }
+

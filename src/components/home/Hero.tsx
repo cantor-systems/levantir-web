@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import Link from 'next/link';
+import { AdvisoryLink as Link } from "@/components/ui/AdvisoryLink";
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { Container } from '../layout/Container';
 import { heroSlides } from '../../config/site';
@@ -203,3 +203,4 @@ export function Hero() {
     </section>
   );
 }
+

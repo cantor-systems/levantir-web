@@ -81,7 +81,7 @@ export default function SeguroDeAutoPage() {
         title="Un seguro de auto debe proteger más que el vehículo."
         supportingCopy="Una adecuada protección de auto debe analizar integralmente el vehículo, la responsabilidad frente a terceros, la continuidad de tu movilidad y el contexto real de uso para evitar brechas patrimoniales."
         primaryCtaText="SOLICITAR COTIZACIÓN"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER MÁS"
         secondaryCtaHref="#contexto"
         imageUrl="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=2070&auto=format&fit=crop"
@@ -240,10 +240,11 @@ export default function SeguroDeAutoPage() {
         title="Hablemos sobre la protección que necesitas."
         supportingCopy="Analizamos tu perfil de movilidad y las alternativas disponibles en las aseguradoras más sólidas del mercado, con criterio técnico independiente y sin compromisos comerciales."
         primaryCtaText="SOLICITAR COTIZACIÓN"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="HABLAR CON UN ASESOR"
-        secondaryCtaHref="/?advisory=true"
+        secondaryCtaHref="?advisory=true"
       />
     </div>
   );
 }
+

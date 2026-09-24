@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
+import { AdvisoryLink as Link } from "@/components/ui/AdvisoryLink";
 import { usePathname } from 'next/navigation';
 import { X, ArrowRight, Phone, ChevronDown } from 'lucide-react';
 import { LevantirLogo } from '../brand/LevantirLogo';
@@ -339,3 +339,4 @@ export function MobileNavigation({
     </div>
   );
 }
+

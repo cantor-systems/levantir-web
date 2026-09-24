@@ -80,7 +80,7 @@ export default function PersonasPage() {
         title="Protege tu salud, tu familia y tu futuro financiero."
         supportingCopy="La protección personal conecta la salud presente con la estabilidad financiera y el bienestar futuro de tu familia. En LEVANTIR estructuramos cada solución con criterio independiente y visión patrimonial."
         primaryCtaText="Hablar con un asesor"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER SOLUCIONES"
         secondaryCtaHref="#soluciones-destacadas"
         imageUrl="https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=2070&auto=format&fit=crop"
@@ -214,10 +214,11 @@ export default function PersonasPage() {
         title="Construye una estrategia de protección personal a la altura de tu patrimonio."
         supportingCopy="Cuéntanos tus prioridades y las de tu familia. Te orientamos para estructurar un esquema armónico de salud, vida y retiro con rigor técnico y total independencia."
         primaryCtaText="Hablar con un asesor"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="SOLICITAR ASESORÍA"
-        secondaryCtaHref="/?advisory=true"
+        secondaryCtaHref="?advisory=true"
       />
     </div>
   );
 }
+

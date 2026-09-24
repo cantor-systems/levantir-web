@@ -165,7 +165,7 @@ export default function InsightsPage() {
         primaryCtaText="EXPLORAR INSIGHTS"
         primaryCtaHref="#destacado"
         secondaryCtaText="HABLAR CON UN ASESOR"
-        secondaryCtaHref="/?advisory=true"
+        secondaryCtaHref="?advisory=true"
         imageUrl="/images/insights/hero-insights.webp"
         imageAlt="Profesionales revisando documentación técnica y notas de análisis en mesa de trabajo con luz natural"
         imagePositionClass="object-[70%_center] sm:object-[75%_center] lg:object-[80%_center]"
@@ -447,7 +447,7 @@ export default function InsightsPage() {
               </p>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 pt-1">
                 <Link
-                  href="/?advisory=true"
+                  href="?advisory=true"
                   className="inline-flex items-center justify-center gap-2.5 bg-[#D4A737] hover:bg-[#C4962B] text-[#0B2D58] px-7 py-4 text-xs sm:text-[0.82rem] font-bold tracking-[0.14em] uppercase rounded-[2px] transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-white whitespace-nowrap"
                 >
                   <span>HABLAR CON UN ASESOR</span>
@@ -542,7 +542,7 @@ export default function InsightsPage() {
                 Cerrar
               </Link>
               <Link
-                href="/?advisory=true"
+                href="?advisory=true"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#D4A737] hover:bg-[#C4962B] text-[#0B2D58] px-6 py-3 text-xs font-bold tracking-[0.14em] uppercase rounded-[2px] transition-colors shadow-sm"
               >
                 <span>ANALIZAR ESTE RIESGO</span>
@@ -555,3 +555,4 @@ export default function InsightsPage() {
     </div>
   );
 }
+

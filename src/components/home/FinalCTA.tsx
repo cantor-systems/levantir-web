@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from 'next/link';
+import { AdvisoryLink as Link } from "@/components/ui/AdvisoryLink";
 import { ArrowRight, MessageCircle } from 'lucide-react';
 import { Container } from '../layout/Container';
 export function FinalCTA() {
@@ -52,3 +52,4 @@ export function FinalCTA() {
     </section>
   );
 }
+

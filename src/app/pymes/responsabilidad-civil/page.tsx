@@ -180,7 +180,7 @@ export default function ResponsabilidadCivilPage() {
         title="Cuando tu operación puede generar una obligación frente a terceros."
         supportingCopy="La exposición frente a terceros depende del giro, la actividad, la operación y el contexto específico de cada empresa. En LEVANTIR evaluamos estos factores para estructurar una protección con rigor técnico y criterio independiente."
         primaryCtaText="EVALUAR MI EXPOSICIÓN"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER MÁS"
         secondaryCtaHref="#contexto"
         imageUrl="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2070&auto=format&fit=crop"
@@ -436,10 +436,11 @@ export default function ResponsabilidadCivilPage() {
         title="Revisemos tu exposición y cómo proteger la continuidad de tu negocio."
         supportingCopy="Evaluamos la interacción de tu empresa con terceros para estructurar una protección equilibrada, técnica y ajustada a tu realidad operativa."
         primaryCtaText="EVALUAR MI EXPOSICIÓN"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="HABLAR CON UN ASESOR"
-        secondaryCtaHref="/?advisory=true"
+        secondaryCtaHref="?advisory=true"
       />
     </div>
   );
 }
+

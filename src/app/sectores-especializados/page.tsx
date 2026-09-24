@@ -93,7 +93,7 @@ export default function SectoresEspecializadosPage() {
         title="Soluciones para riesgos que requieren una mirada más especializada."
         supportingCopy="No todas las operaciones encajan en esquemas convencionales. En LEVANTIR analizamos actividades, activos y responsabilidades con mayor nivel de complejidad para estructurar soluciones con criterio técnico, visión patrimonial y acompañamiento independiente."
         primaryCtaText="REVISAR MI OPERACIÓN ESPECIALIZADA"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER MÁS"
         secondaryCtaHref="#contexto"
         imageUrl="https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=2070&auto=format&fit=crop"
@@ -261,11 +261,12 @@ export default function SectoresEspecializadosPage() {
         title="Evaluemos juntos la protección que requiere tu operación compleja."
         supportingCopy="Si tu empresa enfrenta riesgos no convencionales, cuenta con activos de alta especificidad o requiere asegurar responsabilidades extraordinarias, permítenos asesorarte."
         primaryCtaText="REVISAR MI OPERACIÓN ESPECIALIZADA"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="HABLAR CON UN ASESOR"
-        secondaryCtaHref="/?advisory=true"
+        secondaryCtaHref="?advisory=true"
       />
     </div>
   );
 }
+
 

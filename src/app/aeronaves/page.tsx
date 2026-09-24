@@ -130,7 +130,7 @@ export default function AeronavesPage() {
         title="Seguros y gestión de riesgos para operaciones aeronáuticas."
         supportingCopy="Cada operación aeronáutica presenta riesgos particulares relacionados con la aeronave, el perfil de vuelo, la tripulación, la infraestructura y la responsabilidad frente a terceros. En LEVANTIR analizamos tu entorno operativo con rigor técnico y criterio independiente para estructurar esquemas de aseguramiento acordes a las exigencias reales de tu vuelo."
         primaryCtaText="SOLICITAR ASESORÍA ESPECIALIZADA"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER MÁS"
         secondaryCtaHref="#contexto"
         imageUrl="https://images.unsplash.com/photo-1559628233-100c798642d4?q=80&w=2070&auto=format&fit=crop"
@@ -250,7 +250,7 @@ export default function AeronavesPage() {
                 No existen dos operaciones aeronáuticas idénticas. Las características de la máquina, el historial del mando, las bases habituales y la naturaleza de los traslados definen exigencias únicas que deben plasmarse con precisión en el contrato de seguro.
               </p>
               <div className="pt-4">
-                <Link href="/?advisory=true" className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.16em] uppercase text-[#0B2D58] hover:text-[#D4A737] transition-colors py-2 group focus:outline-none focus-visible:underline">
+                <Link href="?advisory=true" className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.16em] uppercase text-[#0B2D58] hover:text-[#D4A737] transition-colors py-2 group focus:outline-none focus-visible:underline">
                   <span>EVALUAR MI PERFIL OPERATIVO</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Link>
@@ -351,10 +351,11 @@ export default function AeronavesPage() {
         title="Hablemos de tu operación aeronáutica y las soluciones que pueden protegerla."
         supportingCopy="Agenda una conversación técnica y confidencial para evaluar tu aeronave, bases operativas, perfiles de tripulación y requerimientos de responsabilidad civil."
         primaryCtaText="SOLICITAR ASESORÍA ESPECIALIZADA"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="HABLAR CON UN ASESOR"
-        secondaryCtaHref="/?advisory=true"
+        secondaryCtaHref="?advisory=true"
       />
     </div>
   );
 }
+

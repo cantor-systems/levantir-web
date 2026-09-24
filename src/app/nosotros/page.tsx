@@ -149,7 +149,7 @@ export default function NosotrosPage() {
         title="El riesgo se entiende antes de asegurarse."
         supportingCopy="En LEVANTIR ayudamos a personas, empresarios y empresas a tomar mejores decisiones frente al riesgo, con análisis técnico, acceso a soluciones y un acompañamiento independiente."
         primaryCtaText="SOLICITAR ASESORÍA"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER NUESTRA METODOLOGÍA"
         secondaryCtaHref="#metodologia"
         trustNote="Asesoría objetiva · Visión patrimonial · Acompañamiento continuo"
@@ -479,7 +479,7 @@ export default function NosotrosPage() {
 
               <div className="pt-3">
                 <Link
-                  href="/?advisory=true"
+                  href="?advisory=true"
                   className="inline-flex items-center justify-center gap-2.5 bg-[#0B2D58] hover:bg-[#071E3B] text-white h-[52px] sm:h-[54px] px-8 text-xs sm:text-[0.82rem] font-bold tracking-[0.14em] uppercase rounded-[2px] transition-all shadow-sm"
                 >
                   <span>HABLAR CON UN ASESOR</span>
@@ -542,7 +542,7 @@ export default function NosotrosPage() {
 
               <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row items-stretch sm:items-center lg:items-stretch xl:items-center gap-3.5 sm:gap-4 pt-1">
                 <Link
-                  href="/?advisory=true"
+                  href="?advisory=true"
                   className="inline-flex items-center justify-center gap-2.5 bg-[#D4A737] hover:bg-[#C4962B] text-[#0B2D58] px-7 py-4 text-xs sm:text-[0.82rem] font-bold tracking-[0.14em] uppercase rounded-[2px] transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-white whitespace-nowrap"
                 >
                   <span>SOLICITAR ASESORÍA</span>
@@ -550,7 +550,7 @@ export default function NosotrosPage() {
                 </Link>
 
                 <Link
-                  href="/?advisory=true"
+                  href="?advisory=true"
                   className="inline-flex items-center justify-center gap-2 border border-white/25 hover:border-white text-white px-6 py-4 text-xs sm:text-[0.82rem] font-semibold tracking-[0.12em] uppercase rounded-[2px] transition-colors whitespace-nowrap"
                 >
                   <span>HABLAR CON UN ASESOR</span>
@@ -563,3 +563,4 @@ export default function NosotrosPage() {
     </div>
   );
 }
+

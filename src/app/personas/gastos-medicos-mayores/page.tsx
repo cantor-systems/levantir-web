@@ -105,7 +105,7 @@ export default function GastosMedicosMayoresPage() {
         title="Protege tu patrimonio frente a gastos médicos de alto impacto."
         supportingCopy="Un evento médico severo o prolongado puede comprometer la estabilidad económica construida durante años. En LEVANTIR te ayudamos a evaluar y estructurar las alternativas de aseguramiento idóneas para ti y tu familia, con análisis independiente y visión de largo plazo."
         primaryCtaText="REVISAR MIS OPCIONES"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER QUÉ REVISAR"
         secondaryCtaHref="#que-revisar"
         imageUrl="https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=2070&auto=format&fit=crop"
@@ -314,10 +314,11 @@ export default function GastosMedicosMayoresPage() {
         title="Lo que has construido merece una estrategia de protección a su altura."
         supportingCopy="Cuéntanos tus prioridades y las de tu familia. Te ayudaremos a evaluar las alternativas disponibles con criterio independiente, rigor técnico y visión de largo plazo."
         primaryCtaText="REVISAR MIS OPCIONES"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="SOLICITAR ASESORÍA"
-        secondaryCtaHref="/?advisory=true"
+        secondaryCtaHref="?advisory=true"
       />
     </div>
   );
 }
+

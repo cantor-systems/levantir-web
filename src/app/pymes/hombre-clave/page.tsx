@@ -184,7 +184,7 @@ export default function HombreClavePage() {
         title="¿Qué ocurre con tu empresa cuando una persona es difícil de reemplazar?"
         supportingCopy="La ausencia de una persona clave puede comprometer la operación cotidiana, los flujos de ingresos, la continuidad estratégica, las relaciones con clientes o proveedores, el conocimiento técnico acumulado y la capacidad de ejecución de tu empresa. En LEVANTIR estructuramos soluciones con rigor técnico y criterio independiente."
         primaryCtaText="ANALIZAR PERSONAS CLAVE DE MI EMPRESA"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER MÁS"
         secondaryCtaHref="#contexto"
         imageUrl="https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=2070&auto=format&fit=crop"
@@ -440,10 +440,11 @@ export default function HombreClavePage() {
         title="Revisemos juntos la protección para las personas clave de tu empresa."
         supportingCopy="Identifiquemos las dependencias operativas y estratégicas de tu organización para estructurar un esquema de previsión patrimonial ordenado, prudente y con rigor técnico."
         primaryCtaText="ANALIZAR PERSONAS CLAVE DE MI EMPRESA"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="HABLAR CON UN ASESOR"
-        secondaryCtaHref="/?advisory=true"
+        secondaryCtaHref="?advisory=true"
       />
     </div>
   );
 }
+

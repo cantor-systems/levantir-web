@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
+import { AdvisoryLink as Link } from "@/components/ui/AdvisoryLink";
 import { ArrowRight } from "lucide-react";
 import { Container } from "../layout/Container";
 
@@ -59,3 +59,4 @@ export function CTASection({
     </section>
   );
 }
+

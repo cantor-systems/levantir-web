@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
+import { AdvisoryLink as Link } from "@/components/ui/AdvisoryLink";
 import { ArrowRight, ArrowDown, ShieldCheck } from "lucide-react";
 import { Container } from "../layout/Container";
 import { Breadcrumbs, BreadcrumbItem } from "./Breadcrumbs";
@@ -138,3 +138,4 @@ export function PageHero({
     </section>
   );
 }
+

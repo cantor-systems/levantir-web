@@ -86,7 +86,7 @@ export default function PymesPage() {
         title="Protección y continuidad para tu empresa."
         supportingCopy="La protección de una empresa requiere analizar de forma conjunta a las personas, los activos críticos, la responsabilidad frente a terceros, la movilidad operativa y la continuidad del negocio ante cualquier eventualidad. En LEVANTIR estructuramos soluciones con rigor técnico y criterio independiente."
         primaryCtaText="EVALUAR RIESGOS DE MI EMPRESA"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER MÁS"
         secondaryCtaHref="#contexto-riesgo"
         imageUrl="https://images.unsplash.com/photo-1556740758-90de374c12ad?q=80&w=2070&auto=format&fit=crop"
@@ -245,11 +245,12 @@ export default function PymesPage() {
         title="Hablemos sobre la protección que tu empresa necesita."
         supportingCopy="Analizamos tu perfil operativo y evaluamos las alternativas más sólidas del mercado institucional, con criterio técnico independiente y sin compromisos comerciales."
         primaryCtaText="EVALUAR RIESGOS DE MI EMPRESA"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="HABLAR CON UN ASESOR"
-        secondaryCtaHref="/?advisory=true"
+        secondaryCtaHref="?advisory=true"
       />
     </div>
   );
 }
+
 

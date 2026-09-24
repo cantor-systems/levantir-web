@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
+import { AdvisoryLink as Link } from "@/components/ui/AdvisoryLink";
 import { usePathname } from 'next/navigation';
 import { Menu, ArrowRight, ChevronDown } from 'lucide-react';
 
@@ -305,3 +305,4 @@ export function Header({
     </header>
   );
 }
+

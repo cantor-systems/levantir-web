@@ -79,7 +79,7 @@ export default function AutosPage() {
         title="Protección para cada trayecto."
         supportingCopy="La protección de un vehículo debe considerar no sólo el activo, sino la responsabilidad frente a terceros, la continuidad en el camino y el contexto del conductor. En LEVANTIR estructuramos coberturas con rigor técnico y criterio independiente."
         primaryCtaText="SOLICITAR COTIZACIÓN"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER MÁS"
         secondaryCtaHref="#contexto-riesgo"
         imageUrl="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=2070&auto=format&fit=crop"
@@ -213,11 +213,12 @@ export default function AutosPage() {
         title="Estructura la protección de tu vehículo con rigor técnico y criterio independiente."
         supportingCopy="Analizamos las características de tu unidad y tu perfil de conducción para evaluar las alternativas más sólidas del mercado, con absoluta objetividad y sin presiones comerciales."
         primaryCtaText="SOLICITAR COTIZACIÓN"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="HABLAR CON UN ASESOR"
-        secondaryCtaHref="/?advisory=true"
+        secondaryCtaHref="?advisory=true"
       />
     </div>
   );
 }
+
 

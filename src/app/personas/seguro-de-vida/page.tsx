@@ -79,7 +79,7 @@ export default function SeguroDeVidaPage() {
         title="Protección financiera para quienes dependen de ti."
         supportingCopy="El seguro de vida es la herramienta fundamental para respaldar la estabilidad de tus seres queridos y la continuidad de tus proyectos patrimoniales ante lo imprevisto. En LEVANTIR analizamos tus compromisos con criterio técnico e independiente."
         primaryCtaText="Evaluar mi protección"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER QUÉ EVALUAR"
         secondaryCtaHref="#preguntas-clave"
         imageUrl="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?q=80&w=2070&auto=format&fit=crop"
@@ -313,10 +313,11 @@ export default function SeguroDeVidaPage() {
         title="Lo que has construido merece una estrategia de protección a su altura."
         supportingCopy="Cuéntanos tus prioridades y las de tu familia. Te ayudaremos a evaluar las alternativas de seguro de vida disponibles con criterio independiente, rigor técnico y visión de largo plazo."
         primaryCtaText="Evaluar mi protección"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="SOLICITAR ASESORÍA"
-        secondaryCtaHref="/?advisory=true"
+        secondaryCtaHref="?advisory=true"
       />
     </div>
   );
 }
+

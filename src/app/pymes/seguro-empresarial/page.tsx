@@ -166,7 +166,7 @@ export default function SeguroEmpresarialPage() {
         title="Protege los activos que mantienen operando tu empresa."
         supportingCopy="Una adecuada protección empresarial analiza en conjunto la actividad, los activos, la operación y la exposición real de tu negocio para estructurar una solución con criterio técnico y visión de continuidad."
         primaryCtaText="REVISAR LA PROTECCIÓN DE MI EMPRESA"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER MÁS"
         secondaryCtaHref="#contexto"
         imageUrl="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=2070&auto=format&fit=crop"
@@ -422,10 +422,11 @@ export default function SeguroEmpresarialPage() {
         title="Revisemos cómo proteger la continuidad de tu empresa."
         supportingCopy="Evaluamos la exposición física y operativa de tu negocio para estructurar una protección técnica a la medida de tus activos y metas de continuidad."
         primaryCtaText="REVISAR LA PROTECCIÓN DE MI EMPRESA"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="HABLAR CON UN ASESOR"
-        secondaryCtaHref="/?advisory=true"
+        secondaryCtaHref="?advisory=true"
       />
     </div>
   );
 }
+

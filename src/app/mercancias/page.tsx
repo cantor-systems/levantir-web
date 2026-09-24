@@ -91,7 +91,7 @@ export default function MercanciasPage() {
         title="Protección para bienes en movimiento."
         supportingCopy="Una operación logística expone la mercancía y la continuidad del negocio a contingencias en tránsito, maniobras y almacenamiento. En LEVANTIR analizamos tu cadena de suministro con rigor técnico y criterio independiente para estructurar esquemas de protección acordes a la dinámica de tu operación."
         primaryCtaText="REVISAR MI OPERACIÓN LOGÍSTICA"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER MÁS"
         secondaryCtaHref="#contexto"
         imageUrl="https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=2070&auto=format&fit=crop"
@@ -246,11 +246,12 @@ export default function MercanciasPage() {
         title="Revisemos tu operación logística y cómo proteger lo que mueve tu negocio."
         supportingCopy="Evaluemos en conjunto los flujos de transporte, tipos de mercancía y rutas para estructurar una protección patrimonial con rigor técnico y criterio independiente."
         primaryCtaText="REVISAR MI OPERACIÓN LOGÍSTICA"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="HABLAR CON UN ASESOR"
-        secondaryCtaHref="/?advisory=true"
+        secondaryCtaHref="?advisory=true"
       />
     </div>
   );
 }
+
 

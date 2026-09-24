@@ -83,7 +83,7 @@ export default function RetiroPage() {
         title="Construir patrimonio también significa preparar el futuro."
         supportingCopy="Un retiro con claridad e independencia económica no es producto del azar, sino de una estrategia de previsión estructurada con disciplina, tiempo y rigor. En LEVANTIR analizamos tu horizonte con criterio técnico e independiente."
         primaryCtaText="Revisar mi estrategia de retiro"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER ASPECTOS CLAVE"
         secondaryCtaHref="#aspectos-clave"
         imageUrl="https://images.unsplash.com/photo-1496889250866-0c3d0c8f22d2?q=80&w=2070&auto=format&fit=crop"
@@ -319,10 +319,11 @@ export default function RetiroPage() {
         title="Construye una estrategia de retiro con claridad y visión patrimonial."
         supportingCopy="Cuéntanos tus metas y horizonte temporal. Te orientamos para evaluar las alternativas de retiro disponibles con rigor técnico, objetividad y acompañamiento continuo."
         primaryCtaText="Revisar mi estrategia de retiro"
-        primaryCtaHref="/?advisory=true"
+        primaryCtaHref="?advisory=true"
         secondaryCtaText="SOLICITAR ASESORÍA"
-        secondaryCtaHref="/?advisory=true"
+        secondaryCtaHref="?advisory=true"
       />
     </div>
   );
 }
+
