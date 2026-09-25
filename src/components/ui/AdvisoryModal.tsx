@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { X, ArrowRight, CheckCircle2, MessageCircle } from 'lucide-react';
+import { getLeadContextFromPathname } from '@/lib/leads/context';
 
 export function AdvisoryModal() {
   const router = useRouter();
@@ -12,10 +13,22 @@ export function AdvisoryModal() {
   const isOpen = searchParams?.get('advisory') === 'true';
   const defaultTopic = searchParams?.get('topic') || "No estoy seguro / Asesoría integral";
 
+  // Derive internal lead context from current pathname + URL params.
+  // Stored in a ref — does not affect rendering or the UI.
+  // Available for 5D/5E pipeline without mixing PII.
+  const leadContextRef = useRef(getLeadContextFromPathname(pathname || '/', searchParams || null));
+  useEffect(() => {
+    if (isOpen) {
+      leadContextRef.current = getLeadContextFromPathname(pathname || '/', searchParams || null);
+    }
+  }, [isOpen, pathname, searchParams]);
+
   const onClose = useCallback(() => {
     const params = new URLSearchParams(searchParams?.toString() || '');
+    // Remove all advisory-owned params; preserve everything else.
     params.delete('advisory');
     params.delete('topic');
+    params.delete('product');
     const newQuery = params.toString();
     const href = `${pathname || '/'}${newQuery ? `?${newQuery}` : ''}`;
     router.push(href, { scroll: false });

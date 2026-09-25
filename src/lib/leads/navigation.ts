@@ -1,8 +1,15 @@
-import { ProductId, GeneralTopicId } from "./config";
+import { isValidProductId, isValidGeneralTopicId } from "./context";
 
 /**
  * Parses an existing CTA href (e.g. "/?advisory=true&topic=vida") and rebuilds it
  * using the current pathname and search params, preserving unrelated query params.
+ *
+ * Advisory-owned params forwarded from the original href:
+ *   - topic   (GeneralTopicId)
+ *   - product (ProductId)
+ *
+ * They are validated before being written to the URL.
+ * Unknown/invalid values are silently ignored.
  */
 export function buildAdvisoryUrl(
   originalHref: string,
@@ -15,20 +22,26 @@ export function buildAdvisoryUrl(
   }
 
   let topic: string | null = null;
-  
+  let product: string | null = null;
+
   try {
-    // Determine if it has a topic by parsing. Use a dummy base since originalHref might be relative.
+    // Use a dummy base since originalHref might be relative.
     const originalUrl = new URL(originalHref, "http://localhost");
     topic = originalUrl.searchParams.get("topic");
-  } catch (e) {
-    // Fallback if it fails
+    product = originalUrl.searchParams.get("product");
+  } catch {
+    // Fallback if parsing fails
   }
 
   const params = new URLSearchParams(currentSearchParams.toString());
   params.set("advisory", "true");
-  
-  if (topic) {
+
+  // Only write validated values into the URL
+  if (topic && isValidGeneralTopicId(topic)) {
     params.set("topic", topic);
+  }
+  if (product && isValidProductId(product)) {
+    params.set("product", product);
   }
 
   const prefix = currentPathname || "/";
