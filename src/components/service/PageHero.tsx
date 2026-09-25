@@ -109,14 +109,14 @@ export function PageHero({
             </Link>
 
             {secondaryCtaText && (
-              <a
+              <Link
                 href={secondaryCtaHref || "#"}
                 onClick={handleSecondaryScroll}
                 className="inline-flex items-center justify-center gap-2.5 border border-[#0B2D58]/35 hover:border-[#0B2D58] text-[#0B2D58] bg-white/90 hover:bg-white h-[52px] sm:h-[56px] px-7 sm:px-8 text-xs sm:text-[0.82rem] font-semibold tracking-[0.12em] uppercase rounded-[2px] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A737] whitespace-nowrap shadow-xs"
               >
                 <span>{secondaryCtaText}</span>
                 <ArrowDown className="w-4 h-4 text-[#D4A737]" aria-hidden="true" />
-              </a>
+              </Link>
             )}
           </div>
 

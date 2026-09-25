@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { AdvisoryLink } from "@/components/ui/AdvisoryLink";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/service/PageHero";
@@ -446,13 +447,13 @@ export default function InsightsPage() {
                 Cuéntanos tu situación y revisemos juntos qué factores conviene considerar antes de tomar una decisión.
               </p>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 pt-1">
-                <Link
+                <AdvisoryLink
                   href="?advisory=true"
                   className="inline-flex items-center justify-center gap-2.5 bg-[#D4A737] hover:bg-[#C4962B] text-[#0B2D58] px-7 py-4 text-xs sm:text-[0.82rem] font-bold tracking-[0.14em] uppercase rounded-[2px] transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-white whitespace-nowrap"
                 >
                   <span>HABLAR CON UN ASESOR</span>
                   <ArrowRight className="w-4 h-4" />
-                </Link>
+                </AdvisoryLink>
               </div>
             </div>
           </div>
@@ -541,13 +542,13 @@ export default function InsightsPage() {
               >
                 Cerrar
               </Link>
-              <Link
+              <AdvisoryLink
                 href="?advisory=true"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#D4A737] hover:bg-[#C4962B] text-[#0B2D58] px-6 py-3 text-xs font-bold tracking-[0.14em] uppercase rounded-[2px] transition-colors shadow-sm"
               >
                 <span>ANALIZAR ESTE RIESGO</span>
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </AdvisoryLink>
             </div>
           </div>
         </div>
