@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { validateLeadSubmission } from "@/lib/leads/validation";
+import { sendLeadEmail } from "@/lib/leads/email";
 
 export async function POST(request: Request) {
   try {
@@ -35,9 +36,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true }, { status: 200 });
     }
 
-    // For 5D.1 we stop here, further processing (like emailing) goes in subsequent phases.
-    // For now, we return 200 OK.
-    
+    // Human-validated lead: send notification email via Resend.
+    // Further processing (CRM, analytics, etc.) will be added in subsequent phases.
+    const emailResult = await sendLeadEmail(result.data);
+
+    if (!emailResult.ok) {
+      return NextResponse.json(
+        { ok: false, error: "INTERNAL_ERROR" },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({ ok: true }, { status: 200 });
 
   } catch {
