@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { AdvisoryFormSection, AdvisoryFormConfig } from "./AdvisoryFormSection";
+import { usePathname } from "next/navigation";
+import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData } from "./AdvisoryFormSection";
 
 const AUTO_PRODUCTS = [
   { id: "liability", label: "Responsabilidad civil" },
@@ -36,12 +37,67 @@ const CONFIG: AdvisoryFormConfig = {
 };
 
 export function AutoAdvisoryFormSection() {
+  const pathname = usePathname();
+
+  const handleSubmitAsync = async (data: AdvisoryFormSubmitData) => {
+    // Map visual product IDs to controlled backend IDs
+    const PRODUCT_MAP: Record<string, string> = {
+      liability: "responsabilidad-civil",
+      material_damage: "danos-materiales",
+      total_theft: "robo-total",
+      occupant_medical: "gastos-medicos-ocupantes",
+      road_assistance: "asistencia-vial",
+      high_value_auto: "auto-de-alto-valor",
+      fleet: "flotilla",
+      other: "otro-producto",
+    };
+
+    const mappedProducts = data.selectedProducts.map((id) => PRODUCT_MAP[id] || id);
+    const otherProductSelected = mappedProducts.includes("otro-producto");
+
+    const payload: Record<string, unknown> = {
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      message: data.message,
+      vertical: "autos",
+      products: mappedProducts,
+      sourcePage: pathname || "/autos",
+      formId: "auto-advisory",
+      website: data.website,
+    };
+
+    // Only send the free-text detail when the backend ID is present and the
+    // field was provided (already trimmed and guarded upstream in AdvisoryFormSection)
+    if (otherProductSelected && data.otherProduct && data.otherProduct.trim().length > 0) {
+      payload.otherProduct = data.otherProduct.trim();
+    }
+
+    const response = await fetch("/api/leads", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error("HTTP error from endpoint");
+    }
+
+    const result = await response.json();
+    if (result.ok !== true) {
+      throw new Error("Endpoint logic error");
+    }
+  };
+
   return (
     <AdvisoryFormSection
       config={CONFIG}
       contextFields={(idPrefix, onRegisterReset) => (
         <AutoContextFields idPrefix={idPrefix} onRegisterReset={onRegisterReset} />
       )}
+      onSubmitAsync={handleSubmitAsync}
     />
   );
 }
