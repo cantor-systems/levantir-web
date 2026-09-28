@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, ReactNode, useCallback } from "react";
+import React, { useState, ReactNode, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Lock } from "lucide-react";
 import { Container } from "../layout/Container";
@@ -32,12 +32,22 @@ export interface AdvisoryFormConfig {
   messageLabel?: string;
 }
 
+export interface AdvisoryFormSubmitData {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+  selectedProducts: string[];
+  website: string;
+}
+
 export interface AdvisoryFormSectionProps {
   config: AdvisoryFormConfig;
   contextFields: (idPrefix: string, onRegisterReset: (fn: () => void) => void) => ReactNode;
+  onSubmitAsync?: (data: AdvisoryFormSubmitData) => Promise<void>;
 }
 
-export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSectionProps) {
+export function AdvisoryFormSection({ config, contextFields, onSubmitAsync }: AdvisoryFormSectionProps) {
   const {
     sectionId,
     productsBlockId,
@@ -60,13 +70,31 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [otherProductText, setOtherProductText] = useState("");
   const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState("");
+
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [showProductValidationWarning, setShowProductValidationWarning] = useState(false);
 
   const [contextResetFn, setContextResetFn] = useState<(() => void) | null>(null);
   const registerContextReset = useCallback((fn: () => void) => {
     setContextResetFn(() => fn);
   }, []);
+
+  const formSectionRef = useRef<HTMLDivElement>(null);
+  const hasScrolledRef = useRef(false);
+
+  useEffect(() => {
+    if (onSubmitAsync && isSubmitted) {
+      if (!hasScrolledRef.current) {
+        hasScrolledRef.current = true;
+        formSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      hasScrolledRef.current = false;
+    }
+  }, [onSubmitAsync, isSubmitted]);
 
   const isOtherSelected = selectedProducts.includes("other");
 
@@ -77,8 +105,10 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
     if (selectedProducts.length === 0) {
       setShowProductValidationWarning(true);
       const targetElement = document.getElementById(productsBlockId);
@@ -87,7 +117,29 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
       }
       return;
     }
-    setIsSubmitted(true);
+
+    if (onSubmitAsync) {
+      setIsSubmitting(true);
+      setSubmitError(null);
+      try {
+        await onSubmitAsync({
+          name: fullName,
+          email,
+          phone: phoneNumber,
+          message,
+          selectedProducts,
+          website,
+        });
+        setIsSubmitted(true);
+      } catch {
+        setSubmitError("No pudimos enviar tu solicitud. Intenta nuevamente.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else {
+      // Legacy behavior
+      setIsSubmitted(true);
+    }
   };
 
   const handleReset = () => {
@@ -97,7 +149,10 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
     setSelectedProducts([]);
     setOtherProductText("");
     setMessage("");
+    setWebsite("");
     setIsSubmitted(false);
+    setIsSubmitting(false);
+    setSubmitError(null);
     setShowProductValidationWarning(false);
     if (contextResetFn) {
       contextResetFn();
@@ -157,7 +212,7 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
           </div>
 
           <div className="lg:col-span-7">
-            <div className="bg-white border border-[#E8E8E8] rounded-[2px] p-6 sm:p-9 lg:p-10 shadow-xs">
+            <div ref={formSectionRef} className="bg-white border border-[#E8E8E8] rounded-[2px] p-6 sm:p-9 lg:p-10 shadow-xs">
               {isSubmitted ? (
                 <div className="py-12 px-4 text-center space-y-5">
                   <div className="w-16 h-16 rounded-full bg-[#D4A737]/15 text-[#0B2D58] flex items-center justify-center mx-auto border border-[#D4A737]/30">
@@ -187,6 +242,26 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate={false} className="space-y-8">
+                  {submitError && (
+                    <div className="bg-red-50 border border-red-200 p-4 rounded-[2px]">
+                      <p className="text-sm font-medium text-red-800">{submitError}</p>
+                    </div>
+                  )}
+
+                  {/* Honeypot field */}
+                  <div className="absolute -left-[9999px]" aria-hidden="true">
+                    <label htmlFor={`${idPrefix}-website`}>Sitio Web</label>
+                    <input
+                      id={`${idPrefix}-website`}
+                      type="text"
+                      name="website"
+                      value={website}
+                      onChange={(e) => setWebsite(e.target.value)}
+                      tabIndex={-1}
+                      autoComplete="off"
+                    />
+                  </div>
+
                   <div className="space-y-5">
                     <div className="border-b border-[#E8E8E8] pb-2.5">
                       <h3 className="text-xs font-bold tracking-[0.16em] uppercase text-[#0B2D58]">
@@ -208,7 +283,8 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
                           placeholder="Ej. Alejandro Valdés"
-                          className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors"
+                          disabled={isSubmitting}
+                          className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors disabled:opacity-50"
                         />
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -219,7 +295,7 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
                           >
                             TELÉFONO / WHATSAPP <span className="text-[#D4A737] font-bold">*</span>
                           </label>
-                          <div className="flex rounded-[2px] border border-[#E8E8E8] bg-[#FAF9F5]/60 focus-within:border-[#0B2D58] focus-within:bg-white transition-colors">
+                          <div className={`flex rounded-[2px] border border-[#E8E8E8] bg-[#FAF9F5]/60 transition-colors ${isSubmitting ? "opacity-50" : "focus-within:border-[#0B2D58] focus-within:bg-white"}`}>
                             <span className="inline-flex items-center px-3 text-xs font-semibold text-[#0B2D58] border-r border-[#E8E8E8] bg-[#FAF9F5] select-none">
                               +52 (MX)
                             </span>
@@ -230,6 +306,7 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
                               value={phoneNumber}
                               onChange={(e) => setPhoneNumber(e.target.value)}
                               placeholder="55 1234 5678"
+                              disabled={isSubmitting}
                               className="w-full bg-transparent px-3 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none"
                             />
                           </div>
@@ -248,7 +325,8 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="nombre@empresa.com"
-                            className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors"
+                            disabled={isSubmitting}
+                            className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors disabled:opacity-50"
                           />
                         </div>
                       </div>
@@ -279,7 +357,7 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
                           <label
                             key={prod.id}
                             htmlFor={`${idPrefix}-product-${prod.id}`}
-                            className={`flex items-start gap-3 p-3.5 rounded-[2px] border cursor-pointer select-none transition-all duration-150 ${
+                            className={`flex items-start gap-3 p-3.5 rounded-[2px] border cursor-pointer select-none transition-all duration-150 ${isSubmitting ? "opacity-50 pointer-events-none" : ""} ${
                               checked
                                 ? "border-[#0B2D58] bg-[#0B2D58]/5"
                                 : "border-[#E8E8E8] bg-white hover:border-[#0B2D58]/40 hover:bg-[#FAF9F5]/70"
@@ -292,6 +370,7 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
                               value={prod.id}
                               checked={checked}
                               onChange={() => toggleProduct(prod.id)}
+                              disabled={isSubmitting}
                               className="w-4 h-4 mt-0.5 rounded-[2px] text-[#0B2D58] border-[#E8E8E8] focus:ring-[#0B2D58] focus:ring-offset-0 shrink-0 accent-[#0B2D58]"
                             />
                             <span className="text-xs sm:text-[0.82rem] font-medium text-[#0B2D58] leading-tight">
@@ -316,7 +395,8 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
                           value={otherProductText}
                           onChange={(e) => setOtherProductText(e.target.value)}
                           placeholder={otherProductPlaceholder}
-                          className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors"
+                          disabled={isSubmitting}
+                          className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors disabled:opacity-50"
                         />
                       </div>
                     )}
@@ -338,17 +418,19 @@ export function AdvisoryFormSection({ config, contextFields }: AdvisoryFormSecti
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder={messagePlaceholder}
-                      className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors resize-y min-h-[84px]"
+                      disabled={isSubmitting}
+                      className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors resize-y min-h-[84px] disabled:opacity-50"
                     />
                   </div>
 
                   <div className="pt-2">
                     <button
                       type="submit"
-                      className="w-full bg-[#D4A737] hover:bg-[#c4982f] text-[#0B2D58] font-bold text-xs sm:text-sm tracking-[0.14em] uppercase py-4 px-8 rounded-[2px] transition-all shadow-xs flex items-center justify-center gap-2 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#0B2D58] focus:ring-offset-2"
+                      disabled={isSubmitting}
+                      className="w-full bg-[#D4A737] hover:bg-[#c4982f] text-[#0B2D58] font-bold text-xs sm:text-sm tracking-[0.14em] uppercase py-4 px-8 rounded-[2px] transition-all shadow-xs flex items-center justify-center gap-2 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#0B2D58] focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                      <span>SOLICITAR ASESORÍA</span>
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                      <span>{isSubmitting ? "ENVIANDO..." : "SOLICITAR ASESORÍA"}</span>
+                      {!isSubmitting && <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />}
                     </button>
                   </div>
                 </form>

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { AdvisoryFormSection, AdvisoryFormConfig } from "./AdvisoryFormSection";
+import { usePathname } from "next/navigation";
+import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData } from "./AdvisoryFormSection";
 
 const PYMES_PRODUCTS = [
   { id: "property_damage", label: "Daños al inmueble" },
@@ -36,12 +37,60 @@ const CONFIG: AdvisoryFormConfig = {
 };
 
 export function PymesAdvisoryFormSection() {
+  const pathname = usePathname();
+
+  const handleSubmitAsync = async (data: AdvisoryFormSubmitData) => {
+    // Map visual product IDs to controlled backend IDs
+    const PRODUCT_MAP: Record<string, string> = {
+      property_damage: "danos-al-inmueble",
+      contents_equipment: "contenidos-equipo",
+      business_liability: "responsabilidad-civil",
+      theft: "robo",
+      electronic_equipment: "equipo-electronico",
+      consequential_loss: "perdidas-consecuenciales",
+      personal_accident: "accidentes-personales",
+      other: "otro-producto",
+    };
+
+    const mappedProducts = data.selectedProducts.map((id) => PRODUCT_MAP[id] || id);
+
+    const payload = {
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      message: data.message,
+      vertical: "pymes",
+      products: mappedProducts,
+      sourcePage: pathname || "/pymes",
+      formId: "pymes-advisory",
+      website: data.website,
+    };
+
+    const response = await fetch("/api/leads", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error("HTTP error from endpoint");
+    }
+
+    const result = await response.json();
+    if (result.ok !== true) {
+      throw new Error("Endpoint logic error");
+    }
+  };
+
   return (
     <AdvisoryFormSection
       config={CONFIG}
       contextFields={(idPrefix, onRegisterReset) => (
         <PymesContextFields idPrefix={idPrefix} onRegisterReset={onRegisterReset} />
       )}
+      onSubmitAsync={handleSubmitAsync}
     />
   );
 }
