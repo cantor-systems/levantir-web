@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { validateLeadSubmission } from "@/lib/leads/validation";
-import { sendLeadEmail } from "@/lib/leads/email";
+import { sendLeadEmail, sendLeadAcknowledgementEmail } from "@/lib/leads/email";
 
 export async function POST(request: Request) {
   try {
@@ -36,8 +36,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true }, { status: 200 });
     }
 
-    // Human-validated lead: send notification email via Resend.
-    // Further processing (CRM, analytics, etc.) will be added in subsequent phases.
+    // 1. CRITICAL: Send internal notification to LEVANTIR.
+    //    If this fails, we must return 500 — the lead was not received.
     const emailResult = await sendLeadEmail(result.data);
 
     if (!emailResult.ok) {
@@ -45,6 +45,15 @@ export async function POST(request: Request) {
         { ok: false, error: "INTERNAL_ERROR" },
         { status: 500 }
       );
+    }
+
+    // 2. SECONDARY: Send acknowledgement email to the prospect.
+    //    The lead is already in LEVANTIR's hands at this point.
+    //    A failure here must NOT surface as an error to the prospect
+    //    (which would cause duplicate submissions).
+    const ackResult = await sendLeadAcknowledgementEmail(result.data);
+    if (!ackResult.ok) {
+      console.error("Lead acknowledgement email failed; internal notification was already sent successfully");
     }
 
     return NextResponse.json({ ok: true }, { status: 200 });
