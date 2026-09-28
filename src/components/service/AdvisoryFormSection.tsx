@@ -39,6 +39,8 @@ export interface AdvisoryFormSubmitData {
   message: string;
   selectedProducts: string[];
   website: string;
+  /** Free-text detail when the user selected "Otro producto". */
+  otherProduct?: string;
 }
 
 export interface AdvisoryFormSectionProps {
@@ -122,14 +124,19 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync }: Ad
       setIsSubmitting(true);
       setSubmitError(null);
       try {
-        await onSubmitAsync({
+        const submitData: AdvisoryFormSubmitData = {
           name: fullName,
           email,
           phone: phoneNumber,
           message,
           selectedProducts,
           website,
-        });
+        };
+        // Only include the free-text detail when "other" is actually selected
+        if (isOtherSelected && otherProductText.trim().length > 0) {
+          submitData.otherProduct = otherProductText.trim();
+        }
+        await onSubmitAsync(submitData);
         setIsSubmitted(true);
       } catch {
         setSubmitError("No pudimos enviar tu solicitud. Intenta nuevamente.");
@@ -392,6 +399,7 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync }: Ad
                           id={`${idPrefix}-otro-producto`}
                           type="text"
                           required={isOtherSelected}
+                          maxLength={200}
                           value={otherProductText}
                           onChange={(e) => setOtherProductText(e.target.value)}
                           placeholder={otherProductPlaceholder}

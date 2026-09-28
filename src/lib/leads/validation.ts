@@ -7,6 +7,8 @@ export interface ValidatedLead extends LeadContext {
   email: string;
   phone?: string;
   message?: string;
+  /** Free-text detail provided when products includes "otro-producto". */
+  otherProduct?: string;
 }
 
 export type LeadValidationResult =
@@ -147,6 +149,26 @@ export function validateLeadSubmission(body: unknown): LeadValidationResult {
 
   if (phone !== undefined) validLead.phone = phone;
   if (message !== undefined) validLead.message = message;
+
+  // otherProduct: only relevant when "otro-producto" is in the products list
+  const hasOtroProducto = products.some((p) => p === "otro-producto");
+
+  if (hasOtroProducto) {
+    // When otro-producto is selected, a non-empty description is required
+    if (data.otherProduct === undefined || data.otherProduct === null) {
+      return { success: false, error: "INVALID_REQUEST" };
+    }
+    if (typeof data.otherProduct !== "string") {
+      return { success: false, error: "INVALID_REQUEST" };
+    }
+    const otherProductTrimmed = data.otherProduct.trim();
+    if (otherProductTrimmed.length < 2 || otherProductTrimmed.length > 200) {
+      return { success: false, error: "INVALID_REQUEST" };
+    }
+    validLead.otherProduct = otherProductTrimmed;
+  }
+  // If otro-producto is NOT in products, any provided otherProduct is silently
+  // ignored (normalised to undefined) — not treated as a validation error.
 
   return { success: true, spam: false, data: validLead };
 }

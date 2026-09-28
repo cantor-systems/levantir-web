@@ -53,8 +53,9 @@ export function PymesAdvisoryFormSection() {
     };
 
     const mappedProducts = data.selectedProducts.map((id) => PRODUCT_MAP[id] || id);
+    const otherProductSelected = mappedProducts.includes("otro-producto");
 
-    const payload = {
+    const payload: Record<string, unknown> = {
       name: data.name,
       email: data.email,
       phone: data.phone,
@@ -65,6 +66,12 @@ export function PymesAdvisoryFormSection() {
       formId: "pymes-advisory",
       website: data.website,
     };
+
+    // Only send the free-text detail when the backend ID is present and the
+    // field was provided (already trimmed and guarded upstream in AdvisoryFormSection)
+    if (otherProductSelected && data.otherProduct && data.otherProduct.trim().length > 0) {
+      payload.otherProduct = data.otherProduct.trim();
+    }
 
     const response = await fetch("/api/leads", {
       method: "POST",

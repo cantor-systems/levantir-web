@@ -41,11 +41,18 @@ export async function sendLeadEmail(
     "",
     `Vertical:      ${lead.vertical}`,
     `Productos:     ${productsText}`,
+  ];
+
+  if (lead.otherProduct) {
+    lines.push(`Otro producto: ${lead.otherProduct}`);
+  }
+
+  lines.push(
     `Página origen: ${lead.sourcePage}`,
     `Form ID:       ${lead.formId}`,
     "",
     "===========================",
-  ];
+  );
 
   const text = lines.join("\n");
 
