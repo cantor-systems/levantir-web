@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { AdvisoryFormSection, AdvisoryFormConfig } from "./AdvisoryFormSection";
+import { usePathname } from "next/navigation";
+import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData } from "./AdvisoryFormSection";
 
 const AVIATION_PRODUCTS = [
   { id: "aircraft_hull", label: "Casco / daños a la aeronave" },
@@ -36,12 +37,67 @@ const CONFIG: AdvisoryFormConfig = {
 };
 
 export function AviationAdvisoryFormSection() {
+  const pathname = usePathname();
+
+  const handleSubmitAsync = async (data: AdvisoryFormSubmitData) => {
+    // Map visual product IDs to controlled backend IDs
+    const PRODUCT_MAP: Record<string, string> = {
+      aircraft_hull: "casco-danos-a-la-aeronave",
+      aircraft_liability: "responsabilidad-civil",
+      passenger_liability: "responsabilidad-de-pasajeros",
+      crew_personal_accident: "accidentes-personales-tripulacion",
+      loss_of_use: "perdida-de-rentas",
+      war_hijacking_political_risks: "guerra-secuestro-y-riesgos-politicos",
+      ground_third_party_liability: "responsabilidad-en-tierra",
+      other: "otro-producto",
+    };
+
+    const mappedProducts = data.selectedProducts.map((id) => PRODUCT_MAP[id] || id);
+    const otherProductSelected = mappedProducts.includes("otro-producto");
+
+    const payload: Record<string, unknown> = {
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      message: data.message,
+      vertical: "aeronaves",
+      products: mappedProducts,
+      sourcePage: pathname || "/aeronaves",
+      formId: "aviation-advisory",
+      website: data.website,
+    };
+
+    // Only send the free-text detail when the backend ID is present and the
+    // field was provided (already trimmed and guarded upstream in AdvisoryFormSection)
+    if (otherProductSelected && data.otherProduct && data.otherProduct.trim().length > 0) {
+      payload.otherProduct = data.otherProduct.trim();
+    }
+
+    const response = await fetch("/api/leads", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error("HTTP error from endpoint");
+    }
+
+    const result = await response.json();
+    if (result.ok !== true) {
+      throw new Error("Endpoint logic error");
+    }
+  };
+
   return (
     <AdvisoryFormSection
       config={CONFIG}
       contextFields={(idPrefix, onRegisterReset) => (
         <AviationContextFields idPrefix={idPrefix} onRegisterReset={onRegisterReset} />
       )}
+      onSubmitAsync={handleSubmitAsync}
     />
   );
 }
@@ -95,4 +151,3 @@ function AviationContextFields({ idPrefix, onRegisterReset }: AviationContextFie
     </div>
   );
 }
-
