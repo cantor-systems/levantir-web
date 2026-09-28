@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { AdvisoryFormSection, AdvisoryFormConfig } from "./AdvisoryFormSection";
+import { usePathname } from "next/navigation";
+import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData } from "./AdvisoryFormSection";
 
 const SPECIALIZED_PRODUCTS = [
   { id: "specialized_liability", label: "Responsabilidad civil especializada" },
@@ -36,12 +37,67 @@ const CONFIG: AdvisoryFormConfig = {
 };
 
 export function SpecializedAdvisoryFormSection() {
+  const pathname = usePathname();
+
+  const handleSubmitAsync = async (data: AdvisoryFormSubmitData) => {
+    // Map visual product IDs to controlled backend IDs
+    const PRODUCT_MAP: Record<string, string> = {
+      specialized_liability: "responsabilidad-civil-especializada",
+      specialized_assets: "danos-a-activos-especializados",
+      specialized_equipment: "equipo-maquinaria-especializada",
+      aircraft_maintenance: "mantenimiento-de-aeronaves",
+      aviation_workshop_liability: "responsabilidad-de-talleres-aeronauticos",
+      hangars: "hangares",
+      special_operational_risks: "riesgos-operacionales-especiales",
+      other: "otro-producto",
+    };
+
+    const mappedProducts = data.selectedProducts.map((id) => PRODUCT_MAP[id] || id);
+    const otherProductSelected = mappedProducts.includes("otro-producto");
+
+    const payload: Record<string, unknown> = {
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      message: data.message,
+      vertical: "sectores-especializados",
+      products: mappedProducts,
+      sourcePage: pathname || "/sectores-especializados",
+      formId: "specialized-advisory",
+      website: data.website,
+    };
+
+    // Only send the free-text detail when the backend ID is present and the
+    // field was provided (already trimmed and guarded upstream in AdvisoryFormSection)
+    if (otherProductSelected && data.otherProduct && data.otherProduct.trim().length > 0) {
+      payload.otherProduct = data.otherProduct.trim();
+    }
+
+    const response = await fetch("/api/leads", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error("HTTP error from endpoint");
+    }
+
+    const result = await response.json();
+    if (result.ok !== true) {
+      throw new Error("Endpoint logic error");
+    }
+  };
+
   return (
     <AdvisoryFormSection
       config={CONFIG}
       contextFields={(idPrefix, onRegisterReset) => (
         <SpecializedContextFields idPrefix={idPrefix} onRegisterReset={onRegisterReset} />
       )}
+      onSubmitAsync={handleSubmitAsync}
     />
   );
 }
@@ -80,4 +136,3 @@ function SpecializedContextFields({ idPrefix, onRegisterReset }: SpecializedCont
     </div>
   );
 }
-
