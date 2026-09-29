@@ -3,19 +3,32 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { X, ArrowRight, CheckCircle2, MessageCircle } from 'lucide-react';
-import { getLeadContextFromPathname } from '@/lib/leads/context';
+import { getLeadContextFromPathname, isValidGeneralTopicId } from '@/lib/leads/context';
+import { GENERAL_TOPICS, type GeneralTopicId } from '@/lib/leads/config';
+
+// Default topic when the URL carries no valid GeneralTopicId
+const DEFAULT_TOPIC: GeneralTopicId = "asesoria-integral";
+
+/**
+ * Returns the GeneralTopicId to seed the selector with.
+ * - If the URL `topic` param is a valid GeneralTopicId → use it.
+ * - Otherwise → fall back to DEFAULT_TOPIC.
+ * NO invalid value ever reaches the selector or the POST body.
+ */
+function resolveInitialTopic(searchParams: URLSearchParams | null): GeneralTopicId {
+  const raw = searchParams?.get('topic') ?? '';
+  return raw && isValidGeneralTopicId(raw) ? raw : DEFAULT_TOPIC;
+}
 
 export function AdvisoryModal() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  
+
   const isOpen = searchParams?.get('advisory') === 'true';
-  const defaultTopic = searchParams?.get('topic') || "No estoy seguro / Asesoría integral";
 
   // Derive internal lead context from current pathname + URL params.
   // Stored in a ref — does not affect rendering or the UI.
-  // Available for 5D/5E pipeline without mixing PII.
   const leadContextRef = useRef(getLeadContextFromPathname(pathname || '/', searchParams || null));
   useEffect(() => {
     if (isOpen) {
@@ -34,23 +47,32 @@ export function AdvisoryModal() {
     router.push(href, { scroll: false });
   }, [router, pathname, searchParams]);
 
-  const [topic, setTopic] = useState(defaultTopic);
+  // ── Form state ──────────────────────────────────────────────────────────────
+  const [topic, setTopic] = useState<GeneralTopicId>(DEFAULT_TOPIC);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [website, setWebsite] = useState(""); // honeypot — must stay empty for humans
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // Sync topic selector when the modal opens (or URL topic param changes).
+  // Validates the URL value before applying; falls back to DEFAULT_TOPIC.
   useEffect(() => {
-    if (defaultTopic) {
+    if (isOpen) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setTopic(defaultTopic);
+      setTopic(resolveInitialTopic(searchParams || null));
     }
-  }, [defaultTopic]);
+  }, [isOpen, searchParams]);
 
+  // Escape key + body scroll lock
   useEffect(() => {
     if (!isOpen) {
+      // Reset submission state so a future opening starts clean.
+      // Fields are preserved while the modal is simply closed without submitting,
+      // matching the existing semantics (no arbitrary reset on close-without-send).
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsSubmitted(false);
       return;
@@ -71,27 +93,57 @@ export function AdvisoryModal() {
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    // Simulate pristine submission
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-    }, 600);
-  };
+  // ── Submit ──────────────────────────────────────────────────────────────────
 
-  const protectionOptions = [
-    "Auto o movilidad",
-    "Salud o familia (Gastos Médicos)",
-    "Vida / protección patrimonial",
-    "Planes de retiro",
-    "Empresa y continuidad (PYMES)",
-    "Mercancías y logística",
-    "Aeronaves y aviación",
-    "Riesgo especializado",
-    "No estoy seguro / Asesoría integral",
-  ];
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Prevent duplicate concurrent requests
+    if (isSubmitting) return;
+
+    setSubmitError(null);
+    setIsSubmitting(true);
+
+    // Snapshot the commercial context at submit time.
+    // leadContextRef is already current (updated whenever isOpen becomes true).
+    const ctx = leadContextRef.current;
+
+    const payload = {
+      name:       name.trim(),
+      email:      email.trim(),
+      phone:      phone.trim(),
+      message:    message.trim(),
+      vertical:   ctx.vertical,
+      products:   ctx.products,
+      topic,               // GeneralTopicId — the value the user currently has selected
+      sourcePage: ctx.sourcePage,
+      formId:     "advisory-modal" as const,
+      website,             // honeypot — expected to be "" for real humans
+    };
+
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        // Success: show confirmation screen.
+        // Fields are NOT cleared until the user closes the modal,
+        // so the success state is unambiguous and the user can review what was sent.
+        setIsSubmitted(true);
+      } else {
+        // Server returned a non-2xx status: keep form intact, show generic error.
+        setSubmitError("No pudimos enviar tu solicitud. Inténtalo nuevamente.");
+      }
+    } catch {
+      // Network failure or fetch error: keep form intact, show generic error.
+      setSubmitError("No pudimos enviar tu solicitud. Inténtalo nuevamente.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div
@@ -156,6 +208,20 @@ export function AdvisoryModal() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Honeypot — visually offscreen, not interactable by humans */}
+                <div className="absolute -left-[9999px]" aria-hidden="true">
+                  <label htmlFor="modal-website">Sitio Web</label>
+                  <input
+                    id="modal-website"
+                    type="text"
+                    name="website"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
+
                 <div>
                   <label htmlFor="modal-name" className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">
                     Nombre completo <span className="text-[#D4A737]">*</span>
@@ -209,12 +275,12 @@ export function AdvisoryModal() {
                   <select
                     id="modal-topic"
                     value={topic}
-                    onChange={(e) => setTopic(e.target.value)}
+                    onChange={(e) => setTopic(e.target.value as GeneralTopicId)}
                     className="w-full px-3.5 py-2.5 text-sm bg-[#F8F5EF] border border-[#E8E8E8] rounded-[2px] text-[#2E2E2E] focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors"
                   >
-                    {protectionOptions.map((opt) => (
-                      <option key={opt} value={opt}>
-                        {opt}
+                    {GENERAL_TOPICS.map(({ id, label }) => (
+                      <option key={id} value={id}>
+                        {label}
                       </option>
                     ))}
                   </select>
@@ -234,11 +300,18 @@ export function AdvisoryModal() {
                   />
                 </div>
 
+                {/* Error message — only visible when submit fails */}
+                {submitError && (
+                  <p role="alert" className="text-xs text-red-600 text-center">
+                    {submitError}
+                  </p>
+                )}
+
                 <div className="pt-3 flex flex-col sm:flex-row items-center gap-3">
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full sm:w-auto flex-1 inline-flex items-center justify-center gap-2 bg-[#D4A737] hover:bg-[#C4962B] text-[#0B2D58] px-6 py-3 text-xs font-bold tracking-[0.14em] uppercase rounded-[2px] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2D58]"
+                    className="w-full sm:w-auto flex-1 inline-flex items-center justify-center gap-2 bg-[#D4A737] hover:bg-[#C4962B] text-[#0B2D58] px-6 py-3 text-xs font-bold tracking-[0.14em] uppercase rounded-[2px] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2D58] disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     <span>{isSubmitting ? "Enviando..." : "Solicitar asesoría"}</span>
                     <ArrowRight className="w-4 h-4" />
@@ -266,4 +339,3 @@ export function AdvisoryModal() {
     </div>
   );
 }
-
