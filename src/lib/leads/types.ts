@@ -17,6 +17,7 @@ export type LeadFormId =
 export interface LeadContext {
   vertical: import("./config").LeadVertical;
   products: import("./config").ProductId[];
+  topic?: import("./config").GeneralTopicId;
   sourcePage: string;
   formId: LeadFormId;
 }

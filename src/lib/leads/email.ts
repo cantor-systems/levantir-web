@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import type { ValidatedLead } from "./validation";
+import { GENERAL_TOPICS } from "./config";
 
 /**
  * Sends a lead notification email via Resend.
@@ -42,6 +43,11 @@ export async function sendLeadEmail(
     `Vertical:      ${lead.vertical}`,
     `Productos:     ${productsText}`,
   ];
+
+  if (lead.topic) {
+    const topicLabel = GENERAL_TOPICS.find((t) => t.id === lead.topic)?.label || lead.topic;
+    lines.push(`Tema:          ${topicLabel}`);
+  }
 
   if (lead.otherProduct) {
     lines.push(`Otro producto: ${lead.otherProduct}`);

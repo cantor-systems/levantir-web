@@ -1,5 +1,5 @@
 import { PRODUCTS_BY_VERTICAL, LeadVertical, ProductId } from "./config";
-import { isLeadVertical, isValidProductId } from "./context";
+import { isLeadVertical, isValidProductId, isValidGeneralTopicId } from "./context";
 import { LeadContext, LeadFormId } from "./types";
 
 export interface ValidatedLead extends LeadContext {
@@ -146,6 +146,13 @@ export function validateLeadSubmission(body: unknown): LeadValidationResult {
     sourcePage,
     formId
   };
+
+  // Topic
+  if (data.topic !== undefined && data.topic !== null) {
+    if (typeof data.topic !== "string") return { success: false, error: "INVALID_REQUEST" };
+    if (!isValidGeneralTopicId(data.topic)) return { success: false, error: "INVALID_REQUEST" };
+    validLead.topic = data.topic;
+  }
 
   if (phone !== undefined) validLead.phone = phone;
   if (message !== undefined) validLead.message = message;
