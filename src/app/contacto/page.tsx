@@ -13,43 +13,112 @@ import { PageHero } from '@/components/service/PageHero';
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
 import { siteConfig } from '@/config/site';
+import { GENERAL_TOPICS, type GeneralTopicId } from '@/lib/leads/config';
 
-const PROTECTION_OPTIONS = [
-  "Auto o movilidad",
-  "Salud o familia",
-  "Vida / protección financiera",
-  "Retiro",
-  "Empresa",
-  "Mercancías",
-  "Aeronave",
-  "Riesgo especializado",
-  "No estoy seguro",
-];
+const DEFAULT_TOPIC: GeneralTopicId = "asesoria-integral";
 
 function ContactForm() {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [topic, setTopic] = useState<GeneralTopicId>(DEFAULT_TOPIC);
+  const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState(""); // honeypot — must stay empty for humans
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    topic: 'No estoy seguro',
-    message: ''
-  });
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Prevent duplicate concurrent requests
+    if (isSubmitting) return;
+
+    setSubmitError(null);
     setIsSubmitting(true);
-    // TODO: Connect form to production lead endpoint in Antigravity phase.
-    setTimeout(() => {
+
+    const payload = {
+      name:       name.trim(),
+      email:      email.trim(),
+      phone:      phone.trim(),
+      message:    message.trim(),
+      vertical:   "general" as const,
+      products:   [] as const,
+      topic,
+      sourcePage: "/contacto",
+      formId:     "contact-form" as const,
+      website,    // honeypot — expected to be "" for real humans
+    };
+
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        // Success: show confirmation and reset form
+        setIsSubmitted(true);
+        setName("");
+        setPhone("");
+        setEmail("");
+        setTopic(DEFAULT_TOPIC);
+        setMessage("");
+        setWebsite("");
+      } else {
+        // Server returned a non-2xx status: keep form intact, show generic error
+        setSubmitError("No pudimos enviar tu solicitud. Inténtalo nuevamente.");
+      }
+    } catch {
+      // Network failure or fetch error: keep form intact, show generic error
+      setSubmitError("No pudimos enviar tu solicitud. Inténtalo nuevamente.");
+    } finally {
       setIsSubmitting(false);
-      // No simulating success message per user request (NO mostrar mensajes falsos)
-      // Just keep it in a ready state or clear
-      setFormData({ name: '', phone: '', email: '', topic: 'No estoy seguro', message: '' });
-    }, 800);
+    }
   };
+
+  if (isSubmitted) {
+    return (
+      <div className="py-8 space-y-4 text-center">
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-white border border-[#E8E8E8] text-[#D4A737]">
+          <CheckCircle2 className="w-8 h-8" />
+        </div>
+        <h3 className="font-display text-2xl text-[#0B2D58]" style={{ fontFamily: 'var(--font-display), "Playfair Display", Georgia, serif' }}>
+          Solicitud recibida
+        </h3>
+        <p className="text-sm text-[#5C626B] max-w-sm mx-auto leading-relaxed">
+          Hemos recibido tu mensaje. Un asesor de LEVANTIR dará seguimiento a tu solicitud.
+        </p>
+        <div className="pt-2">
+          <button
+            type="button"
+            onClick={() => setIsSubmitted(false)}
+            className="inline-flex items-center gap-2 border border-[#0B2D58] text-[#0B2D58] hover:bg-[#0B2D58] hover:text-white px-6 py-2.5 text-xs font-semibold tracking-[0.14em] uppercase rounded-[2px] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2D58]"
+          >
+            Enviar otra solicitud
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Honeypot — visually offscreen, not interactable by humans */}
+      <div className="absolute -left-[9999px]" aria-hidden="true">
+        <label htmlFor="contact-website">Sitio Web</label>
+        <input
+          id="contact-website"
+          type="text"
+          name="website"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
+
       <div>
         <label htmlFor="contact-name" className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">
           Nombre completo <span className="text-[#D4A737]">*</span>
@@ -58,8 +127,8 @@ function ContactForm() {
           id="contact-name"
           type="text"
           required
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           placeholder="Ej. Alejandro Valdés"
           className="w-full px-3.5 py-3 text-sm bg-white border border-[#E8E8E8] rounded-[2px] text-[#2E2E2E] focus:outline-none focus:border-[#0B2D58] focus:ring-1 focus:ring-[#0B2D58] transition-colors"
         />
@@ -74,8 +143,8 @@ function ContactForm() {
             id="contact-phone"
             type="tel"
             required
-            value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             placeholder="+52 ..."
             className="w-full px-3.5 py-3 text-sm bg-white border border-[#E8E8E8] rounded-[2px] text-[#2E2E2E] focus:outline-none focus:border-[#0B2D58] focus:ring-1 focus:ring-[#0B2D58] transition-colors"
           />
@@ -88,8 +157,8 @@ function ContactForm() {
             id="contact-email"
             type="email"
             required
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="nombre@empresa.com"
             className="w-full px-3.5 py-3 text-sm bg-white border border-[#E8E8E8] rounded-[2px] text-[#2E2E2E] focus:outline-none focus:border-[#0B2D58] focus:ring-1 focus:ring-[#0B2D58] transition-colors"
           />
@@ -103,13 +172,13 @@ function ContactForm() {
         <select
           id="contact-topic"
           required
-          value={formData.topic}
-          onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
+          value={topic}
+          onChange={(e) => setTopic(e.target.value as GeneralTopicId)}
           className="w-full px-3.5 py-3 text-sm bg-white border border-[#E8E8E8] rounded-[2px] text-[#2E2E2E] focus:outline-none focus:border-[#0B2D58] focus:ring-1 focus:ring-[#0B2D58] transition-colors"
         >
-          {PROTECTION_OPTIONS.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
+          {GENERAL_TOPICS.map(({ id, label }) => (
+            <option key={id} value={id}>
+              {label}
             </option>
           ))}
         </select>
@@ -122,20 +191,27 @@ function ContactForm() {
         <textarea
           id="contact-message"
           rows={4}
-          value={formData.message}
-          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           placeholder="Describe brevemente tu situación o requerimiento..."
           className="w-full px-3.5 py-3 text-sm bg-white border border-[#E8E8E8] rounded-[2px] text-[#2E2E2E] focus:outline-none focus:border-[#0B2D58] focus:ring-1 focus:ring-[#0B2D58] transition-colors resize-none"
         />
       </div>
 
+      {/* Error message — only visible when submit fails */}
+      {submitError && (
+        <p role="alert" className="text-xs text-red-600">
+          {submitError}
+        </p>
+      )}
+
       <div className="pt-4">
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#D4A737] hover:bg-[#C4962B] text-[#0B2D58] px-8 py-3.5 text-xs font-bold tracking-[0.14em] uppercase rounded-[2px] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2D58]"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#D4A737] hover:bg-[#C4962B] text-[#0B2D58] px-8 py-3.5 text-xs font-bold tracking-[0.14em] uppercase rounded-[2px] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2D58] disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          <span>{isSubmitting ? "Procesando..." : "Solicitar asesoría"}</span>
+          <span>{isSubmitting ? "Enviando..." : "Solicitar asesoría"}</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
