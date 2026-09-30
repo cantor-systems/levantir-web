@@ -14,6 +14,7 @@ import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
 import { siteConfig } from '@/config/site';
 import { GENERAL_TOPICS, type GeneralTopicId } from '@/lib/leads/config';
+import { trackLeadEvent } from '@/lib/analytics/events';
 
 const DEFAULT_TOPIC: GeneralTopicId = "asesoria-integral";
 
@@ -28,6 +29,33 @@ function ContactForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // Analytics guards — one emission per component instance
+  const viewFiredRef = useRef(false);
+  const startFiredRef = useRef(false);
+
+  // Analytics context base — no PII, no product
+  const analyticsContext = () => ({
+    vertical: "general" as const,
+    form_id: "contact-form" as const,
+    source_path: "/contacto",
+    topic,
+  });
+
+  // PASO 5 — lead_form_view: fire once on mount
+  useEffect(() => {
+    if (viewFiredRef.current) return;
+    viewFiredRef.current = true;
+    trackLeadEvent("lead_form_view", analyticsContext());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // PASO 6 — lead_form_start: fire once on first significant user interaction
+  const trackFormStartOnce = () => {
+    if (startFiredRef.current) return;
+    startFiredRef.current = true;
+    trackLeadEvent("lead_form_start", analyticsContext());
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -36,6 +64,9 @@ function ContactForm() {
 
     setSubmitError(null);
     setIsSubmitting(true);
+
+    // PASO 8 — Honeypot guard: do not fire any submit analytics for bots
+    const isHuman = website.trim() === "";
 
     const payload = {
       name:       name.trim(),
@@ -50,6 +81,11 @@ function ContactForm() {
       website,    // honeypot — expected to be "" for real humans
     };
 
+    // PASO 9 — lead_submit: fire immediately before fetch, only for humans
+    if (isHuman) {
+      trackLeadEvent("lead_submit", analyticsContext());
+    }
+
     try {
       const response = await fetch('/api/leads', {
         method: 'POST',
@@ -58,6 +94,10 @@ function ContactForm() {
       });
 
       if (response.ok) {
+        // PASO 10 — lead_submit_success: fire before UI transition, only for humans
+        if (isHuman) {
+          trackLeadEvent("lead_submit_success", analyticsContext());
+        }
         // Success: show confirmation and reset form
         setIsSubmitted(true);
         setName("");
@@ -67,10 +107,24 @@ function ContactForm() {
         setMessage("");
         setWebsite("");
       } else {
+        // PASO 11 — lead_submit_error server: non-2xx response, only for humans
+        if (isHuman) {
+          trackLeadEvent("lead_submit_error", {
+            ...analyticsContext(),
+            error_type: "server",
+          });
+        }
         // Server returned a non-2xx status: keep form intact, show generic error
         setSubmitError("No pudimos enviar tu solicitud. Inténtalo nuevamente.");
       }
     } catch {
+      // PASO 11 — lead_submit_error network: fetch threw (network failure), only for humans
+      if (isHuman) {
+        trackLeadEvent("lead_submit_error", {
+          ...analyticsContext(),
+          error_type: "network",
+        });
+      }
       // Network failure or fetch error: keep form intact, show generic error
       setSubmitError("No pudimos enviar tu solicitud. Inténtalo nuevamente.");
     } finally {
@@ -128,7 +182,7 @@ function ContactForm() {
           type="text"
           required
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => { trackFormStartOnce(); setName(e.target.value); }}
           placeholder="Ej. Alejandro Valdés"
           className="w-full px-3.5 py-3 text-sm bg-white border border-[#E8E8E8] rounded-[2px] text-[#2E2E2E] focus:outline-none focus:border-[#0B2D58] focus:ring-1 focus:ring-[#0B2D58] transition-colors"
         />
@@ -144,7 +198,7 @@ function ContactForm() {
             type="tel"
             required
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => { trackFormStartOnce(); setPhone(e.target.value); }}
             placeholder="+52 ..."
             className="w-full px-3.5 py-3 text-sm bg-white border border-[#E8E8E8] rounded-[2px] text-[#2E2E2E] focus:outline-none focus:border-[#0B2D58] focus:ring-1 focus:ring-[#0B2D58] transition-colors"
           />
@@ -158,7 +212,7 @@ function ContactForm() {
             type="email"
             required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => { trackFormStartOnce(); setEmail(e.target.value); }}
             placeholder="nombre@empresa.com"
             className="w-full px-3.5 py-3 text-sm bg-white border border-[#E8E8E8] rounded-[2px] text-[#2E2E2E] focus:outline-none focus:border-[#0B2D58] focus:ring-1 focus:ring-[#0B2D58] transition-colors"
           />
@@ -173,7 +227,7 @@ function ContactForm() {
           id="contact-topic"
           required
           value={topic}
-          onChange={(e) => setTopic(e.target.value as GeneralTopicId)}
+          onChange={(e) => { trackFormStartOnce(); setTopic(e.target.value as GeneralTopicId); }}
           className="w-full px-3.5 py-3 text-sm bg-white border border-[#E8E8E8] rounded-[2px] text-[#2E2E2E] focus:outline-none focus:border-[#0B2D58] focus:ring-1 focus:ring-[#0B2D58] transition-colors"
         >
           {GENERAL_TOPICS.map(({ id, label }) => (
@@ -192,7 +246,7 @@ function ContactForm() {
           id="contact-message"
           rows={4}
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={(e) => { trackFormStartOnce(); setMessage(e.target.value); }}
           placeholder="Describe brevemente tu situación o requerimiento..."
           className="w-full px-3.5 py-3 text-sm bg-white border border-[#E8E8E8] rounded-[2px] text-[#2E2E2E] focus:outline-none focus:border-[#0B2D58] focus:ring-1 focus:ring-[#0B2D58] transition-colors resize-none"
         />
