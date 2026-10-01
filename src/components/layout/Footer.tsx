@@ -1,10 +1,15 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
 import { LevantirLogo } from '../brand/LevantirLogo';
 import { Container } from './Container';
+import { useConsent } from '@/components/analytics/ConsentProvider';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+
+  const { openPreferences } = useConsent();
 
   const solutions = [
     { label: "Autos", href: "/autos" },
@@ -103,6 +108,15 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <button
+                  type="button"
+                  onClick={openPreferences}
+                  className="text-sm text-white/80 hover:text-white transition-colors py-0.5 inline-block focus:outline-none focus-visible:text-[#D4A737] text-left w-full"
+                >
+                  Preferencias de privacidad
+                </button>
+              </li>
             </ul>
           </div>
         </div>
