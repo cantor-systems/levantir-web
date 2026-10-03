@@ -42,6 +42,9 @@ interface ConsentContextValue {
   acceptAnalytics: () => void;
   rejectAnalytics: () => void;
   openPreferences: () => void;
+  /** True when GA4 is fully initialized and can accept events. */
+  analyticsReady: boolean;
+  setAnalyticsReady: (ready: boolean) => void;
 }
 
 const ConsentContext = createContext<ConsentContextValue | null>(null);
@@ -70,6 +73,7 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
   const [consent, setConsent] = useState<AnalyticsConsent>("unknown");
   const [hydrated, setHydrated] = useState(false);
   const [preferencesOpen, setPreferencesOpen] = useState(false);
+  const [analyticsReady, setAnalyticsReady] = useState(false);
 
   // Guard to prevent double-read in React Strict Mode
   const hydrationDoneRef = useRef(false);
@@ -109,6 +113,8 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
         acceptAnalytics,
         rejectAnalytics,
         openPreferences,
+        analyticsReady,
+        setAnalyticsReady,
       }}
     >
       {children}

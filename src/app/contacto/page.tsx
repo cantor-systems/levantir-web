@@ -15,10 +15,12 @@ import { Section } from '@/components/layout/Section';
 import { siteConfig } from '@/config/site';
 import { GENERAL_TOPICS, type GeneralTopicId } from '@/lib/leads/config';
 import { trackLeadEvent } from '@/lib/analytics/events';
+import { useConsent } from '@/components/analytics/ConsentProvider';
 
 const DEFAULT_TOPIC: GeneralTopicId = "asesoria-integral";
 
 function ContactForm() {
+  const { consent, hydrated, analyticsReady } = useConsent();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -41,13 +43,15 @@ function ContactForm() {
     topic,
   });
 
-  // PASO 5 — lead_form_view: fire once on mount
+  // PASO 5 — lead_form_view: fire once when Analytics is ready
   useEffect(() => {
+    if (!hydrated || consent !== "granted" || !analyticsReady) return;
     if (viewFiredRef.current) return;
+
     viewFiredRef.current = true;
     trackLeadEvent("lead_form_view", analyticsContext());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [hydrated, consent, analyticsReady]);
 
   // PASO 6 — lead_form_start: fire once on first significant user interaction
   const trackFormStartOnce = () => {

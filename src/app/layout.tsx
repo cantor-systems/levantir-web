@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { AdvisoryModal } from "@/components/ui/AdvisoryModal";
 import { ConsentProvider } from "@/components/analytics/ConsentProvider";
 import { ConsentBanner } from "@/components/analytics/ConsentBanner";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 
 const playfair = Playfair_Display({
   variable: "--font-display",
@@ -71,6 +72,7 @@ export default function RootLayout({
               <AdvisoryModal />
             </Suspense>
             <ConsentBanner />
+            <GoogleAnalytics />
           </div>
         </ConsentProvider>
       </body>
