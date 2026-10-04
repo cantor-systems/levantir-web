@@ -2,9 +2,16 @@
 
 import React, { useState, ReactNode, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowRight, CheckCircle2, Lock } from "lucide-react";
 import { Container } from "../layout/Container";
 import { Section } from "../layout/Section";
+import { useConsent } from "@/components/analytics/ConsentProvider";
+import { trackLeadEvent } from "@/lib/analytics/events";
+import type { LeadAnalyticsErrorType } from "@/lib/analytics/types";
+import { PRODUCTS_BY_VERTICAL, type LeadVertical, type ProductId } from "@/lib/leads/config";
+import { isValidProductId } from "@/lib/leads/context";
+import type { LeadFormId } from "@/lib/leads/types";
 
 export interface ProductOption {
   id: string;
@@ -43,13 +50,27 @@ export interface AdvisoryFormSubmitData {
   otherProduct?: string;
 }
 
+/**
+ * Optional lead analytics config. When omitted, the form is analytics-inert.
+ * Only controlled values — never user input.
+ */
+export interface AdvisoryFormAnalyticsConfig {
+  vertical: LeadVertical;
+  formId: LeadFormId;
+}
+
 export interface AdvisoryFormSectionProps {
   config: AdvisoryFormConfig;
   contextFields: (idPrefix: string, onRegisterReset: (fn: () => void) => void) => ReactNode;
-  onSubmitAsync?: (data: AdvisoryFormSubmitData) => Promise<void>;
+  /**
+   * May resolve with the controlled ProductIds that were submitted
+   * (used only for lead_product_interest analytics after success).
+   */
+  onSubmitAsync?: (data: AdvisoryFormSubmitData) => Promise<void | string[]>;
+  analytics?: AdvisoryFormAnalyticsConfig;
 }
 
-export function AdvisoryFormSection({ config, contextFields, onSubmitAsync }: AdvisoryFormSectionProps) {
+export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, analytics }: AdvisoryFormSectionProps) {
   const {
     sectionId,
     productsBlockId,
@@ -87,6 +108,87 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync }: Ad
   const formSectionRef = useRef<HTMLDivElement>(null);
   const hasScrolledRef = useRef(false);
 
+  // ── Lead analytics (inert unless `analytics` prop is supplied) ─────────────
+  const pathname = usePathname();
+  const { consent, hydrated, analyticsReady } = useConsent();
+  const analyticsEligible = hydrated && consent === "granted" && analyticsReady;
+
+  // Ref mirror so async handlers read the latest eligibility, not a stale closure.
+  const eligibleRef = useRef(false);
+  useEffect(() => {
+    eligibleRef.current = analyticsEligible;
+  }, [analyticsEligible]);
+
+  const viewFiredRef = useRef(false);
+  const startFiredRef = useRef(false);
+
+  // Safe emitter: only controlled params, never throws into the lead flow.
+  const emitLeadEvent = (
+    run: (base: { vertical: LeadVertical; form_id: LeadFormId; source_path: string }) => void
+  ) => {
+    if (!analytics || !eligibleRef.current) return;
+    try {
+      run({
+        vertical: analytics.vertical,
+        form_id: analytics.formId,
+        source_path: pathname || "/",
+      });
+    } catch {
+      // Analytics must never break the lead UI.
+    }
+  };
+
+  // lead_form_view — real exposure of the form card, once per mount.
+  useEffect(() => {
+    if (!analytics || !analyticsEligible) return;
+    if (viewFiredRef.current) return;
+    if (typeof IntersectionObserver === "undefined") return;
+    const el = formSectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (viewFiredRef.current) {
+          observer.disconnect();
+          return;
+        }
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        if (!eligibleRef.current) return;
+
+        viewFiredRef.current = true;
+        observer.disconnect();
+        emitLeadEvent((base) => trackLeadEvent("lead_form_view", base));
+      },
+      { threshold: 0.25 }
+    );
+    observer.observe(el);
+
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [analytics, analyticsEligible, pathname]);
+
+  // lead_form_start — bubbling form-level change; honeypot excluded.
+  const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
+    if (!analytics || startFiredRef.current) return;
+    const targetName = (e.target as { name?: unknown }).name;
+    if (targetName === "website") return;
+    if (!eligibleRef.current) return; // do not consume the guard pre-consent
+
+    startFiredRef.current = true;
+    emitLeadEvent((base) => trackLeadEvent("lead_form_start", base));
+  };
+
+  // Only controlled ProductIds belonging to the configured vertical.
+  const toValidProductIds = (ids: string[]): string[] => {
+    if (!analytics || analytics.vertical === "general") return [];
+    const allowed = new Set<string>(
+      (PRODUCTS_BY_VERTICAL[analytics.vertical] as ReadonlyArray<{ readonly id: string }>).map(
+        (p) => p.id
+      )
+    );
+    return Array.from(new Set(ids)).filter((id) => isValidProductId(id) && allowed.has(id));
+  };
+
   useEffect(() => {
     if (onSubmitAsync && isSubmitted) {
       if (!hasScrolledRef.current) {
@@ -123,6 +225,10 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync }: Ad
     if (onSubmitAsync) {
       setIsSubmitting(true);
       setSubmitError(null);
+      const isHuman = website.trim() === "";
+      if (isHuman) {
+        emitLeadEvent((base) => trackLeadEvent("lead_submit", base));
+      }
       try {
         const submitData: AdvisoryFormSubmitData = {
           name: fullName,
@@ -136,9 +242,32 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync }: Ad
         if (isOtherSelected && otherProductText.trim().length > 0) {
           submitData.otherProduct = otherProductText.trim();
         }
-        await onSubmitAsync(submitData);
+        const submittedProducts = await onSubmitAsync(submitData);
+
+        if (isHuman) {
+          emitLeadEvent((base) => trackLeadEvent("lead_submit_success", base));
+          if (Array.isArray(submittedProducts)) {
+            for (const product of toValidProductIds(submittedProducts)) {
+              emitLeadEvent((base) =>
+                trackLeadEvent("lead_product_interest", {
+                  ...base,
+                  // Validated against PRODUCTS_BY_VERTICAL; guard confirmed ProductId.
+                  product: product as ProductId,
+                })
+              );
+            }
+          }
+        }
+
         setIsSubmitted(true);
-      } catch {
+      } catch (err) {
+        if (isHuman) {
+          // fetch network rejection is a TypeError; everything else is server-side.
+          const errorType: LeadAnalyticsErrorType = err instanceof TypeError ? "network" : "server";
+          emitLeadEvent((base) =>
+            trackLeadEvent("lead_submit_error", { ...base, error_type: errorType })
+          );
+        }
         setSubmitError("No pudimos enviar tu solicitud. Intenta nuevamente.");
       } finally {
         setIsSubmitting(false);
@@ -150,6 +279,7 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync }: Ad
   };
 
   const handleReset = () => {
+    startFiredRef.current = false; // new interaction cycle (view guard intentionally kept)
     setFullName("");
     setPhoneNumber("");
     setEmail("");
@@ -248,7 +378,7 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync }: Ad
                   </div>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} noValidate={false} className="space-y-8">
+                <form onSubmit={handleSubmit} onChange={handleFormChange} noValidate={false} className="space-y-8">
                   {submitError && (
                     <div className="bg-red-50 border border-red-200 p-4 rounded-[2px]">
                       <p className="text-sm font-medium text-red-800">{submitError}</p>

@@ -2,7 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData } from "./AdvisoryFormSection";
+import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData, AdvisoryFormAnalyticsConfig } from "./AdvisoryFormSection";
+
+const AUTO_ANALYTICS: AdvisoryFormAnalyticsConfig = {
+  vertical: "autos",
+  formId: "auto-advisory",
+};
 
 const AUTO_PRODUCTS = [
   { id: "liability", label: "Responsabilidad civil" },
@@ -39,7 +44,7 @@ const CONFIG: AdvisoryFormConfig = {
 export function AutoAdvisoryFormSection() {
   const pathname = usePathname();
 
-  const handleSubmitAsync = async (data: AdvisoryFormSubmitData) => {
+  const handleSubmitAsync = async (data: AdvisoryFormSubmitData): Promise<string[]> => {
     // Map visual product IDs to controlled backend IDs
     const PRODUCT_MAP: Record<string, string> = {
       liability: "responsabilidad-civil",
@@ -89,6 +94,9 @@ export function AutoAdvisoryFormSection() {
     if (result.ok !== true) {
       throw new Error("Endpoint logic error");
     }
+
+    // Controlled backend ProductIds, used by the shared form for analytics only.
+    return mappedProducts;
   };
 
   return (
@@ -98,6 +106,7 @@ export function AutoAdvisoryFormSection() {
         <AutoContextFields idPrefix={idPrefix} onRegisterReset={onRegisterReset} />
       )}
       onSubmitAsync={handleSubmitAsync}
+      analytics={AUTO_ANALYTICS}
     />
   );
 }
