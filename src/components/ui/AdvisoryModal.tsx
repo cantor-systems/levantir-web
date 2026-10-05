@@ -3,8 +3,12 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { X, ArrowRight, CheckCircle2, MessageCircle } from 'lucide-react';
-import { getLeadContextFromPathname, isValidGeneralTopicId } from '@/lib/leads/context';
-import { GENERAL_TOPICS, type GeneralTopicId } from '@/lib/leads/config';
+import { getLeadContextFromPathname, isValidGeneralTopicId, isValidProductId } from '@/lib/leads/context';
+import { GENERAL_TOPICS, PRODUCTS_BY_VERTICAL, type GeneralTopicId, type ProductId } from '@/lib/leads/config';
+import type { LeadContext } from '@/lib/leads/types';
+import { useConsent } from '@/components/analytics/ConsentProvider';
+import { trackLeadEvent } from '@/lib/analytics/events';
+import type { LeadAnalyticsErrorType } from '@/lib/analytics/types';
 
 // Default topic when the URL carries no valid GeneralTopicId
 const DEFAULT_TOPIC: GeneralTopicId = "asesoria-integral";
@@ -58,14 +62,97 @@ export function AdvisoryModal() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // ── Lead analytics ──────────────────────────────────────────────────────────
+  const { consent, hydrated, analyticsReady } = useConsent();
+  const analyticsEligible = hydrated && consent === "granted" && analyticsReady;
+
+  // Ref mirror so async handlers read the latest eligibility, not a stale closure.
+  const eligibleRef = useRef(false);
+  useEffect(() => {
+    eligibleRef.current = analyticsEligible;
+  }, [analyticsEligible]);
+
+  // Latest effective topic (synced with the selector), readable from effects/handlers.
+  const topicRef = useRef<GeneralTopicId>(DEFAULT_TOPIC);
+
+  // Per-open-cycle guards; re-armed whenever the modal closes.
+  const viewFiredRef = useRef(false);
+  const startFiredRef = useRef(false);
+
+  // Safe emitter: only controlled params, never throws into the lead flow.
+  const emitLeadEvent = useCallback(
+    (
+      run: (base: {
+        vertical: LeadContext["vertical"];
+        form_id: "advisory-modal";
+        source_path: string;
+        topic: GeneralTopicId;
+      }) => void,
+      ctx: LeadContext = leadContextRef.current,
+      topicValue: GeneralTopicId = topicRef.current
+    ) => {
+      if (!eligibleRef.current) return;
+      try {
+        run({
+          vertical: ctx.vertical,
+          form_id: "advisory-modal",
+          source_path: ctx.sourcePage || "/",
+          topic: topicValue,
+        });
+      } catch {
+        // Analytics must never break the lead UI.
+      }
+    },
+    []
+  );
+
   // Sync topic selector when the modal opens (or URL topic param changes).
   // Validates the URL value before applying; falls back to DEFAULT_TOPIC.
   useEffect(() => {
     if (isOpen) {
+      const resolved = resolveInitialTopic(searchParams || null);
+      topicRef.current = resolved;
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setTopic(resolveInitialTopic(searchParams || null));
+      setTopic(resolved);
     }
   }, [isOpen, searchParams]);
+
+  // lead_form_view — once per eligible open cycle. Declared after the context
+  // and topic sync effects so it reads this opening's snapshot. Closing re-arms
+  // both guards; no retroactive view if consent arrives after closing.
+  useEffect(() => {
+    if (!isOpen) {
+      viewFiredRef.current = false;
+      startFiredRef.current = false;
+      return;
+    }
+    if (!analyticsEligible || viewFiredRef.current) return;
+    viewFiredRef.current = true;
+    emitLeadEvent((base) => trackLeadEvent("lead_form_view", base));
+  }, [isOpen, analyticsEligible, emitLeadEvent]);
+
+  // lead_form_start — bubbling form-level change; honeypot excluded.
+  const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
+    if (startFiredRef.current) return;
+    const targetName = (e.target as { name?: unknown }).name;
+    if (targetName === "website") return;
+    if (!eligibleRef.current) return; // do not consume the guard pre-consent
+
+    startFiredRef.current = true;
+    emitLeadEvent((base) => trackLeadEvent("lead_form_start", base));
+  };
+
+  // Only controlled ProductIds that belong to the context's vertical.
+  // `general` has no product taxonomy, so it yields none.
+  const toValidProductIds = (ctx: LeadContext): ProductId[] => {
+    if (ctx.vertical === "general") return [];
+    const allowed = new Set<string>(
+      (PRODUCTS_BY_VERTICAL[ctx.vertical] as ReadonlyArray<{ readonly id: string }>).map((p) => p.id)
+    );
+    return Array.from(new Set<string>(ctx.products)).filter(
+      (id): id is ProductId => isValidProductId(id) && allowed.has(id)
+    );
+  };
 
   // Escape key + body scroll lock
   useEffect(() => {
@@ -104,6 +191,9 @@ export function AdvisoryModal() {
     setSubmitError(null);
     setIsSubmitting(true);
 
+    // Antibot: no submit analytics for honeypot-filled submissions.
+    const isHuman = website.trim() === "";
+
     // Snapshot the commercial context at submit time.
     // leadContextRef is already current (updated whenever isOpen becomes true).
     const ctx = leadContextRef.current;
@@ -121,6 +211,10 @@ export function AdvisoryModal() {
       website,             // honeypot — expected to be "" for real humans
     };
 
+    if (isHuman) {
+      emitLeadEvent((base) => trackLeadEvent("lead_submit", base), ctx, topic);
+    }
+
     try {
       const response = await fetch('/api/leads', {
         method: 'POST',
@@ -129,15 +223,41 @@ export function AdvisoryModal() {
       });
 
       if (response.ok) {
+        if (isHuman) {
+          emitLeadEvent((base) => trackLeadEvent("lead_submit_success", base), ctx, topic);
+          for (const product of toValidProductIds(ctx)) {
+            emitLeadEvent(
+              (base) => trackLeadEvent("lead_product_interest", { ...base, product }),
+              ctx,
+              topic
+            );
+          }
+        }
         // Success: show confirmation screen.
         // Fields are NOT cleared until the user closes the modal,
         // so the success state is unambiguous and the user can review what was sent.
         setIsSubmitted(true);
       } else {
         // Server returned a non-2xx status: keep form intact, show generic error.
+        if (isHuman) {
+          emitLeadEvent(
+            (base) => trackLeadEvent("lead_submit_error", { ...base, error_type: "server" }),
+            ctx,
+            topic
+          );
+        }
         setSubmitError("No pudimos enviar tu solicitud. Inténtalo nuevamente.");
       }
-    } catch {
+    } catch (err) {
+      if (isHuman) {
+        // fetch network rejection is a TypeError; anything else is server-side.
+        const errorType: LeadAnalyticsErrorType = err instanceof TypeError ? "network" : "server";
+        emitLeadEvent(
+          (base) => trackLeadEvent("lead_submit_error", { ...base, error_type: errorType }),
+          ctx,
+          topic
+        );
+      }
       // Network failure or fetch error: keep form intact, show generic error.
       setSubmitError("No pudimos enviar tu solicitud. Inténtalo nuevamente.");
     } finally {
@@ -207,7 +327,7 @@ export function AdvisoryModal() {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} onChange={handleFormChange} className="space-y-4">
                 {/* Honeypot — visually offscreen, not interactable by humans */}
                 <div className="absolute -left-[9999px]" aria-hidden="true">
                   <label htmlFor="modal-website">Sitio Web</label>
@@ -275,7 +395,11 @@ export function AdvisoryModal() {
                   <select
                     id="modal-topic"
                     value={topic}
-                    onChange={(e) => setTopic(e.target.value as GeneralTopicId)}
+                    onChange={(e) => {
+                      const next = e.target.value as GeneralTopicId;
+                      topicRef.current = next;
+                      setTopic(next);
+                    }}
                     className="w-full px-3.5 py-2.5 text-sm bg-[#F8F5EF] border border-[#E8E8E8] rounded-[2px] text-[#2E2E2E] focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors"
                   >
                     {GENERAL_TOPICS.map(({ id, label }) => (
