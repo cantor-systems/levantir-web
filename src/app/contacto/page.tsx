@@ -49,13 +49,24 @@ function ContactForm() {
     topic,
   });
 
+  const safeTrackEvent = (
+    eventName: Parameters<typeof trackLeadEvent>[0],
+    context: Parameters<typeof trackLeadEvent>[1]
+  ) => {
+    try {
+      trackLeadEvent(eventName, context);
+    } catch {
+      // Aislar excepciones analíticas (H-04) para no bloquear flujo comercial
+    }
+  };
+
   // PASO 5 — lead_form_view: fire once when Analytics is ready
   useEffect(() => {
     if (!hydrated || consent !== "granted" || !analyticsReady) return;
     if (viewFiredRef.current) return;
 
     viewFiredRef.current = true;
-    trackLeadEvent("lead_form_view", analyticsContext());
+    safeTrackEvent("lead_form_view", analyticsContext());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hydrated, consent, analyticsReady]);
 
@@ -64,7 +75,7 @@ function ContactForm() {
     if (!eligibleRef.current) return; // H-01: guard start event
     if (startFiredRef.current) return;
     startFiredRef.current = true;
-    trackLeadEvent("lead_form_start", analyticsContext());
+    safeTrackEvent("lead_form_start", analyticsContext());
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -94,7 +105,7 @@ function ContactForm() {
 
     // PASO 9 — lead_submit: fire immediately before fetch, only for humans
     if (isHuman && eligibleRef.current) {
-      trackLeadEvent("lead_submit", analyticsContext());
+      safeTrackEvent("lead_submit", analyticsContext());
     }
 
     try {
@@ -107,7 +118,7 @@ function ContactForm() {
       if (response.ok) {
         // PASO 10 — lead_submit_success: fire before UI transition, only for humans
         if (isHuman && eligibleRef.current) {
-          trackLeadEvent("lead_submit_success", analyticsContext());
+          safeTrackEvent("lead_submit_success", analyticsContext());
         }
         // Success: show confirmation and reset form
         setIsSubmitted(true);
@@ -120,7 +131,7 @@ function ContactForm() {
       } else {
         // PASO 11 — lead_submit_error server: non-2xx response, only for humans
         if (isHuman && eligibleRef.current) {
-          trackLeadEvent("lead_submit_error", {
+          safeTrackEvent("lead_submit_error", {
             ...analyticsContext(),
             error_type: "server",
           });
@@ -131,7 +142,7 @@ function ContactForm() {
     } catch {
       // PASO 11 — lead_submit_error network: fetch threw (network failure), only for humans
       if (isHuman && eligibleRef.current) {
-        trackLeadEvent("lead_submit_error", {
+        safeTrackEvent("lead_submit_error", {
           ...analyticsContext(),
           error_type: "network",
         });
@@ -158,7 +169,10 @@ function ContactForm() {
         <div className="pt-2">
           <button
             type="button"
-            onClick={() => setIsSubmitted(false)}
+            onClick={() => {
+              setIsSubmitted(false);
+              startFiredRef.current = false;
+            }}
             className="inline-flex items-center gap-2 border border-[#0B2D58] text-[#0B2D58] hover:bg-[#0B2D58] hover:text-white px-6 py-2.5 text-xs font-semibold tracking-[0.14em] uppercase rounded-[2px] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2D58]"
           >
             Enviar otra solicitud
