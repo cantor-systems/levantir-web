@@ -24,6 +24,7 @@ import React, {
 } from "react";
 import {
   type AnalyticsConsent,
+  CONSENT_STORAGE_KEY,
   readConsentFromStorage,
   writeConsentToStorage,
 } from "@/lib/analytics/consent";
@@ -86,6 +87,22 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
     const stored = readConsentFromStorage();
     setConsent(stored);
     setHydrated(true);
+  }, []);
+
+  // Listen for changes from other tabs
+  useEffect(() => {
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === CONSENT_STORAGE_KEY) {
+        if (event.newValue === "granted" || event.newValue === "denied") {
+          setConsent(event.newValue as AnalyticsConsent);
+        } else if (event.newValue === null) {
+          setConsent("unknown");
+        }
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
   const acceptAnalytics = useCallback(() => {
