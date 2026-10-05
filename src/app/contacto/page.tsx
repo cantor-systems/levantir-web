@@ -34,6 +34,12 @@ function ContactForm() {
   // Analytics guards — one emission per component instance
   const viewFiredRef = useRef(false);
   const startFiredRef = useRef(false);
+  const eligibleRef = useRef(false);
+
+  // Sync eligibility for async handlers (H-02)
+  useEffect(() => {
+    eligibleRef.current = Boolean(hydrated && consent === "granted" && analyticsReady);
+  }, [hydrated, consent, analyticsReady]);
 
   // Analytics context base — no PII, no product
   const analyticsContext = () => ({
@@ -55,6 +61,7 @@ function ContactForm() {
 
   // PASO 6 — lead_form_start: fire once on first significant user interaction
   const trackFormStartOnce = () => {
+    if (!eligibleRef.current) return; // H-01: guard start event
     if (startFiredRef.current) return;
     startFiredRef.current = true;
     trackLeadEvent("lead_form_start", analyticsContext());
@@ -86,7 +93,7 @@ function ContactForm() {
     };
 
     // PASO 9 — lead_submit: fire immediately before fetch, only for humans
-    if (isHuman) {
+    if (isHuman && eligibleRef.current) {
       trackLeadEvent("lead_submit", analyticsContext());
     }
 
@@ -99,7 +106,7 @@ function ContactForm() {
 
       if (response.ok) {
         // PASO 10 — lead_submit_success: fire before UI transition, only for humans
-        if (isHuman) {
+        if (isHuman && eligibleRef.current) {
           trackLeadEvent("lead_submit_success", analyticsContext());
         }
         // Success: show confirmation and reset form
@@ -112,7 +119,7 @@ function ContactForm() {
         setWebsite("");
       } else {
         // PASO 11 — lead_submit_error server: non-2xx response, only for humans
-        if (isHuman) {
+        if (isHuman && eligibleRef.current) {
           trackLeadEvent("lead_submit_error", {
             ...analyticsContext(),
             error_type: "server",
@@ -123,7 +130,7 @@ function ContactForm() {
       }
     } catch {
       // PASO 11 — lead_submit_error network: fetch threw (network failure), only for humans
-      if (isHuman) {
+      if (isHuman && eligibleRef.current) {
         trackLeadEvent("lead_submit_error", {
           ...analyticsContext(),
           error_type: "network",
