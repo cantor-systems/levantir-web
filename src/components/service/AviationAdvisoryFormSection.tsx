@@ -2,7 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData } from "./AdvisoryFormSection";
+import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData, AdvisoryFormAnalyticsConfig } from "./AdvisoryFormSection";
+
+const AVIATION_ANALYTICS: AdvisoryFormAnalyticsConfig = {
+  vertical: "aeronaves",
+  formId: "aviation-advisory",
+};
 
 const AVIATION_PRODUCTS = [
   { id: "aircraft_hull", label: "Casco / daños a la aeronave" },
@@ -39,7 +44,7 @@ const CONFIG: AdvisoryFormConfig = {
 export function AviationAdvisoryFormSection() {
   const pathname = usePathname();
 
-  const handleSubmitAsync = async (data: AdvisoryFormSubmitData) => {
+  const handleSubmitAsync = async (data: AdvisoryFormSubmitData): Promise<string[]> => {
     // Map visual product IDs to controlled backend IDs
     const PRODUCT_MAP: Record<string, string> = {
       aircraft_hull: "casco-danos-a-la-aeronave",
@@ -89,6 +94,9 @@ export function AviationAdvisoryFormSection() {
     if (result.ok !== true) {
       throw new Error("Endpoint logic error");
     }
+
+    // Controlled backend ProductIds, used by the shared form for analytics only.
+    return mappedProducts;
   };
 
   return (
@@ -98,6 +106,7 @@ export function AviationAdvisoryFormSection() {
         <AviationContextFields idPrefix={idPrefix} onRegisterReset={onRegisterReset} />
       )}
       onSubmitAsync={handleSubmitAsync}
+      analytics={AVIATION_ANALYTICS}
     />
   );
 }

@@ -2,7 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData } from "./AdvisoryFormSection";
+import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData, AdvisoryFormAnalyticsConfig } from "./AdvisoryFormSection";
+
+const PYMES_ANALYTICS: AdvisoryFormAnalyticsConfig = {
+  vertical: "pymes",
+  formId: "pymes-advisory",
+};
 
 const PYMES_PRODUCTS = [
   { id: "property_damage", label: "Daños al inmueble" },
@@ -39,7 +44,7 @@ const CONFIG: AdvisoryFormConfig = {
 export function PymesAdvisoryFormSection() {
   const pathname = usePathname();
 
-  const handleSubmitAsync = async (data: AdvisoryFormSubmitData) => {
+  const handleSubmitAsync = async (data: AdvisoryFormSubmitData): Promise<string[]> => {
     // Map visual product IDs to controlled backend IDs
     const PRODUCT_MAP: Record<string, string> = {
       property_damage: "danos-al-inmueble",
@@ -89,6 +94,9 @@ export function PymesAdvisoryFormSection() {
     if (result.ok !== true) {
       throw new Error("Endpoint logic error");
     }
+
+    // Controlled backend ProductIds, used by the shared form for analytics only.
+    return mappedProducts;
   };
 
   return (
@@ -98,6 +106,7 @@ export function PymesAdvisoryFormSection() {
         <PymesContextFields idPrefix={idPrefix} onRegisterReset={onRegisterReset} />
       )}
       onSubmitAsync={handleSubmitAsync}
+      analytics={PYMES_ANALYTICS}
     />
   );
 }

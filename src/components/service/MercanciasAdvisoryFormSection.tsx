@@ -2,7 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData } from "./AdvisoryFormSection";
+import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData, AdvisoryFormAnalyticsConfig } from "./AdvisoryFormSection";
+
+const MERCANCIAS_ANALYTICS: AdvisoryFormAnalyticsConfig = {
+  vertical: "mercancias",
+  formId: "mercancias-advisory",
+};
 
 const MERCANCIAS_PRODUCTS = [
   { id: "land_transport", label: "Transporte terrestre" },
@@ -39,7 +44,7 @@ const CONFIG: AdvisoryFormConfig = {
 export function MercanciasAdvisoryFormSection() {
   const pathname = usePathname();
 
-  const handleSubmitAsync = async (data: AdvisoryFormSubmitData) => {
+  const handleSubmitAsync = async (data: AdvisoryFormSubmitData): Promise<string[]> => {
     // Map visual product IDs to controlled backend IDs
     const PRODUCT_MAP: Record<string, string> = {
       land_transport: "transporte-terrestre",
@@ -88,6 +93,9 @@ export function MercanciasAdvisoryFormSection() {
     if (result.ok !== true) {
       throw new Error("Endpoint logic error");
     }
+
+    // Controlled backend ProductIds, used by the shared form for analytics only.
+    return mappedProducts;
   };
 
   return (
@@ -97,6 +105,7 @@ export function MercanciasAdvisoryFormSection() {
         <MercanciasContextFields idPrefix={idPrefix} onRegisterReset={onRegisterReset} />
       )}
       onSubmitAsync={handleSubmitAsync}
+      analytics={MERCANCIAS_ANALYTICS}
     />
   );
 }

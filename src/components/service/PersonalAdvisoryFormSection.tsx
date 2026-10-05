@@ -2,7 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData } from "./AdvisoryFormSection";
+import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData, AdvisoryFormAnalyticsConfig } from "./AdvisoryFormSection";
+
+const PERSONAL_ANALYTICS: AdvisoryFormAnalyticsConfig = {
+  vertical: "personas",
+  formId: "personal-advisory",
+};
 
 const PERSONAL_PRODUCTS = [
   { id: "life", label: "Vida" },
@@ -38,7 +43,7 @@ const CONFIG: AdvisoryFormConfig = {
 export function PersonalAdvisoryFormSection() {
   const pathname = usePathname();
 
-  const handleSubmitAsync = async (data: AdvisoryFormSubmitData) => {
+  const handleSubmitAsync = async (data: AdvisoryFormSubmitData): Promise<string[]> => {
     // Map visual product IDs to controlled backend IDs
     const PRODUCT_MAP: Record<string, string> = {
       life: "vida",
@@ -87,6 +92,9 @@ export function PersonalAdvisoryFormSection() {
     if (result.ok !== true) {
       throw new Error("Endpoint logic error");
     }
+
+    // Controlled backend ProductIds, used by the shared form for analytics only.
+    return mappedProducts;
   };
 
   return (
@@ -96,6 +104,7 @@ export function PersonalAdvisoryFormSection() {
         <PersonalContextFields idPrefix={idPrefix} onRegisterReset={onRegisterReset} />
       )}
       onSubmitAsync={handleSubmitAsync}
+      analytics={PERSONAL_ANALYTICS}
     />
   );
 }
