@@ -138,15 +138,15 @@ function AutoContextFields({ idPrefix, onRegisterReset }: AutoContextFieldsProps
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label htmlFor={`${idPrefix}-marca`} className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">MARCA</label>
-            <input id={`${idPrefix}-marca`} type="text" value={vehicleMake} onChange={(e) => setVehicleMake(e.target.value)} placeholder="Ej. BMW" className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors" />
+            <input data-clarity-mask="true" id={`${idPrefix}-marca`} type="text" value={vehicleMake} onChange={(e) => setVehicleMake(e.target.value)} placeholder="Ej. BMW" className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors" />
           </div>
           <div>
             <label htmlFor={`${idPrefix}-modelo`} className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">MODELO</label>
-            <input id={`${idPrefix}-modelo`} type="text" value={vehicleModel} onChange={(e) => setVehicleModel(e.target.value)} placeholder="Ej. X3" className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors" />
+            <input data-clarity-mask="true" id={`${idPrefix}-modelo`} type="text" value={vehicleModel} onChange={(e) => setVehicleModel(e.target.value)} placeholder="Ej. X3" className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors" />
           </div>
           <div>
             <label htmlFor={`${idPrefix}-anio`} className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">AÑO <span className="text-[#5C626B] text-[0.7rem] font-normal lowercase">(opcional)</span></label>
-            <input id={`${idPrefix}-anio`} type="text" value={vehicleYear} onChange={(e) => setVehicleYear(e.target.value)} placeholder="Ej. 2024" className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors" />
+            <input data-clarity-mask="true" id={`${idPrefix}-anio`} type="text" value={vehicleYear} onChange={(e) => setVehicleYear(e.target.value)} placeholder="Ej. 2024" className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors" />
           </div>
         </div>
         <div>

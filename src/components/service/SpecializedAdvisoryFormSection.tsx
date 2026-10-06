@@ -128,7 +128,7 @@ function SpecializedContextFields({ idPrefix, onRegisterReset }: SpecializedCont
       <div className="space-y-4">
         <div>
           <label htmlFor={`${idPrefix}-sector`} className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">SECTOR / ACTIVIDAD <span className="text-[#D4A737] font-bold">*</span></label>
-          <input id={`${idPrefix}-sector`} type="text" required value={sectorActivity} onChange={(e) => setSectorActivity(e.target.value)} placeholder="Ej. Taller aeronáutico, hangar, tecnología, operación especializada" className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors" />
+          <input data-clarity-mask="true" id={`${idPrefix}-sector`} type="text" required value={sectorActivity} onChange={(e) => setSectorActivity(e.target.value)} placeholder="Ej. Taller aeronáutico, hangar, tecnología, operación especializada" className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors" />
         </div>
         <div>
           <label htmlFor={`${idPrefix}-tipo-operacion`} className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">TIPO DE OPERACIÓN <span className="text-[#D4A737] font-bold">*</span></label>
@@ -139,7 +139,7 @@ function SpecializedContextFields({ idPrefix, onRegisterReset }: SpecializedCont
         </div>
         <div>
           <label htmlFor={`${idPrefix}-descripcion-operacion`} className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">BREVE DESCRIPCIÓN DE LA OPERACIÓN</label>
-          <textarea id={`${idPrefix}-descripcion-operacion`} rows={2} value={operationDescription} onChange={(e) => setOperationDescription(e.target.value)} placeholder="Describe brevemente las características principales de tu operación, procesos, activos o responsabilidades involucradas." className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors resize-y min-h-[64px]" />
+          <textarea data-clarity-mask="true" id={`${idPrefix}-descripcion-operacion`} rows={2} value={operationDescription} onChange={(e) => setOperationDescription(e.target.value)} placeholder="Describe brevemente las características principales de tu operación, procesos, activos o responsabilidades involucradas." className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors resize-y min-h-[64px]" />
         </div>
       </div>
     </div>

@@ -388,7 +388,7 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, anal
                   {/* Honeypot field */}
                   <div className="absolute -left-[9999px]" aria-hidden="true">
                     <label htmlFor={`${idPrefix}-website`}>Sitio Web</label>
-                    <input
+                    <input data-clarity-mask="true"
                       id={`${idPrefix}-website`}
                       type="text"
                       name="website"
@@ -413,7 +413,7 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, anal
                         >
                           NOMBRE COMPLETO <span className="text-[#D4A737] font-bold">*</span>
                         </label>
-                        <input
+                        <input data-clarity-mask="true"
                           id={`${idPrefix}-nombre`}
                           type="text"
                           required
@@ -436,7 +436,7 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, anal
                             <span className="inline-flex items-center px-3 text-xs font-semibold text-[#0B2D58] border-r border-[#E8E8E8] bg-[#FAF9F5] select-none">
                               +52 (MX)
                             </span>
-                            <input
+                            <input data-clarity-mask="true"
                               id={`${idPrefix}-telefono`}
                               type="tel"
                               required
@@ -455,7 +455,7 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, anal
                           >
                             CORREO ELECTRÓNICO <span className="text-[#D4A737] font-bold">*</span>
                           </label>
-                          <input
+                          <input data-clarity-mask="true"
                             id={`${idPrefix}-email`}
                             type="email"
                             required
@@ -500,7 +500,7 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, anal
                                 : "border-[#E8E8E8] bg-white hover:border-[#0B2D58]/40 hover:bg-[#FAF9F5]/70"
                             }`}
                           >
-                            <input
+                            <input data-clarity-mask="true"
                               id={`${idPrefix}-product-${prod.id}`}
                               type="checkbox"
                               name={checkboxGroupName}
@@ -525,7 +525,7 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, anal
                         >
                           ESPECIFICA EL OTRO PRODUCTO <span className="text-[#D4A737] font-bold">*</span>
                         </label>
-                        <input
+                        <input data-clarity-mask="true"
                           id={`${idPrefix}-otro-producto`}
                           type="text"
                           required={isOtherSelected}
@@ -550,7 +550,7 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, anal
                       {messageLabel}{" "}
                       <span className="text-[#5C626B] text-[0.7rem] font-normal lowercase">(opcional)</span>
                     </label>
-                    <textarea
+                    <textarea data-clarity-mask="true"
                       id={`${idPrefix}-mensaje`}
                       rows={3}
                       value={message}

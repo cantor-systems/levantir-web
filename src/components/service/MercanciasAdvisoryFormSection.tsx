@@ -128,7 +128,7 @@ function MercanciasContextFields({ idPrefix, onRegisterReset }: MercanciasContex
       <div className="space-y-4">
         <div>
           <label htmlFor={`${idPrefix}-tipo-mercancia`} className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">TIPO DE MERCANCÍA <span className="text-[#D4A737] font-bold">*</span></label>
-          <input id={`${idPrefix}-tipo-mercancia`} type="text" required value={cargoType} onChange={(e) => setCargoType(e.target.value)} placeholder="Ej. Equipo electrónico, alimentos, maquinaria" className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors" />
+          <input data-clarity-mask="true" id={`${idPrefix}-tipo-mercancia`} type="text" required value={cargoType} onChange={(e) => setCargoType(e.target.value)} placeholder="Ej. Equipo electrónico, alimentos, maquinaria" className="w-full bg-[#FAF9F5]/60 border border-[#E8E8E8] rounded-[2px] px-4 py-3 text-sm text-[#0B2D58] placeholder-[#5C626B]/50 focus:outline-none focus:border-[#0B2D58] focus:bg-white transition-colors" />
         </div>
         <div>
           <label htmlFor={`${idPrefix}-modalidad`} className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">MODALIDAD DE TRANSPORTE <span className="text-[#D4A737] font-bold">*</span></label>

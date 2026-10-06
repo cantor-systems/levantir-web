@@ -187,7 +187,7 @@ function ContactForm() {
       {/* Honeypot — visually offscreen, not interactable by humans */}
       <div className="absolute -left-[9999px]" aria-hidden="true">
         <label htmlFor="contact-website">Sitio Web</label>
-        <input
+        <input data-clarity-mask="true"
           id="contact-website"
           type="text"
           name="website"
@@ -202,7 +202,7 @@ function ContactForm() {
         <label htmlFor="contact-name" className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">
           Nombre completo <span className="text-[#D4A737]">*</span>
         </label>
-        <input
+        <input data-clarity-mask="true"
           id="contact-name"
           type="text"
           required
@@ -218,7 +218,7 @@ function ContactForm() {
           <label htmlFor="contact-phone" className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">
             Teléfono / WhatsApp <span className="text-[#D4A737]">*</span>
           </label>
-          <input
+          <input data-clarity-mask="true"
             id="contact-phone"
             type="tel"
             required
@@ -232,7 +232,7 @@ function ContactForm() {
           <label htmlFor="contact-email" className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">
             Correo electrónico <span className="text-[#D4A737]">*</span>
           </label>
-          <input
+          <input data-clarity-mask="true"
             id="contact-email"
             type="email"
             required
@@ -267,7 +267,7 @@ function ContactForm() {
         <label htmlFor="contact-message" className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">
           Mensaje o contexto (opcional)
         </label>
-        <textarea
+        <textarea data-clarity-mask="true"
           id="contact-message"
           rows={4}
           value={message}

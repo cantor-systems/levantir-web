@@ -331,7 +331,7 @@ export function AdvisoryModal() {
                 {/* Honeypot — visually offscreen, not interactable by humans */}
                 <div className="absolute -left-[9999px]" aria-hidden="true">
                   <label htmlFor="modal-website">Sitio Web</label>
-                  <input
+                  <input data-clarity-mask="true"
                     id="modal-website"
                     type="text"
                     name="website"
@@ -346,7 +346,7 @@ export function AdvisoryModal() {
                   <label htmlFor="modal-name" className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">
                     Nombre completo <span className="text-[#D4A737]">*</span>
                   </label>
-                  <input
+                  <input data-clarity-mask="true"
                     id="modal-name"
                     type="text"
                     required
@@ -362,7 +362,7 @@ export function AdvisoryModal() {
                     <label htmlFor="modal-phone" className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">
                       Teléfono / WhatsApp <span className="text-[#D4A737]">*</span>
                     </label>
-                    <input
+                    <input data-clarity-mask="true"
                       id="modal-phone"
                       type="tel"
                       required
@@ -376,7 +376,7 @@ export function AdvisoryModal() {
                     <label htmlFor="modal-email" className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">
                       Correo electrónico <span className="text-[#D4A737]">*</span>
                     </label>
-                    <input
+                    <input data-clarity-mask="true"
                       id="modal-email"
                       type="email"
                       required
@@ -414,7 +414,7 @@ export function AdvisoryModal() {
                   <label htmlFor="modal-message" className="block text-xs font-semibold uppercase tracking-wider text-[#0B2D58] mb-1.5">
                     Mensaje o contexto (opcional)
                   </label>
-                  <textarea
+                  <textarea data-clarity-mask="true"
                     id="modal-message"
                     rows={3}
                     value={message}
