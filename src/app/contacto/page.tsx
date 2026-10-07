@@ -305,22 +305,7 @@ function ContactForm() {
 export default function ContactoPage() {
   const formSectionRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    document.title = "Contacto | Asesoría en Seguros y Gestión de Riesgos | LEVANTIR";
-    
-    // Update canonical tag
-    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-    if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.rel = 'canonical';
-      document.head.appendChild(canonical);
-    }
-    canonical.href = "https://levantir.com/contacto";
-    
-    return () => {
-      document.title = "LEVANTIR | Seguros y Gestión de Riesgos";
-    };
-  }, []);
+
 
   const handleScrollToForm = () => {
     formSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
