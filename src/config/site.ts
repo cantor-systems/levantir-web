@@ -61,9 +61,9 @@ export const heroSlides: HeroSlide[] = [
   {
     id: "personas-familia",
     theme: "Personas & Familia",
-    // Elegant family moment in serene natural setting
-    imageUrl: "https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=2070&auto=format&fit=crop",
-    altText: "Familia caminando en calma en un entorno natural al atardecer",
+    // Familia de tres personas compartiendo un momento en una terraza residencial moderna, con ciudad y montañas al atardecer
+    imageUrl: "/images/home/hero/home-hero-personas.webp",
+    altText: "Familia de tres personas compartiendo un momento en una terraza residencial moderna, con ciudad y montañas al atardecer",
     labelCategory: "PERSONAS",
     labelTagline: "Lo más importante, siempre contigo.",
   },
