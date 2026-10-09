@@ -79,9 +79,9 @@ export const heroSlides: HeroSlide[] = [
   {
     id: "mercancias-logistica",
     theme: "Mercancías & Logística",
-    // Precision container terminal and international supply chain
-    imageUrl: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop",
-    altText: "Terminal de carga y contenedores en operación logística continua",
+    // Tractocamión blanco transportando mercancías por una autopista con paisaje montañoso al atardecer.
+    imageUrl: "/images/home/hero/home-hero-mercancias.webp",
+    altText: "Tractocamión blanco transportando mercancías por una autopista con paisaje montañoso al atardecer.",
     labelCategory: "MERCANCÍAS",
     labelTagline: "Tu operación, en movimiento seguro.",
   },
