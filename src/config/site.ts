@@ -35,8 +35,8 @@ export const heroSlides: HeroSlide[] = [
     id: "autos-executive",
     theme: "Autos & Patrimonio",
     // Premium executive vehicle on scenic modern architectural villa terrace overlooking city dusk
-    imageUrl: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop",
-    altText: "Vehículo ejecutivo en residencia moderna con vista panorámica",
+    imageUrl: "/images/home/hero/home-hero-autos.webp",
+    altText: "Sedán ejecutivo oscuro circulando por una avenida con edificios modernos al atardecer",
     labelCategory: "AUTOS",
     labelTagline: "Tu tranquilidad, siempre protegida.",
   },
@@ -44,8 +44,8 @@ export const heroSlides: HeroSlide[] = [
     id: "aeronaves",
     theme: "Aeronaves",
     // Executive private jet gleaming on runway at sunrise
-    imageUrl: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=2094&auto=format&fit=crop",
-    altText: "Aeronave ejecutiva en pista de despegue con luz de amanecer",
+    imageUrl: "/images/home/hero/home-hero-aeronaves.webp",
+    altText: "Avioneta monomotor volando sobre un paisaje montañoso al atardecer",
     labelCategory: "AERONAVES",
     labelTagline: "Protección para llegar más lejos.",
   },
