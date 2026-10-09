@@ -70,9 +70,9 @@ export const heroSlides: HeroSlide[] = [
   {
     id: "pymes-corporativo",
     theme: "Empresas & PYMES",
-    // Modern architectural corporate headquarters with warm lighting
-    imageUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop",
-    altText: "Edificio corporativo moderno con arquitectura geométrica y cristal",
+    // Responsables de una empresa supervisando maquinaria y procesos de producción en una instalación industrial moderna.
+    imageUrl: "/images/home/hero/home-hero-pymes.webp",
+    altText: "Responsables de una empresa supervisando maquinaria y procesos de producción en una instalación industrial moderna.",
     labelCategory: "PYMES",
     labelTagline: "Soluciones a la medida de tu negocio.",
   },
