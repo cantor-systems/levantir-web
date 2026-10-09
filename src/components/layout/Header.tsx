@@ -281,7 +281,7 @@ export function Header({
             <Link
               href="?advisory=true"
               scroll={false}
-              className="inline-flex items-center gap-2 bg-[#D4A737] hover:bg-[#C4962B] text-[#0B2D58] px-5 py-3 text-xs font-bold tracking-[0.14em] uppercase rounded-[2px] transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2D58]"
+              className="hidden md:inline-flex items-center gap-2 bg-[#D4A737] hover:bg-[#C4962B] text-[#0B2D58] px-5 py-3 text-xs font-bold tracking-[0.14em] uppercase rounded-[2px] transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2D58]"
             >
               <span>SOLICITAR ASESORÍA</span>
               <ArrowRight className="w-4 h-4" />
