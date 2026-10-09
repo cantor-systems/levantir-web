@@ -50,11 +50,11 @@ export const heroSlides: HeroSlide[] = [
     labelTagline: "Protección para llegar más lejos.",
   },
   {
-    id: "embarcaciones",
-    theme: "Patrimonio Marítimo",
-    // Sophisticated yacht navigating deep waters
-    imageUrl: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d17?q=80&w=2070&auto=format&fit=crop",
-    altText: "Embarcación en navegación marítima en aguas abiertas",
+    id: "patrimonio",
+    theme: "Patrimonio",
+    // Residencia contemporánea de arquitectura elegante, situada sobre una zona elevada con vista urbana y montañosa al atardecer
+    imageUrl: "/images/home/hero/home-hero-patrimonio.webp",
+    altText: "Residencia contemporánea de arquitectura elegante, situada sobre una zona elevada con vista urbana y montañosa al atardecer",
     labelCategory: "PATRIMONIO",
     labelTagline: "Visión de largo plazo ante el riesgo.",
   },
