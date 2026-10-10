@@ -200,7 +200,7 @@ export const insightsData: InsightPreviewItem[] = [
     title: "Gastos médicos: una decisión que protege más que tu salud",
     summary: "Un respaldo clave para tu bienestar, tu familia y tu patrimonio.",
     href: "/personas/gastos-medicos-mayores",
-    imageUrl: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=800&auto=format&fit=crop",
+    imageUrl: "/images/home/insights/insights-personas.webp",
   },
   {
     id: "hombre-clave",
@@ -208,7 +208,7 @@ export const insightsData: InsightPreviewItem[] = [
     title: "El valor de un hombre clave en la continuidad del negocio",
     summary: "Cómo proteger el futuro de tu empresa ante la ausencia de un talento estratégico.",
     href: "#insight-hombre-clave",
-    imageUrl: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=800&auto=format&fit=crop",
+    imageUrl: "/images/home/insights/insights-empresas.webp",
   },
   {
     id: "mercancias-resilientes",
