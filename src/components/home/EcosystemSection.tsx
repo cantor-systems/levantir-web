@@ -67,54 +67,68 @@ export function EcosystemSection() {
 
           {/* Right Column: Editorial Structural Constellation (4 cols on lg) */}
           <div className="lg:col-span-4 flex items-center justify-center p-6 sm:p-8 lg:p-10 bg-white rounded-[2px] border border-[#E8E8E8] min-h-[400px] sm:min-h-[440px] overflow-hidden">
-            <div className="relative w-full max-w-[340px] sm:max-w-[350px] aspect-square flex items-center justify-center">
-              {/* Subtle cross trajectory lines */}
-              <div className="absolute inset-x-8 top-1/2 -translate-y-1/2 h-[1px] bg-[#E8E8E8]" />
-              <div className="absolute inset-y-8 left-1/2 -translate-x-1/2 w-[1px] bg-[#E8E8E8]" />
+            <div className="relative w-full max-w-[280px] sm:max-w-[380px] aspect-square flex items-center justify-center mt-4 sm:mt-0">
+              {/* Connection Lines via SVG */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100">
+                <line x1="50" y1="50" x2="50" y2="14" stroke="#E8E8E8" strokeWidth="0.4" />
+                <line x1="50" y1="50" x2="50" y2="86" stroke="#E8E8E8" strokeWidth="0.4" />
+                <line x1="50" y1="50" x2="14" y2="50" stroke="#E8E8E8" strokeWidth="0.4" />
+                <line x1="50" y1="50" x2="86" y2="50" stroke="#E8E8E8" strokeWidth="0.4" />
+              </svg>
 
-              {/* Center: Empresa (Lo que te impulsa) */}
-              <div className="relative z-10 flex flex-col items-center text-center p-4 sm:p-4.5 bg-white rounded-[2px] border border-[#0B2D58]/25 shadow-xs">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#F8F5EF] flex items-center justify-center text-[#0B2D58] mb-1.5">
-                  <Building2 className="w-5 h-5 text-[#0B2D58]" />
+              {/* Center: Empresa */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center text-center z-10 w-[100px] sm:w-[120px]">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#F8F5EF] border border-[#D4A737]/40 flex items-center justify-center text-[#0B2D58] mb-1 sm:mb-1.5 shadow-sm relative z-10">
+                  <Building2 className="w-7 h-7 sm:w-8 sm:h-8" />
                 </div>
-                <span className="text-xs sm:text-[0.82rem] font-bold text-[#0B2D58]">Empresa</span>
-                <span className="text-[0.68rem] sm:text-[0.72rem] text-[#5C626B]">Lo que te impulsa</span>
+                <div className="bg-white/95 px-1 py-0.5 rounded text-[#0B2D58] relative z-10">
+                  <span className="block text-[0.8rem] sm:text-[0.9rem] font-bold leading-tight">Empresa</span>
+                  <span className="block text-[0.65rem] sm:text-[0.7rem] text-[#5C626B] leading-tight mt-0.5">Lo que te impulsa</span>
+                </div>
               </div>
 
               {/* Top: Personas */}
-              <div className="absolute top-1 sm:top-2 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center text-center">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white border border-[#E8E8E8] flex items-center justify-center text-[#0B2D58] mb-1.5 shadow-xs">
+              <div className="absolute top-[14%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center text-center z-10 w-[120px] sm:w-[130px]">
+                <div className="bg-white/95 px-1 py-0.5 rounded text-[#0B2D58] absolute bottom-full mb-1">
+                  <span className="block text-[0.7rem] sm:text-[0.8rem] font-bold leading-tight">Personas</span>
+                  <span className="block text-[0.6rem] sm:text-[0.65rem] text-[#5C626B] leading-tight mt-0.5 whitespace-nowrap">Tu mayor valor</span>
+                </div>
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white border border-[#E8E8E8] flex items-center justify-center text-[#0B2D58] shadow-sm relative z-10">
                   <User className="w-4 h-4 sm:w-5 sm:h-5 text-[#0B2D58]" />
                 </div>
-                <span className="text-xs sm:text-[0.82rem] font-bold text-[#0B2D58]">Personas</span>
-                <span className="text-[0.68rem] sm:text-[0.72rem] text-[#5C626B] whitespace-nowrap">Tu mayor valor</span>
-              </div>
-
-              {/* Left: Patrimonio */}
-              <div className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 z-10 flex flex-col items-center text-center">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white border border-[#E8E8E8] flex items-center justify-center text-[#0B2D58] mb-1.5 shadow-xs">
-                  <Home className="w-4 h-4 sm:w-5 sm:h-5 text-[#0B2D58]" />
-                </div>
-                <span className="text-xs sm:text-[0.82rem] font-bold text-[#0B2D58]">Patrimonio</span>
-                <span className="text-[0.68rem] sm:text-[0.72rem] text-[#5C626B] whitespace-nowrap">Lo construido</span>
-              </div>
-
-              {/* Right: Operación */}
-              <div className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 z-10 flex flex-col items-center text-center">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white border border-[#E8E8E8] flex items-center justify-center text-[#0B2D58] mb-1.5 shadow-xs">
-                  <Briefcase className="w-4 h-4 sm:w-5 sm:h-5 text-[#0B2D58]" />
-                </div>
-                <span className="text-xs sm:text-[0.82rem] font-bold text-[#0B2D58]">Operación</span>
-                <span className="text-[0.68rem] sm:text-[0.72rem] text-[#5C626B] whitespace-nowrap">Lo hace posible</span>
               </div>
 
               {/* Bottom: Riesgos especializados */}
-              <div className="absolute bottom-1 sm:bottom-2 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center text-center">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white border border-[#E8E8E8] flex items-center justify-center text-[#0B2D58] mb-1.5 shadow-xs">
+              <div className="absolute top-[86%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center text-center z-10 w-[150px] sm:w-[170px]">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white border border-[#E8E8E8] flex items-center justify-center text-[#0B2D58] shadow-sm relative z-10">
                   <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4A737]" />
                 </div>
-                <span className="text-xs sm:text-[0.82rem] font-bold text-[#0B2D58] whitespace-nowrap">Riesgos especializados</span>
-                <span className="text-[0.68rem] sm:text-[0.72rem] text-[#5C626B] whitespace-nowrap">Lo extraordinario</span>
+                <div className="bg-white/95 px-1 py-0.5 rounded text-[#0B2D58] absolute top-full mt-1">
+                  <span className="block text-[0.7rem] sm:text-[0.8rem] font-bold leading-tight">Riesgos especializados</span>
+                  <span className="block text-[0.6rem] sm:text-[0.65rem] text-[#5C626B] leading-tight mt-0.5 whitespace-nowrap">Lo extraordinario</span>
+                </div>
+              </div>
+
+              {/* Left: Patrimonio */}
+              <div className="absolute top-1/2 left-[14%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center text-center z-10 w-[90px] sm:w-[110px]">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white border border-[#E8E8E8] flex items-center justify-center text-[#0B2D58] shadow-sm relative z-10">
+                  <Home className="w-4 h-4 sm:w-5 sm:h-5 text-[#0B2D58]" />
+                </div>
+                <div className="bg-white/95 px-1 py-0.5 rounded text-[#0B2D58] absolute top-full mt-1">
+                  <span className="block text-[0.7rem] sm:text-[0.8rem] font-bold leading-tight">Patrimonio</span>
+                  <span className="block text-[0.6rem] sm:text-[0.65rem] text-[#5C626B] leading-tight mt-0.5 whitespace-nowrap">Lo construido</span>
+                </div>
+              </div>
+
+              {/* Right: Operación */}
+              <div className="absolute top-1/2 left-[86%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center text-center z-10 w-[90px] sm:w-[110px]">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white border border-[#E8E8E8] flex items-center justify-center text-[#0B2D58] shadow-sm relative z-10">
+                  <Briefcase className="w-4 h-4 sm:w-5 sm:h-5 text-[#0B2D58]" />
+                </div>
+                <div className="bg-white/95 px-1 py-0.5 rounded text-[#0B2D58] absolute top-full mt-1">
+                  <span className="block text-[0.7rem] sm:text-[0.8rem] font-bold leading-tight">Operación</span>
+                  <span className="block text-[0.6rem] sm:text-[0.65rem] text-[#5C626B] leading-tight mt-0.5 whitespace-nowrap">Lo hace posible</span>
+                </div>
               </div>
             </div>
           </div>
