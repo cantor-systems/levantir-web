@@ -207,7 +207,7 @@ export const insightsData: InsightPreviewItem[] = [
     category: "EMPRESAS",
     title: "El valor de un hombre clave en la continuidad del negocio",
     summary: "Cómo proteger el futuro de tu empresa ante la ausencia de un talento estratégico.",
-    href: "#insight-hombre-clave",
+    href: "/pymes/hombre-clave",
     imageUrl: "/images/home/insights/insights-empresas.webp",
   },
   {
@@ -215,7 +215,7 @@ export const insightsData: InsightPreviewItem[] = [
     category: "MERCANCÍAS",
     title: "Mercancías en movimiento: riesgos que no se detienen",
     summary: "Soluciones para una cadena de suministro más segura y resiliente.",
-    href: "#insight-mercancias",
+    href: "/mercancias",
     imageUrl: "/images/home/hero/home-hero-mercancias.webp",
   },
 ];
