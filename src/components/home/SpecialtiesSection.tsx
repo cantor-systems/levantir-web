@@ -63,7 +63,7 @@ export function SpecialtiesSection() {
           >
             <div className="aspect-[16/10] w-full overflow-hidden bg-[#E8E8E8]">
               <img
-                src="/images/sectores-especializados/hangar-hero.webp"
+                src="/images/home/specialties/sectores-industriales.webp"
                 alt="Hangar corporativo con jets y aeronaves en entorno técnico especializado"
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                 loading="lazy"
