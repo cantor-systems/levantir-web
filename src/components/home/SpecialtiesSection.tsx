@@ -30,8 +30,8 @@ export function SpecialtiesSection() {
           >
             <div className="aspect-[16/10] w-full overflow-hidden bg-[#E8E8E8]">
               <img
-                src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1200&auto=format&fit=crop"
-                alt="Aeronave ejecutiva en pista"
+                src="/images/sectores-especializados/hangar-hero.webp"
+                alt="Aeronave ejecutiva dentro de un hangar"
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                 loading="lazy"
               />

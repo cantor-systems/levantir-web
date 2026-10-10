@@ -125,8 +125,8 @@ export const solutionsData: SolutionItem[] = [
     title: "Aeronaves",
     subtitle: "Protección para llegar más lejos.",
     href: "/aeronaves",
-    imageUrl: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=800&auto=format&fit=crop",
-    altText: "Aeronave ejecutiva en plataforma aeroportuaria",
+    imageUrl: "/images/home/hero/home-hero-aeronaves.webp",
+    altText: "Aeronave ejecutiva en vuelo sobre un paisaje montañoso",
   },
   {
     id: "sectores-especializados",
@@ -216,6 +216,6 @@ export const insightsData: InsightPreviewItem[] = [
     title: "Mercancías en movimiento: riesgos que no se detienen",
     summary: "Soluciones para una cadena de suministro más segura y resiliente.",
     href: "#insight-mercancias",
-    imageUrl: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=800&auto=format&fit=crop",
+    imageUrl: "/images/home/hero/home-hero-mercancias.webp",
   },
 ];
