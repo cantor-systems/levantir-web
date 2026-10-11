@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { AdvisoryLink as Link } from "@/components/ui/AdvisoryLink";
 import { usePathname } from 'next/navigation';
 import { Menu, ArrowRight, ChevronDown } from 'lucide-react';
@@ -141,8 +142,8 @@ export function Header({
         <div
           className={`flex items-center justify-between w-full min-[1440px]:grid min-[1440px]:grid-cols-[auto_minmax(0,1fr)_auto] min-[1440px]:gap-x-10 min-[1650px]:gap-x-14 transition-[height] duration-200 ${
             isScrolled
-              ? 'h-[80px] lg:h-[86px]'
-              : 'h-[88px] lg:h-[94px] 2xl:h-[98px]'
+              ? 'h-[64px] lg:h-[86px]'
+              : 'h-[68px] sm:h-[72px] lg:h-[94px] 2xl:h-[98px]'
           }`}
         >
           {/* Column 1: Logo */}
@@ -154,14 +155,13 @@ export function Header({
               aria-label="LEVANTIR – Ir a inicio"
               className="flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A737] rounded-sm transition-opacity hover:opacity-95 flex items-center"
             >
-              <img
-                src="/LEVANTIR_Logo_Reference.webp"
-                alt="LEVANTIR"
-                width={1060}
-                height={250}
+              <Image
+                src="/images/brand/levantir-logo.webp"
+                alt="LEVANTIR — Seguros y Gestión de Riesgos"
+                width={2048}
+                height={512}
+                priority
                 className="h-8 sm:h-9 md:h-10 lg:h-[50px] xl:h-[52px] 2xl:h-[54px] w-auto object-contain select-none"
-                loading="eager"
-                decoding="async"
               />
             </Link>
           </div>
