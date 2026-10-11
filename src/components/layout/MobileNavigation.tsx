@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AdvisoryLink as Link } from "@/components/ui/AdvisoryLink";
 import { usePathname } from 'next/navigation';
 import { X, ArrowRight, Phone, ChevronDown } from 'lucide-react';
-import { LevantirLogo } from '../brand/LevantirLogo';
+import Image from 'next/image';
 
 // ─── Navigation data ──────────────────────────────────────────────────────────
 
@@ -223,8 +223,16 @@ export function MobileNavigation({
           href="/"
           onClick={() => onClose()}
           aria-label="LEVANTIR – Ir a inicio"
+          className="flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A737] rounded-sm transition-opacity hover:opacity-95"
         >
-          <LevantirLogo variant="light" size="sm" showDescriptor={false} />
+          <Image
+            src="/images/brand/levantir-logo-white.webp"
+            alt="LEVANTIR — Seguros y Gestión de Riesgos"
+            width={2801}
+            height={701}
+            priority
+            className="h-8 sm:h-9 w-auto object-contain select-none"
+          />
         </Link>
         <button
           type="button"
