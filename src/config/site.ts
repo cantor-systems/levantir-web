@@ -91,7 +91,7 @@ export const solutionsData: SolutionItem[] = [
   {
     id: "autos",
     title: "Autos",
-    subtitle: "Tu movilidad, siempre protegida.",
+    subtitle: "Conoce opciones de aseguramiento para tu vehículo y los riesgos asociados a su uso.",
     href: "/autos",
     imageUrl: "https://images.unsplash.com/photo-1555215695-3004980ad54e?q=80&w=800&auto=format&fit=crop",
     altText: "Vehículo ejecutivo en carretera con arquitectura de vanguardia",
@@ -99,7 +99,7 @@ export const solutionsData: SolutionItem[] = [
   {
     id: "personas",
     title: "Personas",
-    subtitle: "Lo más importante, siempre contigo.",
+    subtitle: "Explora alternativas para proteger tu salud, tu familia y tu estabilidad económica.",
     href: "/personas",
     imageUrl: "https://images.unsplash.com/photo-1476703993599-0035a21b17a9?q=80&w=800&auto=format&fit=crop",
     altText: "Silueta familiar caminando unida en un paisaje abierto",
@@ -107,7 +107,7 @@ export const solutionsData: SolutionItem[] = [
   {
     id: "pymes",
     title: "PYMES",
-    subtitle: "Soluciones a la medida de tu negocio.",
+    subtitle: "Identifica riesgos que pueden afectar los bienes, la operación y la continuidad de tu negocio.",
     href: "/pymes",
     imageUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=800&auto=format&fit=crop",
     altText: "Sede corporativa contemporánea con fachada de cristal y acero",
@@ -115,7 +115,7 @@ export const solutionsData: SolutionItem[] = [
   {
     id: "mercancias",
     title: "Mercancías",
-    subtitle: "Tu operación, en movimiento seguro.",
+    subtitle: "Comprende las opciones de cobertura para mercancías durante su transporte.",
     href: "/mercancias",
     imageUrl: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=800&auto=format&fit=crop",
     altText: "Contenedores de carga en terminal logística marítima y terrestre",
@@ -123,7 +123,7 @@ export const solutionsData: SolutionItem[] = [
   {
     id: "aeronaves",
     title: "Aeronaves",
-    subtitle: "Protección para llegar más lejos.",
+    subtitle: "Conoce aspectos clave del aseguramiento de aeronaves y sus operaciones.",
     href: "/aeronaves",
     imageUrl: "/images/home/hero/home-hero-aeronaves.webp",
     altText: "Aeronave ejecutiva en vuelo sobre un paisaje montañoso",
@@ -131,7 +131,7 @@ export const solutionsData: SolutionItem[] = [
   {
     id: "sectores-especializados",
     title: "Sectores especializados",
-    subtitle: "Cobertura para lo extraordinario.",
+    subtitle: "Explora alternativas de protección para actividades con riesgos particulares.",
     href: "/sectores-especializados",
     imageUrl: "/images/sectores-especializados/hangar-hero.webp",
     altText: "Hangar corporativo con aeronaves ejecutivas en entorno técnico especializado",
