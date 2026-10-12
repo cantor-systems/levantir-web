@@ -38,7 +38,7 @@ export const heroSlides: HeroSlide[] = [
     imageUrl: "/images/home/hero/home-hero-autos.webp",
     altText: "Sedán ejecutivo oscuro circulando por una avenida con edificios modernos al atardecer",
     labelCategory: "AUTOS",
-    labelTagline: "Tu tranquilidad, siempre protegida.",
+    labelTagline: "Conoce opciones para asegurar tu vehículo.",
   },
   {
     id: "aeronaves",
@@ -47,7 +47,7 @@ export const heroSlides: HeroSlide[] = [
     imageUrl: "/images/home/hero/home-hero-aeronaves.webp",
     altText: "Avioneta monomotor volando sobre un paisaje montañoso al atardecer",
     labelCategory: "AERONAVES",
-    labelTagline: "Protección para llegar más lejos.",
+    labelTagline: "Explora opciones de aseguramiento para aeronaves.",
   },
   {
     id: "patrimonio",
@@ -56,7 +56,7 @@ export const heroSlides: HeroSlide[] = [
     imageUrl: "/images/home/hero/home-hero-patrimonio.webp",
     altText: "Residencia contemporánea de arquitectura elegante, situada sobre una zona elevada con vista urbana y montañosa al atardecer",
     labelCategory: "PATRIMONIO",
-    labelTagline: "Visión de largo plazo ante el riesgo.",
+    labelTagline: "Identifica alternativas para proteger tu patrimonio.",
   },
   {
     id: "personas-familia",
@@ -65,7 +65,7 @@ export const heroSlides: HeroSlide[] = [
     imageUrl: "/images/home/hero/home-hero-personas.webp",
     altText: "Familia de tres personas compartiendo un momento en una terraza residencial moderna, con ciudad y montañas al atardecer",
     labelCategory: "PERSONAS",
-    labelTagline: "Lo más importante, siempre contigo.",
+    labelTagline: "Conoce opciones para protegerte a ti y a tu familia.",
   },
   {
     id: "pymes-corporativo",
@@ -74,7 +74,7 @@ export const heroSlides: HeroSlide[] = [
     imageUrl: "/images/home/hero/home-hero-pymes.webp",
     altText: "Responsables de una empresa supervisando maquinaria y procesos de producción en una instalación industrial moderna.",
     labelCategory: "PYMES",
-    labelTagline: "Soluciones a la medida de tu negocio.",
+    labelTagline: "Identifica los riesgos que pueden afectar tu negocio.",
   },
   {
     id: "mercancias-logistica",
@@ -83,7 +83,7 @@ export const heroSlides: HeroSlide[] = [
     imageUrl: "/images/home/hero/home-hero-mercancias.webp",
     altText: "Tractocamión blanco transportando mercancías por una autopista con paisaje montañoso al atardecer.",
     labelCategory: "MERCANCÍAS",
-    labelTagline: "Tu operación, en movimiento seguro.",
+    labelTagline: "Conoce coberturas para el transporte de mercancías.",
   },
 ];
 
@@ -142,53 +142,53 @@ export const methodologySteps: MethodologyStepItem[] = [
   {
     number: "01",
     title: "Comprender",
-    description: "Escuchamos tus objetivos y entendemos tu contexto.",
+    description: "Conocemos tus necesidades, objetivos y situación actual.",
   },
   {
     number: "02",
     title: "Identificar",
-    description: "Analizamos tus riesgos actuales y potenciales.",
+    description: "Te ayudamos a reconocer los riesgos que pueden afectar tu patrimonio o actividad.",
   },
   {
     number: "03",
-    title: "Estructurar",
-    description: "Diseñamos la mejor estrategia de protección.",
+    title: "Orientar",
+    description: "Explicamos alternativas de aseguramiento y aspectos importantes de sus coberturas.",
   },
   {
     number: "04",
-    title: "Implementar",
-    description: "Acompañamos la gestión y puesta en marcha.",
+    title: "Conectar",
+    description: "Facilitamos el contacto con un agente de seguros autorizado que pueda atenderte.",
   },
   {
     number: "05",
-    title: "Revisar",
-    description: "Evolucionamos la estrategia conforme cambian tus necesidades.",
+    title: "Dar seguimiento",
+    description: "Apoyamos la comunicación y el seguimiento de la atención relacionada con tus seguros.",
   },
 ];
 
 export const principlesData: PrincipleItem[] = [
   {
     id: "analisis",
-    title: "Análisis antes que producto",
-    description: "Entendemos tu realidad antes de sugerir una solución.",
+    title: "Conocemos tus necesidades",
+    description: "Escuchamos tu situación y lo que necesitas proteger antes de explorar alternativas.",
     iconType: "analysis",
   },
   {
     id: "proteccion",
-    title: "Protección integral",
-    description: "Conectamos personas, patrimonio y operación.",
+    title: "Consideramos distintos riesgos",
+    description: "Te ayudamos a identificar riesgos relacionados con tu familia, patrimonio o actividad empresarial.",
     iconType: "protection",
   },
   {
     id: "soluciones",
-    title: "Soluciones estructuradas",
-    description: "Diseñadas a la medida de tus objetivos.",
+    title: "Explicamos tus opciones",
+    description: "Te orientamos para comprender coberturas y aspectos importantes de las alternativas disponibles.",
     iconType: "solutions",
   },
   {
     id: "acompanamiento",
-    title: "Acompañamiento",
-    description: "Estamos contigo hoy y en el futuro.",
+    title: "Apoyamos el seguimiento",
+    description: "Facilitamos la comunicación y el seguimiento de la atención relacionada con tus seguros.",
     iconType: "accompaniment",
   },
 ];

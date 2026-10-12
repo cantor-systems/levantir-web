@@ -46,11 +46,11 @@ export function EcosystemSection() {
               className="font-display text-3xl sm:text-4xl lg:text-[2.65rem] text-[#0B2D58] leading-[1.14] font-medium"
               style={{ fontFamily: 'var(--font-display), "Playfair Display", Georgia, serif' }}
             >
-              Tu empresa y tu patrimonio no existen por separado.
+              Los riesgos de tu empresa también pueden afectar tu patrimonio.
             </h2>
 
             <p className="text-base sm:text-[1.05rem] text-[#2E2E2E]/85 leading-relaxed">
-              En LEVANTIR integramos una visión completa de tus personas, tu patrimonio y tu operación, para diseñar soluciones que consideren todas sus dimensiones.
+              Te ayudamos a considerar cómo se relacionan las personas, los bienes, la operación y las responsabilidades de tu empresa, para identificar necesidades de protección y conocer alternativas de aseguramiento.
             </p>
 
             <div className="pt-2">
@@ -105,7 +105,7 @@ export function EcosystemSection() {
                 </div>
                 <div className="bg-white/95 px-1 py-0.5 rounded text-[#0B2D58] absolute top-full mt-1">
                   <span className="block text-[0.7rem] sm:text-[0.8rem] font-bold leading-tight">Riesgos especializados</span>
-                  <span className="block text-[0.6rem] sm:text-[0.65rem] text-[#5C626B] leading-tight mt-0.5 whitespace-nowrap">Lo extraordinario</span>
+                  <span className="block text-[0.6rem] sm:text-[0.65rem] text-[#5C626B] leading-tight mt-0.5 whitespace-nowrap">Riesgos particulares</span>
                 </div>
               </div>
 
@@ -127,7 +127,7 @@ export function EcosystemSection() {
                 </div>
                 <div className="bg-white/95 px-1 py-0.5 rounded text-[#0B2D58] absolute top-full mt-1">
                   <span className="block text-[0.7rem] sm:text-[0.8rem] font-bold leading-tight">Operación</span>
-                  <span className="block text-[0.6rem] sm:text-[0.65rem] text-[#5C626B] leading-tight mt-0.5 whitespace-nowrap">Lo hace posible</span>
+                  <span className="block text-[0.6rem] sm:text-[0.65rem] text-[#5C626B] leading-tight mt-0.5 whitespace-nowrap">Actividad diaria</span>
                 </div>
               </div>
             </div>

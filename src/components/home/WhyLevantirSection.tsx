@@ -33,13 +33,13 @@ export function WhyLevantirSection() {
               className="font-display text-3xl sm:text-4xl lg:text-[3.15rem] text-[#0B2D58] leading-[1.12] font-medium"
               style={{ fontFamily: 'var(--font-display), "Playfair Display", Georgia, serif' }}
             >
-              Criterio antes que catálogo.
+              Te ayudamos a elegir opciones de aseguramiento con información clara.
             </h2>
           </div>
 
           <div className="lg:col-span-6 lg:pt-8">
             <p className="text-base sm:text-lg text-[#2E2E2E]/85 leading-relaxed max-w-[52ch]">
-              Más que intermediarios, somos asesores. Nuestro compromiso es ayudarte a tomar mejores decisiones, con una visión de largo plazo.
+              En LEVANTIR escuchamos tus necesidades, te orientamos sobre riesgos y alternativas de aseguramiento y facilitamos el contacto con agentes autorizados para recibir atención personalizada.
             </p>
           </div>
         </div>

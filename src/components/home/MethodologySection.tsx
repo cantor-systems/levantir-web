@@ -17,14 +17,14 @@ export function MethodologySection() {
               className="font-display text-3xl sm:text-4xl lg:text-[3.15rem] text-[#0B2D58] leading-[1.12] font-medium"
               style={{ fontFamily: 'var(--font-display), "Playfair Display", Georgia, serif' }}
             >
-              Primero entendemos el riesgo. <br className="hidden sm:inline" />
-              Después hablamos de seguros.
+              Primero conocemos tus necesidades y riesgos. <br className="hidden sm:inline" />
+              Después exploramos las opciones de aseguramiento.
             </h2>
           </div>
 
           <div className="lg:col-span-5 lg:pt-8">
             <p className="text-base sm:text-lg text-[#2E2E2E]/85 leading-relaxed max-w-[48ch]">
-              Un proceso claro y riguroso para diseñar soluciones que realmente protegen lo que valoras y te permiten avanzar con confianza.
+              Te orientamos mediante un proceso que permite identificar tus necesidades, comprender alternativas de aseguramiento y facilitar la atención de un agente autorizado cuando sea necesario.
             </p>
           </div>
         </div>

@@ -17,7 +17,7 @@ export function SpecialtiesSection() {
             className="font-display text-3xl sm:text-4xl lg:text-[3.15rem] text-[#0B2D58] leading-[1.12] font-medium"
             style={{ fontFamily: 'var(--font-display), "Playfair Display", Georgia, serif' }}
           >
-            Cuando el riesgo requiere algo más que una solución estándar.
+            Te orientamos sobre seguros para actividades con riesgos especializados.
           </h2>
         </div>
 
@@ -45,7 +45,7 @@ export function SpecialtiesSection() {
                   Aeronáutica
                 </h3>
                 <p className="mt-3.5 text-base sm:text-[1.05rem] text-[#2E2E2E]/85 leading-relaxed">
-                  Soluciones especializadas para aeronaves, operadores y cadenas de valor en la industria aeronáutica, con una visión global del riesgo.
+                  Conoce aspectos relevantes del aseguramiento de aeronaves, operadores y actividades relacionadas con la industria aeronáutica.
                 </p>
               </div>
 
@@ -64,7 +64,7 @@ export function SpecialtiesSection() {
             <div className="aspect-[16/10] w-full overflow-hidden bg-[#E8E8E8]">
               <img
                 src="/images/home/specialties/sectores-industriales.webp"
-                alt="Hangar corporativo con jets y aeronaves en entorno técnico especializado"
+                alt="Planta industrial moderna con instalaciones de manufactura y logística"
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                 loading="lazy"
               />
@@ -78,7 +78,7 @@ export function SpecialtiesSection() {
                   Sectores especializados
                 </h3>
                 <p className="mt-3.5 text-base sm:text-[1.05rem] text-[#2E2E2E]/85 leading-relaxed">
-                  Diseñamos coberturas a la medida para industrias con riesgos complejos, desde energía y construcción hasta manufactura, logística y más.
+                  Explora alternativas de aseguramiento para actividades como energía, construcción, manufactura y logística, considerando sus riesgos particulares.
                 </p>
               </div>
 
