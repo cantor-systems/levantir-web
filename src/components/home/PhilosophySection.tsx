@@ -30,7 +30,7 @@ export function PhilosophySection() {
             </div>
 
             <p className="text-base sm:text-[1.05rem] text-[#2E2E2E]/85 leading-relaxed max-w-[55ch]">
-              Escuchamos, analizamos y diseñamos soluciones a la medida, con una visión integral de tu patrimonio, para que puedas avanzar con tranquilidad.
+              Te ayudamos a identificar tus riesgos, comprender las opciones de aseguramiento y tomar decisiones informadas para proteger tu patrimonio.
             </p>
           </div>
         </div>
