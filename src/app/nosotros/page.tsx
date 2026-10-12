@@ -34,108 +34,108 @@ const principles = [
     icon: UserCheck,
     title: "Enfoque en el cliente",
     description:
-      "Las decisiones parten de las necesidades, objetivos y contexto real de cada cliente, asegurando pertinencia en cada cobertura.",
+      "Partimos de tus necesidades y prioridades reales para recomendar opciones pertinentes.",
   },
   {
     icon: Compass,
     title: "Independencia",
     description:
-      "Analizamos alternativas con criterio objetivo y sin partir de una solución predeterminada ni compromisos de colocación.",
+      "Evaluamos alternativas con criterio objetivo para ayudarte a comparar opciones con claridad.",
   },
   {
     icon: Shield,
     title: "Visión integral",
     description:
-      "Entendemos el riesgo desde una perspectiva patrimonial, personal y empresarial, protegiendo todos los frentes que interactúan.",
+      "Analizamos los riesgos considerando tanto el ámbito personal como el empresarial.",
   },
   {
     icon: HeartHandshake,
     title: "Relaciones de largo plazo",
     description:
-      "Construimos vínculos basados en claridad, seguimiento y acompañamiento continuo en cada etapa de evolución o siniestro.",
+      "Buscamos acompañarte a lo largo del tiempo con seguimiento y comunicación constante.",
   },
 ];
 
 const dimensions = [
   {
     label: "Contexto",
-    text: "Comprendemos la realidad particular y el entorno operativo o familiar en que te desenvuelves.",
+    text: "Analizamos tu entorno personal, familiar u operativo para entender tu situación de partida.",
   },
   {
     label: "Patrimonio",
-    text: "Evaluamos los activos tangibles e intangibles que dan sustento y continuidad a tu trayectoria.",
+    text: "Revisamos los bienes y activos que sustentan tu estabilidad o la de tu empresa.",
   },
   {
     label: "Objetivos",
-    text: "Alineamos cada estructura de cobertura con tus prioridades inmediatas y de largo plazo.",
+    text: "Identificamos tus prioridades de protección tanto inmediatas como a futuro.",
   },
   {
     label: "Operación",
-    text: "Identificamos los puntos neurálgicos, dependencias críticas y contingencias de actividad.",
+    text: "Evaluamos las actividades clave y contingencias que podrían interrumpir tu negocio.",
   },
   {
     label: "Responsabilidades",
-    text: "Dimensionamos las obligaciones hacia terceros, colaboradores y dependientes familiares.",
+    text: "Consideramos los compromisos frente a terceros, colaboradores y familia.",
   },
   {
     label: "Necesidades reales",
-    text: "Partimos de lo que verdaderamente requieres, sin empaquetados genéricos ni sobrecostos.",
+    text: "Te ayudamos a identificar las coberturas que podrían responder a tus necesidades, sin agregar opciones que no aporten valor.",
   },
 ];
 
 const methodologySteps = [
   {
     number: "01",
-    title: "Comprender",
-    description: "Conocemos tu contexto, patrimonio, operación, responsabilidades y objetivos.",
+    title: "Conocer",
+    description: "Escuchamos tus necesidades y conocemos qué deseas proteger.",
   },
   {
     number: "02",
     title: "Identificar",
-    description: "Analizamos las exposiciones relevantes de acuerdo con tu realidad.",
+    description: "Te ayudamos a reconocer los riesgos y aspectos que debes considerar.",
   },
   {
     number: "03",
-    title: "Estructurar",
-    description: "Evaluamos alternativas de protección adecuadas a tu perfil de riesgo.",
+    title: "Orientar",
+    description: "Te proporcionamos información para comprender las opciones de aseguramiento.",
   },
   {
     number: "04",
-    title: "Implementar",
-    description: "Acompañamos la selección y contratación de la solución.",
+    title: "Conectar",
+    description: "Facilitamos el contacto con un agente autorizado que pueda asesorarte y acompañarte en la contratación.",
   },
   {
     number: "05",
-    title: "Revisar",
-    description: "Damos seguimiento y adaptamos la protección conforme evoluciona tu situación.",
+    title: "Dar seguimiento",
+    description: "Apoyamos la comunicación y los recordatorios relacionados con tus pólizas.",
   },
 ];
 
 const credibilityAttributes = [
   {
     icon: FileSearch,
-    title: "Análisis técnico",
-    description: "Evaluación rigurosa de cláusulas, sumas aseguradas, deducibles y coberturas reales.",
+    title: "Información clara",
+    description: "Explicamos con detalle coberturas, exclusiones, deducibles y condiciones de tu seguro.",
   },
   {
     icon: Users,
     title: "Atención personalizada",
-    description: "Un interlocutor experto dedicado a tu cuenta, disponible cuando surgen inquietudes.",
+    description: "Escuchamos tus dudas y te atendemos de forma directa según tus necesidades particulares.",
   },
   {
     icon: Building2,
-    title: "Visión patrimonial",
-    description: "Conexión integral entre riesgos personales, familiares y estructuras de negocio.",
+    title: "Orientación integral",
+    description: "Evaluamos tanto riesgos personales y familiares como los del ámbito empresarial.",
   },
   {
     icon: RefreshCw,
-    title: "Acompañamiento continuo",
-    description: "Respaldo activo en renovaciones, siniestros y adaptaciones periódicas de póliza.",
+    title: "Seguimiento constante",
+    description: "Apoyamos a los agentes con recordatorios de renovación y comunicaciones de seguimiento a sus clientes.",
   },
   {
     icon: Award,
-    title: "Relaciones de largo plazo",
-    description: "Compromiso de permanencia cimentado en transparencia, rigor profesional y ética.",
+    title: "Apoyo en siniestros",
+    description: "Ofrecemos apoyo humano inicial y facilitamos el contacto con la unidad responsable de atender el siniestro.",
   },
 ];
 
@@ -146,8 +146,8 @@ export default function NosotrosPage() {
       <PageHero
         breadcrumbs={breadcrumbs}
         eyebrow="NUESTRO PROPÓSITO"
-        title="El riesgo se entiende antes de asegurarse."
-        supportingCopy="En LEVANTIR ayudamos a personas, empresarios y empresas a tomar mejores decisiones frente al riesgo, con análisis técnico, acceso a soluciones y un acompañamiento independiente."
+        title="Asesoría en seguros para personas y empresas."
+        supportingCopy="En LEVANTIR te ayudamos a comprender los riesgos que pueden afectar tu patrimonio, conocer tus opciones de aseguramiento y tomar decisiones informadas. También facilitamos el contacto con agentes de seguros autorizados que puedan atender tus necesidades de manera personalizada."
         primaryCtaText="SOLICITAR ASESORÍA"
         primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER NUESTRA METODOLOGÍA"
@@ -177,17 +177,17 @@ export default function NosotrosPage() {
                 className="font-display text-3xl sm:text-4xl md:text-[2.65rem] lg:text-[2.95rem] text-[#0B2D58] leading-[1.14] font-medium"
                 style={{ fontFamily: 'var(--font-display), "Playfair Display", Georgia, serif' }}
               >
-                Más que seguros, una visión patrimonial.
+                Más que seguros, ofrecemos una visión integral de tu patrimonio.
               </h2>
             </div>
 
             {/* Right Context Copy */}
             <div className="lg:col-span-6 lg:border-l lg:border-[#E8E8E8] lg:pl-8 xl:pl-12 flex flex-col justify-center space-y-4 pt-1 lg:pt-3">
               <p className="text-base sm:text-[1.08rem] text-[#2E2E2E] leading-relaxed font-normal">
-                <strong className="text-[#0B2D58] font-semibold">LEVANTIR</strong> es un despacho de asesoría en seguros y gestión de riesgos que acompaña a personas, empresarios y empresas a entender sus exposiciones y estructurar soluciones de protección acordes a su realidad.
+                <strong className="text-[#0B2D58] font-semibold">LEVANTIR</strong> es una empresa enfocada en la orientación sobre seguros y la gestión de riesgos. Ayudamos a personas, empresarios y empresas a comprender sus necesidades de protección y evaluar las alternativas de aseguramiento disponibles.
               </p>
               <p className="text-[0.95rem] sm:text-base text-[#2E2E2E]/80 leading-relaxed font-normal">
-                No creemos en pólizas genéricas ni en catálogos cerrados. Nuestro trabajo consiste en traducir complejidades contractuales en certidumbre, asegurando que cada activo, persona y operación cuente con el respaldo exacto que requiere.
+                Nuestro objetivo es que cada cliente cuente con información clara para tomar decisiones. Cuando necesita asesoría personalizada, facilitamos el contacto con un agente de seguros autorizado, de acuerdo con sus necesidades y ubicación.
               </p>
             </div>
           </div>
@@ -207,11 +207,11 @@ export default function NosotrosPage() {
                 >
                   <div className="flex items-center gap-2.5 mb-2.5">
                     <span className="text-xs font-mono font-bold text-[#D4A737]">0{idx + 1}</span>
-                    <h3 className="text-base sm:text-[1.05rem] font-bold text-[#0B2D58] tracking-tight">
+                    <h3 className="font-sans text-base sm:text-lg font-semibold text-[#0B2D58] leading-[1.35]">
                       {dim.label}
                     </h3>
                   </div>
-                  <p className="text-[0.92rem] sm:text-[0.96rem] text-[#2E2E2E]/85 leading-relaxed font-normal">
+                  <p className="text-[0.92rem] sm:text-base text-[#2E2E2E]/85 leading-relaxed font-normal">
                     {dim.text}
                   </p>
                 </div>
@@ -235,7 +235,7 @@ export default function NosotrosPage() {
               className="font-display text-2xl sm:text-3xl md:text-[2.45rem] text-[#0B2D58] leading-[1.18] font-medium"
               style={{ fontFamily: 'var(--font-display), "Playfair Display", Georgia, serif' }}
             >
-              Criterio técnico e independencia en cada recomendación.
+              Ofrecemos asesoría con criterio técnico e independencia en cada recomendación.
             </h2>
           </div>
 
@@ -251,10 +251,10 @@ export default function NosotrosPage() {
                     <div className="w-11 h-11 rounded-[2px] bg-[#F8F5EF] border border-[#E8E8E8] flex items-center justify-center text-[#0B2D58] mb-5">
                       <IconComp className="w-5 h-5 text-[#D4A737]" />
                     </div>
-                    <h3 className="text-lg font-bold text-[#0B2D58] tracking-tight mb-2.5">
+                    <h3 className="font-sans text-base sm:text-lg font-semibold text-[#0B2D58] leading-[1.35] mb-2.5">
                       {p.title}
                     </h3>
-                    <p className="text-[0.93rem] text-[#2E2E2E]/85 leading-relaxed font-normal">
+                    <p className="text-[0.92rem] sm:text-base text-[#2E2E2E]/85 leading-relaxed font-normal">
                       {p.description}
                     </p>
                   </div>
@@ -315,23 +315,22 @@ export default function NosotrosPage() {
                   className="font-display text-3xl sm:text-4xl md:text-[2.75rem] text-[#0B2D58] leading-[1.14] font-medium"
                   style={{ fontFamily: 'var(--font-display), "Playfair Display", Georgia, serif' }}
                 >
-                  Riesgos hoy. <br className="hidden sm:inline" />
-                  Oportunidades mañana.
+                  Te ayudamos a identificar riesgos y encontrar opciones para proteger tu patrimonio.
                 </h2>
               </div>
 
               <div className="border-l-2 border-[#D4A737] pl-5 py-1">
                 <p className="text-lg sm:text-[1.12rem] text-[#0B2D58] font-medium leading-relaxed">
-                  Creemos que una gestión de riesgos bien estructurada no sólo protege lo que ha costado construir, sino que también ayuda a crear mejores condiciones para tomar decisiones y avanzar con mayor tranquilidad.
+                  Una buena decisión de aseguramiento comienza por conocer los riesgos, comprender las coberturas disponibles y revisar las condiciones de contratación.
                 </p>
               </div>
 
               <div className="space-y-4 pt-1 text-[0.96rem] sm:text-base text-[#2E2E2E]/85 leading-relaxed font-normal">
                 <p>
-                  <strong className="text-[#0B2D58] font-semibold">Criterio antes que catálogo:</strong> El valor no está en acumular pólizas aisladas, sino en estructurar coberturas que respondan con exactitud técnica y contractual en el momento en que se presentan los imprevistos.
+                  <strong className="text-[#0B2D58] font-semibold">Evaluación de coberturas:</strong> Antes de elegir un seguro, es importante revisar sus coberturas, exclusiones, deducibles, sumas aseguradas y condiciones relevantes.
                 </p>
                 <p>
-                  <strong className="text-[#0B2D58] font-semibold">Certidumbre para decidir:</strong> Cuando las personas y empresas entienden con claridad sus exposiciones, operan, invierten y planifican con una base sólida de confianza y estabilidad.
+                  <strong className="text-[#0B2D58] font-semibold">Información para decidir:</strong> Te ayudamos a comprender estos aspectos para que puedas conversar con tu agente y evaluar las alternativas con mayor claridad.
                 </p>
               </div>
             </div>
@@ -354,13 +353,13 @@ export default function NosotrosPage() {
                 className="font-display text-3xl sm:text-4xl lg:text-[3.15rem] text-[#0B2D58] leading-[1.12] font-medium"
                 style={{ fontFamily: 'var(--font-display), "Playfair Display", Georgia, serif' }}
               >
-                Un proceso claro para decisiones más sólidas.
+                Un proceso claro te ayuda a tomar mejores decisiones.
               </h2>
             </div>
 
             <div className="lg:col-span-5 lg:pt-8">
               <p className="text-base sm:text-lg text-[#2E2E2E]/85 leading-relaxed max-w-[48ch]">
-                Aplicamos una metodología estructurada para entender, analizar y acompañar cada decisión de protección patrimonial.
+                Nuestro proceso comienza por conocer tus necesidades y ayudarte a comprender los riesgos que deseas cubrir. Cuando requieres asesoría personalizada, facilitamos el contacto con un agente de seguros autorizado.
               </p>
             </div>
           </div>
@@ -369,7 +368,7 @@ export default function NosotrosPage() {
             {methodologySteps.map((step, index) => (
               <div
                 key={step.number}
-                className={`relative flex flex-col bg-white border border-[#E8E8E8] p-7 sm:p-8 rounded-[2px] transition-all duration-300 hover:border-[#D4A737] hover:shadow-sm ${
+                className={`relative flex flex-col h-full bg-white border border-[#E8E8E8] p-6 sm:p-7 lg:px-5 lg:py-7 xl:px-6 xl:py-8 rounded-[2px] transition-all duration-300 hover:border-[#D4A737] hover:shadow-sm ${
                   index === 4 ? "sm:col-span-2 lg:col-span-1" : ""
                 }`}
               >
@@ -380,11 +379,11 @@ export default function NosotrosPage() {
                   {step.number}
                 </span>
 
-                <h3 className="text-lg sm:text-[1.2rem] font-bold text-[#0B2D58] tracking-tight mb-2.5">
+                <h3 className="font-sans text-base sm:text-lg font-semibold text-[#0B2D58] leading-[1.35] mb-2.5">
                   {step.title}
                 </h3>
 
-                <p className="text-[0.92rem] sm:text-[0.96rem] text-[#2E2E2E]/85 leading-[1.65]">
+                <p className="text-[0.92rem] sm:text-base text-[#2E2E2E]/85 leading-[1.65] font-normal">
                   {step.description}
                 </p>
               </div>
@@ -407,7 +406,7 @@ export default function NosotrosPage() {
               className="font-display text-2xl sm:text-3xl md:text-[2.45rem] text-[#0B2D58] leading-[1.18] font-medium"
               style={{ fontFamily: 'var(--font-display), "Playfair Display", Georgia, serif' }}
             >
-              Confianza respaldada por rigor, criterio y atención cercana.
+              Te ofrecemos atención personalizada, orientación y seguimiento.
             </h2>
           </div>
 
@@ -417,16 +416,16 @@ export default function NosotrosPage() {
               return (
                 <div
                   key={item.title}
-                  className="bg-[#F8F5EF] border border-[#E8E8E8] p-6 sm:p-7 rounded-[2px] flex flex-col justify-between hover:border-[#D4A737]/60 transition-colors"
+                  className="bg-[#F8F5EF] border border-[#E8E8E8] p-6 sm:p-7 lg:px-5 lg:py-6 xl:px-6 xl:py-7 rounded-[2px] flex flex-col justify-between h-full hover:border-[#D4A737]/60 transition-colors"
                 >
                   <div>
                     <div className="w-10 h-10 rounded-[2px] bg-white border border-[#E8E8E8] flex items-center justify-center text-[#0B2D58] mb-4">
                       <IconComp className="w-5 h-5 text-[#D4A737]" />
                     </div>
-                    <h3 className="text-base sm:text-[1.05rem] font-bold text-[#0B2D58] tracking-tight mb-2">
+                    <h3 className="font-sans text-base sm:text-lg font-semibold text-[#0B2D58] leading-[1.35] mb-2.5">
                       {item.title}
                     </h3>
-                    <p className="text-[0.88rem] sm:text-[0.92rem] text-[#2E2E2E]/80 leading-relaxed font-normal">
+                    <p className="text-[0.92rem] sm:text-base text-[#2E2E2E]/80 leading-relaxed font-normal">
                       {item.description}
                     </p>
                   </div>
@@ -454,26 +453,26 @@ export default function NosotrosPage() {
                   className="font-display text-3xl sm:text-4xl md:text-[2.75rem] text-[#0B2D58] leading-[1.14] font-medium"
                   style={{ fontFamily: 'var(--font-display), "Playfair Display", Georgia, serif' }}
                 >
-                  Experiencia que se traduce en mejores decisiones.
+                  Un equipo enfocado en orientación y atención.
                 </h2>
               </div>
 
               <p className="text-base sm:text-lg text-[#2E2E2E]/90 leading-relaxed font-normal">
-                Nuestro equipo combina experiencia en seguros, análisis de riesgos y atención personalizada. Trabajamos de manera cercana para entender lo que realmente importa y construir soluciones que tengan sentido en cada contexto.
+                Nuestro equipo trabaja para ofrecer información clara sobre seguros y apoyar la atención de clientes y agentes. Facilitamos la comunicación, el seguimiento de pólizas y el contacto con profesionales autorizados cuando se requiere asesoría personalizada.
               </p>
 
               <div className="space-y-3 pt-2 text-[0.95rem] text-[#2E2E2E]/85">
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-[#D4A737] flex-shrink-0 mt-0.5" />
-                  <span>Análisis técnico y contractual sin sesgos comerciales predeterminados.</span>
+                  <span>Orientación clara sobre necesidades de protección.</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-[#D4A737] flex-shrink-0 mt-0.5" />
-                  <span>Interlocutores consultivos que entienden la dinámica patrimonial y empresarial.</span>
+                  <span>Coordinación con agentes de seguros autorizados.</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-[#D4A737] flex-shrink-0 mt-0.5" />
-                  <span>Acompañamiento proactivo en la gestión de siniestros y renovaciones periódicas.</span>
+                  <span>Seguimiento de clientes, renovaciones y acompañamiento inicial durante siniestros.</span>
                 </div>
               </div>
 
@@ -530,14 +529,14 @@ export default function NosotrosPage() {
                 className="font-display text-3xl sm:text-4xl md:text-[2.95rem] lg:text-[3.35rem] text-white leading-[1.12] font-medium"
                 style={{ fontFamily: 'var(--font-display), "Playfair Display", Georgia, serif' }}
               >
-                Tu patrimonio merece una conversación con criterio.
+                Recibe orientación sobre tus necesidades de protección.
               </h2>
             </div>
 
             {/* Right Column */}
             <div className="lg:col-span-5 lg:border-l lg:border-white/15 lg:pl-8 xl:pl-12 flex flex-col justify-center space-y-6 sm:space-y-7 min-w-0">
               <p className="text-base sm:text-lg text-white/90 leading-relaxed">
-                Cuéntanos tu situación y descubre cómo podemos ayudarte a proteger lo que has construido y lo que está por venir.
+                Cuéntanos qué necesitas proteger. Te ayudaremos a comprender tus opciones y, cuando corresponda, a contactar con un agente de seguros autorizado que pueda atenderte.
               </p>
 
               <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row items-stretch sm:items-center lg:items-stretch xl:items-center gap-3.5 sm:gap-4 pt-1">
