@@ -125,7 +125,7 @@ export function Hero() {
 
             {/* Fixed Supporting Copy */}
             <p className="mt-5 sm:mt-7 text-base sm:text-lg md:text-[1.15rem] leading-[1.65] text-[#1B2533] max-w-[54ch] font-normal">
-              Soluciones de seguros y gestión de riesgos para personas, empresarios y empresas que buscan un futuro con mayor certeza.
+              Te ayudamos a comprender tus riesgos, conocer opciones de aseguramiento y encontrar orientación para proteger lo que más valoras.
             </p>
 
             {/* Action CTAs */}
@@ -275,7 +275,7 @@ export function Hero() {
           </h1>
 
           <p className="text-[0.95rem] leading-[1.65] text-[#1B2533] mb-8 font-normal">
-            Soluciones de seguros y gestión de riesgos para personas, empresarios y empresas que buscan un futuro con mayor certeza.
+            Te ayudamos a comprender tus riesgos, conocer opciones de aseguramiento y encontrar orientación para proteger lo que más valoras.
           </p>
 
           {/* Action CTAs */}
