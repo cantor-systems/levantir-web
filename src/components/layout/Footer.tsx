@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { LevantirLogo } from '../brand/LevantirLogo';
+import Image from 'next/image';
 import { Container } from './Container';
 import { useConsent } from '@/components/analytics/ConsentProvider';
 
@@ -40,9 +40,16 @@ export function Footer() {
           <div className="lg:col-span-5 space-y-6 min-w-0">
             <Link
               href="/"
-              className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A737]"
+              aria-label="LEVANTIR – Ir a inicio"
+              className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A737] rounded-sm transition-opacity hover:opacity-95"
             >
-              <LevantirLogo variant="light" size="md" showDescriptor={true} />
+              <Image
+                src="/images/brand/levantir-logo-white.webp"
+                alt="LEVANTIR — Seguros y Gestión de Riesgos"
+                width={2801}
+                height={701}
+                className="h-8 sm:h-9 md:h-10 w-auto object-contain select-none"
+              />
             </Link>
 
             <p className="text-white/90 text-sm sm:text-base font-normal max-w-[42ch] leading-relaxed pt-2">
