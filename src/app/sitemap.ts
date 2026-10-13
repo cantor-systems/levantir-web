@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { GUIAS_BASE_PATH, guiasDeSeguros } from '../content/guias-de-seguros'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://levantir.com'
@@ -8,7 +9,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/autos',
     '/autos/seguro-de-auto',
     '/contacto',
-    '/insights',
+    GUIAS_BASE_PATH,
+    ...guiasDeSeguros.map((guia) => `${GUIAS_BASE_PATH}/${guia.slug}`),
     '/mercancias',
     '/nosotros',
     '/personas',

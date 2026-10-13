@@ -13,7 +13,7 @@ export function InsightsSection() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14 sm:mb-16">
           <div className="max-w-2xl space-y-3.5">
             <p className="text-xs font-bold tracking-[0.2em] uppercase text-[#D4A737]">
-              LEVANTIR INSIGHTS
+              GUÍAS DE SEGUROS
             </p>
             <h2
               className="font-display text-3xl sm:text-4xl lg:text-[3.15rem] text-[#0B2D58] leading-[1.12] font-medium"
@@ -24,10 +24,10 @@ export function InsightsSection() {
           </div>
 
           <Link
-            href="/insights"
+            href="/guias-de-seguros"
             className="inline-flex items-center text-xs font-bold tracking-[0.14em] uppercase text-[#0B2D58] hover:text-[#D4A737] transition-colors whitespace-nowrap pb-1"
           >
-            <span>VER TODOS LOS ARTÍCULOS</span>
+            <span>VER TODAS LAS GUÍAS</span>
             <ArrowRight className="w-4 h-4 ml-1.5" />
           </Link>
         </div>
@@ -66,7 +66,7 @@ export function InsightsSection() {
                 </div>
 
                 <div className="pt-6 mt-6 border-t border-[#E8E8E8]/80 flex items-center text-[#0B2D58] group-hover:text-[#D4A737] font-semibold text-xs tracking-wider uppercase transition-colors">
-                  <span className="mr-2">LEER ARTÍCULO</span>
+                  <span className="mr-2">LEER GUÍA</span>
                   <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
                 </div>
               </div>

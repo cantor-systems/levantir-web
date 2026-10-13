@@ -52,7 +52,7 @@ const NAV_ITEMS: NavItem[] = [
     label: 'NOSOTROS',
     href: '/nosotros',
     children: [
-      { label: 'Insights', href: '/insights' },
+      { label: 'Guías de seguros', href: '/guias-de-seguros' },
     ],
   },
   { label: 'CONTACTO', href: '/contacto' },
@@ -62,12 +62,12 @@ const NAV_ITEMS: NavItem[] = [
  * A nav item is considered "active" when:
  * 1. currentPath exactly matches item.href
  * 2. currentPath is a subroute of item.href (e.g. /pymes/hombre-clave → PYMES active)
- * 3. currentPath matches one of item's children (e.g. /insights → NOSOTROS active)
+ * 3. currentPath matches one of item's children (e.g. /guias-de-seguros → NOSOTROS active)
  */
 function isItemActive(item: NavItem, currentPath: string): boolean {
   if (currentPath === item.href) return true;
   if (item.href !== '/' && currentPath.startsWith(item.href + '/')) return true;
-  if (item.children?.some((child) => currentPath === child.href)) return true;
+  if (item.children?.some((child) => currentPath === child.href || currentPath.startsWith(child.href + '/'))) return true;
   return false;
 }
 

@@ -66,7 +66,7 @@ const NOSOTROS_GROUP: AccordionGroup = {
   href: '/nosotros',
   mainLinkLabel: 'Quiénes somos',
   children: [
-    { label: 'Insights', href: '/insights' },
+    { label: 'Guías de seguros', href: '/guias-de-seguros' },
   ],
 };
 
@@ -75,7 +75,7 @@ const NOSOTROS_GROUP: AccordionGroup = {
 function isGroupActive(group: AccordionGroup, currentPath: string): boolean {
   if (currentPath === group.href) return true;
   if (group.href !== '/' && currentPath.startsWith(group.href + '/')) return true;
-  return group.children.some((child) => currentPath === child.href);
+  return group.children.some((child) => currentPath === child.href || currentPath.startsWith(child.href + '/'));
 }
 
 // ─── Props ────────────────────────────────────────────────────────────────────

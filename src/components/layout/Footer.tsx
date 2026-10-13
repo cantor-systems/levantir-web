@@ -22,7 +22,7 @@ export function Footer() {
 
   const brandLinks = [
     { label: "Nosotros", href: "/nosotros" },
-    { label: "Insights", href: "/insights" },
+    { label: "Guías de seguros", href: "/guias-de-seguros" },
     { label: "Contacto", href: "/contacto" },
   ];
 

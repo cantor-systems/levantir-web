@@ -1,4 +1,5 @@
 import { HeroSlide, InsightPreviewItem, MethodologyStepItem, NavigationItem, PrincipleItem, SolutionItem } from '../types';
+import { GUIAS_INICIO_SLUGS, getGuiaBySlug, getGuiaHref } from '../content/guias-de-seguros';
 
 export const siteConfig = {
   name: "LEVANTIR",
@@ -193,29 +194,18 @@ export const principlesData: PrincipleItem[] = [
   },
 ];
 
-export const insightsData: InsightPreviewItem[] = [
-  {
-    id: "gastos-medicos",
-    category: "PERSONAS",
-    title: "Gastos médicos: una decisión que protege más que tu salud",
-    summary: "Un respaldo clave para tu bienestar, tu familia y tu patrimonio.",
-    href: "/personas/gastos-medicos-mayores",
-    imageUrl: "/images/home/insights/insights-personas.webp",
-  },
-  {
-    id: "hombre-clave",
-    category: "EMPRESAS",
-    title: "El valor de un hombre clave en la continuidad del negocio",
-    summary: "Cómo proteger el futuro de tu empresa ante la ausencia de un talento estratégico.",
-    href: "/pymes/hombre-clave",
-    imageUrl: "/images/home/insights/insights-empresas.webp",
-  },
-  {
-    id: "mercancias-resilientes",
-    category: "MERCANCÍAS",
-    title: "Mercancías en movimiento: riesgos que no se detienen",
-    summary: "Soluciones para una cadena de suministro más segura y resiliente.",
-    href: "/mercancias",
-    imageUrl: "/images/home/hero/home-hero-mercancias.webp",
-  },
-];
+// Guías mostradas en Inicio: derivadas de la fuente editorial única.
+export const insightsData: InsightPreviewItem[] = GUIAS_INICIO_SLUGS.flatMap((slug) => {
+  const guia = getGuiaBySlug(slug);
+  if (!guia) return [];
+  return [
+    {
+      id: guia.slug,
+      category: guia.category,
+      title: guia.title,
+      summary: guia.metaDescription,
+      href: getGuiaHref(guia.slug),
+      imageUrl: guia.image.src,
+    },
+  ];
+});
