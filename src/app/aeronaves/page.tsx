@@ -41,8 +41,8 @@ const marketScope = [
     title: "Aviación general y privada",
     category: "NÚCLEO OPERATIVO",
     description: "Aeronaves monomotor y bimotor para propietarios-pilotos, enlaces empresariales y vuelos privados con base en aeródromos civiles.",
-    imageUrl: "https://images.unsplash.com/photo-1559628233-100c798642d4?q=80&w=800&auto=format&fit=crop",
-    altText: "Aeronave monomotor de aviación general en plataforma con luz diurna",
+    imageUrl: "/images/aeronaves/aviacion-general.webp",
+    altText: "Avión monomotor en hangar de aviación general con vista a pista al atardecer",
     technicalHighlight: "Monomotor y bimotor · Aviación civil · Vuelo privado",
   },
   {
@@ -50,8 +50,8 @@ const marketScope = [
     title: "Helicópteros y operaciones verticales",
     category: "ALCANCE COMPLEMENTARIO",
     description: "Operaciones de ala rotativa para transporte ejecutivo punto a punto, acceso a helipuertos urbanos o predios con infraestructura especializada.",
-    imageUrl: "https://images.unsplash.com/photo-1617469165885-0db8294c3232?q=80&w=800&auto=format&fit=crop",
-    altText: "Helicóptero civil en operación y entorno de aterrizaje",
+    imageUrl: "/images/aeronaves/helicopteros.webp",
+    altText: "Helicóptero civil en helipuerto con vista panorámica al amanecer",
     technicalHighlight: "Ala rotativa · Helipuertos · Movilidad punto a punto",
   },
   {
@@ -59,8 +59,8 @@ const marketScope = [
     title: "Jets ejecutivos y corporativos",
     category: "MOVILIDAD CORPORATIVA",
     description: "Aeronaves a turbina destinadas a itinerarios corporativos de mediano y largo alcance con altas exigencias de disponibilidad y cumplimiento.",
-    imageUrl: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=800&auto=format&fit=crop",
-    altText: "Aeronave ejecutiva en plataforma aeroportuaria",
+    imageUrl: "/images/aeronaves/jets-ejecutivos.webp",
+    altText: "Jet ejecutivo en plataforma aeroportuaria con iluminación al atardecer",
     technicalHighlight: "Turbina · Operación ejecutiva · Rutas nacionales e internacionales",
   },
   {
@@ -68,8 +68,8 @@ const marketScope = [
     title: "Hangares e infraestructura técnica",
     category: "INSTALACIONES & BASE",
     description: "Instalaciones fijas de resguardo, hangares privados, talleres certificados y áreas de servicio en plataforma para apoyo en tierra.",
-    imageUrl: "https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?q=80&w=800&auto=format&fit=crop",
-    altText: "Instalaciones de hangar y resguardo técnico de aeronaves",
+    imageUrl: "/images/aeronaves/hangares.webp",
+    altText: "Hangar de mantenimiento aeronáutico con aeronave turbohélice y equipo técnico en rampa",
     technicalHighlight: "Resguardo · Mantenimiento · Seguridad en rampa",
   },
 ];
@@ -133,9 +133,9 @@ export default function AeronavesPage() {
         primaryCtaHref="?advisory=true"
         secondaryCtaText="CONOCER MÁS"
         secondaryCtaHref="#contexto"
-        imageUrl="https://images.unsplash.com/photo-1559628233-100c798642d4?q=80&w=2070&auto=format&fit=crop"
+        imageUrl="/images/aeronaves/hero-aeronaves.webp"
         imageAlt="Aeronave civil en plataforma de aeródromo civil con luz natural"
-        imagePositionClass="object-[82%_center] sm:object-[84%_center] lg:object-[85%_center]"
+        imagePositionClass="object-[60%_center] sm:object-[78%_center] lg:object-[82%_center] xl:object-[85%_center]"
         trustNote="Asesoría técnica · Aviación civil y privada · Criterio independiente"
         cornerDescriptorCategory="AERONAVES & RIESGOS AÉREOS"
         cornerDescriptorText="Criterio técnico e independiente para salvaguardar aeronaves, tripulaciones y responsabilidades operacionales."

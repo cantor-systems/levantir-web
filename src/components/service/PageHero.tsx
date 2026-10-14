@@ -52,9 +52,10 @@ export function PageHero({
   return (
     <section
       aria-label={ariaLabel || title}
-      className="relative w-full min-h-[580px] sm:min-h-[640px] md:min-h-[680px] lg:min-h-[720px] xl:min-h-[760px] flex items-center overflow-hidden bg-[#F8F5EF] border-b border-[#E8E8E8]"
+      className="relative w-full sm:min-h-[640px] md:min-h-[680px] lg:min-h-[720px] xl:min-h-[760px] flex flex-col sm:flex-row sm:items-center overflow-hidden bg-[#F8F5EF] border-b border-[#E8E8E8]"
     >
-      <div className="absolute inset-0 z-0">
+      {/* Mobile (<sm): in-flow 16:9 photo above the content. sm+: original absolute background. */}
+      <div className="relative sm:absolute sm:inset-0 z-0 w-full aspect-video sm:aspect-auto overflow-hidden">
         <img
           src={imageUrl}
           alt={imageAlt}
@@ -71,13 +72,9 @@ export function PageHero({
           className="absolute inset-0 z-10 pointer-events-none hidden sm:block lg:hidden"
           style={{ background: "linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.90) 36%, rgba(255, 255, 255, 0.62) 56%, rgba(255, 255, 255, 0.20) 74%, rgba(255, 255, 255, 0.0) 86%)" }}
         />
-        <div
-          className="absolute inset-0 z-10 pointer-events-none sm:hidden"
-          style={{ background: "linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.90) 50%, rgba(255, 255, 255, 0.45) 74%, rgba(255, 255, 255, 0.0) 92%)" }}
-        />
       </div>
 
-      <Container className="relative z-20 py-16 sm:py-20 md:py-24 lg:py-28 xl:py-32">
+      <Container className="relative z-20 py-8 sm:py-20 md:py-24 lg:py-28 xl:py-32">
         <div className="max-w-2xl lg:max-w-[700px] xl:max-w-[760px]">
           <div className="mb-6 sm:mb-8">
             <Breadcrumbs items={breadcrumbs} />
