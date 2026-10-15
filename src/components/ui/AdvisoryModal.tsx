@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import Link from 'next/link';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { X, ArrowRight, CheckCircle2, MessageCircle } from 'lucide-react';
 import { getLeadContextFromPathname, isValidGeneralTopicId, isValidProductId } from '@/lib/leads/context';
@@ -453,7 +454,15 @@ export function AdvisoryModal() {
                 </div>
 
                 <p className="text-[0.68rem] text-[#5C626B] text-center pt-2">
-                  Tus datos se tratan bajo estricta confidencialidad según nuestro Aviso de Privacidad.
+                  Tus datos se tratan bajo estricta confidencialidad según nuestro{" "}
+                  <Link
+                    href="/aviso-de-privacidad"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-[#0B2D58] transition-colors"
+                  >
+                    Aviso de Privacidad
+                  </Link>.
                 </p>
               </form>
             </div>

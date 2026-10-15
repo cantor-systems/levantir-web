@@ -27,8 +27,8 @@ export function Footer() {
   ];
 
   const legalLinks = [
-    { label: "Aviso de privacidad", href: "#aviso-de-privacidad" },
-    { label: "Términos y condiciones", href: "#terminos-y-condiciones" },
+    { label: "Aviso de privacidad", href: "/aviso-de-privacidad" },
+    { label: "Términos y condiciones", href: "/terminos-y-condiciones" },
   ];
 
   return (

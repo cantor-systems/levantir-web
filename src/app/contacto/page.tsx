@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { 
   ArrowRight,
   Phone,
@@ -296,7 +297,15 @@ function ContactForm() {
       </div>
       
       <p className="text-[0.7rem] text-[#5C626B] mt-4">
-        Consulta cómo tratamos tus datos en nuestro <a href="#aviso-de-privacidad" className="underline hover:text-[#0B2D58] transition-colors">Aviso de Privacidad</a>.
+        Consulta cómo tratamos tus datos en nuestro{" "}
+        <Link
+          href="/aviso-de-privacidad"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-[#0B2D58] transition-colors"
+        >
+          Aviso de Privacidad
+        </Link>.
       </p>
     </form>
   );

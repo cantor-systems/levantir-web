@@ -338,7 +338,9 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, anal
                 <p className="text-xs text-[#5C626B] leading-relaxed">
                   La información que compartas será utilizada únicamente para atender tu solicitud.{" "}
                   <Link
-                    href="#aviso-de-privacidad"
+                    href="/aviso-de-privacidad"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-[#0B2D58] font-semibold underline underline-offset-2 hover:text-[#D4A737] transition-colors"
                   >
                     Aviso de Privacidad
