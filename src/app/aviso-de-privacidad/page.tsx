@@ -17,6 +17,14 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "LEVANTIR",
     locale: "es_MX",
+    images: [
+      {
+        url: "https://levantir.com/images/brand/levantir-open-graph.png",
+        width: 1200,
+        height: 630,
+        alt: "LEVANTIR | Seguros y Gestión de Riesgos",
+      },
+    ],
   },
 };
 
