@@ -26,6 +26,14 @@ export const metadata: Metadata = {
   title: "Seguro Empresarial | Protección para Empresas",
   description: "Protege los activos físicos, maquinaria e inventario que mantienen en marcha tu empresa ante eventualidades y contingencias operativas con LEVANTIR.",
   alternates: { canonical: "https://levantir.com/pymes/seguro-empresarial" },
+  openGraph: {
+    title: "Seguro Empresarial | Protección para Empresas | LEVANTIR",
+    description: "Protege los activos físicos, maquinaria e inventario que mantienen en marcha tu empresa ante eventualidades y contingencias operativas con LEVANTIR.",
+    url: "https://levantir.com/pymes/seguro-empresarial",
+    type: "website",
+    siteName: "LEVANTIR",
+    locale: "es_MX",
+  },
 };
 
 const breadcrumbs = [

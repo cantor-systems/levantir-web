@@ -12,6 +12,14 @@ export const metadata: Metadata = {
   title: "Seguro de Vida y Protección Patrimonial",
   description: "Protección financiera para quienes dependen de ti. En LEVANTIR analizamos dependencias económicas, compromisos y horizontes temporales para estructurar tu seguro de vida.",
   alternates: { canonical: "https://levantir.com/personas/seguro-de-vida" },
+  openGraph: {
+    title: "Seguro de Vida y Protección Patrimonial | LEVANTIR",
+    description: "Protección financiera para quienes dependen de ti. En LEVANTIR analizamos dependencias económicas, compromisos y horizontes temporales para estructurar tu seguro de vida.",
+    url: "https://levantir.com/personas/seguro-de-vida",
+    type: "website",
+    siteName: "LEVANTIR",
+    locale: "es_MX",
+  },
 };
 
 const breadcrumbs = [

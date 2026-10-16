@@ -13,6 +13,14 @@ export const metadata: Metadata = {
   title: "Seguro de Transporte de Mercancías y Carga",
   description: "Asesoría técnica para evaluar riesgos en tránsito, analizar medios de transporte y estructurar esquemas de seguro para mercancías y carga en movimiento con LEVANTIR.",
   alternates: { canonical: "https://levantir.com/mercancias" },
+  openGraph: {
+    title: "Seguro de Transporte de Mercancías y Carga | LEVANTIR",
+    description: "Asesoría técnica para evaluar riesgos en tránsito, analizar medios de transporte y estructurar esquemas de seguro para mercancías y carga en movimiento con LEVANTIR.",
+    url: "https://levantir.com/mercancias",
+    type: "website",
+    siteName: "LEVANTIR",
+    locale: "es_MX",
+  },
 };
 
 const breadcrumbs = [

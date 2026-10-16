@@ -9,6 +9,15 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://levantir.com/aviso-de-privacidad",
   },
+  openGraph: {
+    title: "Aviso de privacidad | LEVANTIR",
+    description:
+      "Consulta el Aviso de privacidad de LEVANTIR y conoce cómo tratamos y protegemos los datos personales.",
+    url: "https://levantir.com/aviso-de-privacidad",
+    type: "website",
+    siteName: "LEVANTIR",
+    locale: "es_MX",
+  },
 };
 
 const displayFont = {

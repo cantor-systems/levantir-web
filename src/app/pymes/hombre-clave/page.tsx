@@ -26,6 +26,14 @@ export const metadata: Metadata = {
   title: "Seguro de Hombre Clave para Empresas",
   description: "Asesoría técnica para identificar personas clave, evaluar el nivel de dependencia y estructurar esquemas de protección patrimonial y continuidad empresarial.",
   alternates: { canonical: "https://levantir.com/pymes/hombre-clave" },
+  openGraph: {
+    title: "Seguro de Hombre Clave para Empresas | LEVANTIR",
+    description: "Asesoría técnica para identificar personas clave, evaluar el nivel de dependencia y estructurar esquemas de protección patrimonial y continuidad empresarial.",
+    url: "https://levantir.com/pymes/hombre-clave",
+    type: "website",
+    siteName: "LEVANTIR",
+    locale: "es_MX",
+  },
 };
 
 const breadcrumbs = [

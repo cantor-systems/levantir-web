@@ -13,6 +13,14 @@ export const metadata: Metadata = {
   title: "Seguros para Personas y Patrimonio",
   description: "Protege tu salud, tu familia y tu futuro financiero. En LEVANTIR estructuramos soluciones integrales de seguros para personas con criterio independiente.",
   alternates: { canonical: "https://levantir.com/personas" },
+  openGraph: {
+    title: "Seguros para Personas y Patrimonio | LEVANTIR",
+    description: "Protege tu salud, tu familia y tu futuro financiero. En LEVANTIR estructuramos soluciones integrales de seguros para personas con criterio independiente.",
+    url: "https://levantir.com/personas",
+    type: "website",
+    siteName: "LEVANTIR",
+    locale: "es_MX",
+  },
 };
 
 const breadcrumbs = [

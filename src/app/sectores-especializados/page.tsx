@@ -13,6 +13,14 @@ export const metadata: Metadata = {
   title: "Sectores Especializados | Soluciones para Riesgos Complejos",
   description: "Análisis técnico y estructuración de coberturas para operaciones complejas, activos de alto valor y responsabilidades no estandarizadas con LEVANTIR.",
   alternates: { canonical: "https://levantir.com/sectores-especializados" },
+  openGraph: {
+    title: "Sectores Especializados | Soluciones para Riesgos Complejos | LEVANTIR",
+    description: "Análisis técnico y estructuración de coberturas para operaciones complejas, activos de alto valor y responsabilidades no estandarizadas con LEVANTIR.",
+    url: "https://levantir.com/sectores-especializados",
+    type: "website",
+    siteName: "LEVANTIR",
+    locale: "es_MX",
+  },
 };
 
 const breadcrumbs = [

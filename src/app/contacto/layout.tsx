@@ -7,6 +7,15 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://levantir.com/contacto",
   },
+  openGraph: {
+    title: "Contacto | Asesoría en Seguros y Gestión de Riesgos | LEVANTIR",
+    description:
+      "Contáctanos para estructurar la mejor estrategia de protección. Hablemos sobre tus necesidades de seguros y gestión de riesgos sin compromiso.",
+    url: "https://levantir.com/contacto",
+    type: "website",
+    siteName: "LEVANTIR",
+    locale: "es_MX",
+  },
 };
 
 export default function ContactoLayout({

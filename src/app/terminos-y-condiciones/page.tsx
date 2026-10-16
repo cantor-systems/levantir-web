@@ -9,6 +9,15 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://levantir.com/terminos-y-condiciones",
   },
+  openGraph: {
+    title: "Términos y condiciones | LEVANTIR",
+    description:
+      "Consulta los términos y condiciones de uso del sitio web de LEVANTIR y el alcance de sus servicios de orientación.",
+    url: "https://levantir.com/terminos-y-condiciones",
+    type: "website",
+    siteName: "LEVANTIR",
+    locale: "es_MX",
+  },
 };
 
 const displayFont = {

@@ -14,6 +14,14 @@ export const metadata: Metadata = {
   title: "Seguro de Autos y Movilidad",
   description: "Asesoría técnica e independiente para estructurar coberturas de auto. Analizamos uso, tipo de vehículo y entorno de circulación para definir la protección más sólida del mercado.",
   alternates: { canonical: "https://levantir.com/autos" },
+  openGraph: {
+    title: "Seguro de Autos y Movilidad | LEVANTIR",
+    description: "Asesoría técnica e independiente para estructurar coberturas de auto. Analizamos uso, tipo de vehículo y entorno de circulación para definir la protección más sólida del mercado.",
+    url: "https://levantir.com/autos",
+    type: "website",
+    siteName: "LEVANTIR",
+    locale: "es_MX",
+  },
 };
 
 const breadcrumbs = [

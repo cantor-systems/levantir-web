@@ -12,6 +12,14 @@ export const metadata: Metadata = {
   title: "Seguro de Gastos Médicos Mayores",
   description: "Protege tu patrimonio frente a gastos médicos de alto impacto. En LEVANTIR te ayudamos a evaluar deducibles, coaseguros y coberturas con criterio independiente.",
   alternates: { canonical: "https://levantir.com/personas/gastos-medicos-mayores" },
+  openGraph: {
+    title: "Seguro de Gastos Médicos Mayores | LEVANTIR",
+    description: "Protege tu patrimonio frente a gastos médicos de alto impacto. En LEVANTIR te ayudamos a evaluar deducibles, coaseguros y coberturas con criterio independiente.",
+    url: "https://levantir.com/personas/gastos-medicos-mayores",
+    type: "website",
+    siteName: "LEVANTIR",
+    locale: "es_MX",
+  },
 };
 
 const breadcrumbs = [

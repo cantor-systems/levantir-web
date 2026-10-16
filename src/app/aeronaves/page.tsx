@@ -13,6 +13,14 @@ export const metadata: Metadata = {
   title: "Seguro de Aeronaves y Riesgos Aeronáuticos",
   description: "Asesoría técnica y gestión integral de riesgos para aviación civil, avionetas, helicópteros y operaciones aeronáuticas privadas con LEVANTIR.",
   alternates: { canonical: "https://levantir.com/aeronaves" },
+  openGraph: {
+    title: "Seguro de Aeronaves y Riesgos Aeronáuticos | LEVANTIR",
+    description: "Asesoría técnica y gestión integral de riesgos para aviación civil, avionetas, helicópteros y operaciones aeronáuticas privadas con LEVANTIR.",
+    url: "https://levantir.com/aeronaves",
+    type: "website",
+    siteName: "LEVANTIR",
+    locale: "es_MX",
+  },
 };
 
 const breadcrumbs = [

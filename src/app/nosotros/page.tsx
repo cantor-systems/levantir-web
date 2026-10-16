@@ -22,6 +22,15 @@ export const metadata: Metadata = {
   description:
     "Conoce el enfoque de LEVANTIR para entender riesgos, proteger patrimonio y acompañar a personas, empresarios y empresas con criterio técnico e independiente.",
   alternates: { canonical: "https://levantir.com/nosotros" },
+  openGraph: {
+    title: "Nosotros | Asesoría en Seguros y Gestión de Riesgos | LEVANTIR",
+    description:
+      "Conoce el enfoque de LEVANTIR para entender riesgos, proteger patrimonio y acompañar a personas, empresarios y empresas con criterio técnico e independiente.",
+    url: "https://levantir.com/nosotros",
+    type: "website",
+    siteName: "LEVANTIR",
+    locale: "es_MX",
+  },
 };
 
 const breadcrumbs = [
