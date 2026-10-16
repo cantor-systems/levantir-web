@@ -8,6 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/aeronaves',
     '/autos',
     '/autos/seguro-de-auto',
+    '/aviso-de-privacidad',
     '/contacto',
     GUIAS_BASE_PATH,
     ...guiasDeSeguros.map((guia) => `${GUIAS_BASE_PATH}/${guia.slug}`),
@@ -21,7 +22,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/pymes/hombre-clave',
     '/pymes/responsabilidad-civil',
     '/pymes/seguro-empresarial',
-    '/sectores-especializados'
+    '/sectores-especializados',
+    '/terminos-y-condiciones'
   ]
 
   return routes.map((route) => ({
