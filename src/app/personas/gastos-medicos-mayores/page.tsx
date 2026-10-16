@@ -9,7 +9,7 @@ import { CTASection } from "@/components/service/CTASection";
 import { HeartPulse, Wallet, Users, FileSpreadsheet, Percent, Maximize2, Building2, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Seguro de Gastos Médicos Mayores | LEVANTIR",
+  title: "Seguro de Gastos Médicos Mayores",
   description: "Protege tu patrimonio frente a gastos médicos de alto impacto. En LEVANTIR te ayudamos a evaluar deducibles, coaseguros y coberturas con criterio independiente.",
   alternates: { canonical: "https://levantir.com/personas/gastos-medicos-mayores" },
 };

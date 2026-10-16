@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Seguro de Responsabilidad Civil | LEVANTIR",
+  title: "Seguro de Responsabilidad Civil",
   description: "Asesoría técnica para evaluar la exposición frente a terceros y estructurar coberturas de responsabilidad civil acordes a la actividad y operación de tu empresa.",
   alternates: { canonical: "https://levantir.com/pymes/responsabilidad-civil" },
 };

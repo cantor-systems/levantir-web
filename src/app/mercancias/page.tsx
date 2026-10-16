@@ -10,7 +10,7 @@ import { ServiceMethodologySection } from "@/components/service/ServiceMethodolo
 import { CTASection } from "@/components/service/CTASection";
 
 export const metadata: Metadata = {
-  title: "Seguro de Transporte de Mercancías y Carga | LEVANTIR",
+  title: "Seguro de Transporte de Mercancías y Carga",
   description: "Asesoría técnica para evaluar riesgos en tránsito, analizar medios de transporte y estructurar esquemas de seguro para mercancías y carga en movimiento con LEVANTIR.",
   alternates: { canonical: "https://levantir.com/mercancias" },
 };

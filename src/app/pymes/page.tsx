@@ -10,7 +10,7 @@ import { ServiceMethodologySection } from "@/components/service/ServiceMethodolo
 import { CTASection } from "@/components/service/CTASection";
 
 export const metadata: Metadata = {
-  title: "Seguros para PYMES y Empresas | LEVANTIR",
+  title: "Seguros para PYMES y Empresas",
   description: "Asesoría para proteger tu empresa. Evaluamos activos, responsabilidad civil y continuidad operativa para estructurar coberturas corporativas sólidas.",
   alternates: { canonical: "https://levantir.com/pymes" },
 };

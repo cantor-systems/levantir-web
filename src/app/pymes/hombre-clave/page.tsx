@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Seguro de Hombre Clave para Empresas | LEVANTIR",
+  title: "Seguro de Hombre Clave para Empresas",
   description: "Asesoría técnica para identificar personas clave, evaluar el nivel de dependencia y estructurar esquemas de protección patrimonial y continuidad empresarial.",
   alternates: { canonical: "https://levantir.com/pymes/hombre-clave" },
 };

@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Seguro Empresarial | Protección para Empresas | LEVANTIR",
+  title: "Seguro Empresarial | Protección para Empresas",
   description: "Protege los activos físicos, maquinaria e inventario que mantienen en marcha tu empresa ante eventualidades y contingencias operativas con LEVANTIR.",
   alternates: { canonical: "https://levantir.com/pymes/seguro-empresarial" },
 };

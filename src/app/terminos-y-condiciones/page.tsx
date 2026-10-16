@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 
 export const metadata: Metadata = {
-  title: "Términos y condiciones | LEVANTIR",
+  title: "Términos y condiciones",
   description:
     "Consulta los términos y condiciones de uso del sitio web de LEVANTIR y el alcance de sus servicios de orientación.",
   alternates: {

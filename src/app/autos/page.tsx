@@ -11,7 +11,7 @@ import { CTASection } from "@/components/service/CTASection";
 import { Scale, Car, ShieldCheck, Sliders, MapPin, Users, Search, SlidersHorizontal, Handshake } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Seguro de Autos y Movilidad | LEVANTIR",
+  title: "Seguro de Autos y Movilidad",
   description: "Asesoría técnica e independiente para estructurar coberturas de auto. Analizamos uso, tipo de vehículo y entorno de circulación para definir la protección más sólida del mercado.",
   alternates: { canonical: "https://levantir.com/autos" },
 };

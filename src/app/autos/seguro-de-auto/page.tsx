@@ -9,7 +9,7 @@ import { CTASection } from "@/components/service/CTASection";
 import { Scale, Car, ShieldAlert, HeartPulse, Wrench, Gavel, Sliders, MapPin, Users, Search, SlidersHorizontal, Handshake, Info, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Seguro de Auto | Protección Patrimonial en Movilidad | LEVANTIR",
+  title: "Seguro de Auto | Protección Patrimonial en Movilidad",
   description: "Un seguro de auto debe proteger más que el vehículo. En LEVANTIR analizamos tu perfil de movilidad, responsabilidad frente a terceros y contexto de uso con rigor técnico.",
   alternates: { canonical: "https://levantir.com/autos/seguro-de-auto" },
 };

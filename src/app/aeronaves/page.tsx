@@ -10,7 +10,7 @@ import { ServiceMethodologySection } from "@/components/service/ServiceMethodolo
 import { CTASection } from "@/components/service/CTASection";
 
 export const metadata: Metadata = {
-  title: "Seguro de Aeronaves y Riesgos Aeronáuticos | LEVANTIR",
+  title: "Seguro de Aeronaves y Riesgos Aeronáuticos",
   description: "Asesoría técnica y gestión integral de riesgos para aviación civil, avionetas, helicópteros y operaciones aeronáuticas privadas con LEVANTIR.",
   alternates: { canonical: "https://levantir.com/aeronaves" },
 };

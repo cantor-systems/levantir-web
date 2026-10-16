@@ -9,7 +9,7 @@ import { CTASection } from "@/components/service/CTASection";
 import { Clock, PiggyBank, Target, ShieldCheck, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Planes de Retiro y Protección Financiera | LEVANTIR",
+  title: "Planes de Retiro y Protección Financiera",
   description: "Construir patrimonio también significa preparar el futuro. En LEVANTIR te ayudamos a estructurar planes de retiro con visión de largo plazo y criterio independiente.",
   alternates: { canonical: "https://levantir.com/personas/retiro" },
 };

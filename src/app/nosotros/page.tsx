@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Nosotros | Asesoría en Seguros y Gestión de Riesgos | LEVANTIR",
+  title: "Nosotros | Asesoría en Seguros y Gestión de Riesgos",
   description:
     "Conoce el enfoque de LEVANTIR para entender riesgos, proteger patrimonio y acompañar a personas, empresarios y empresas con criterio técnico e independiente.",
   alternates: { canonical: "https://levantir.com/nosotros" },

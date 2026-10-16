@@ -10,7 +10,7 @@ import { ServiceMethodologySection } from "@/components/service/ServiceMethodolo
 import { CTASection } from "@/components/service/CTASection";
 
 export const metadata: Metadata = {
-  title: "Sectores Especializados | Soluciones para Riesgos Complejos | LEVANTIR",
+  title: "Sectores Especializados | Soluciones para Riesgos Complejos",
   description: "Análisis técnico y estructuración de coberturas para operaciones complejas, activos de alto valor y responsabilidades no estandarizadas con LEVANTIR.",
   alternates: { canonical: "https://levantir.com/sectores-especializados" },
 };

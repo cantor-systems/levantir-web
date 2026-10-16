@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 
 export const metadata: Metadata = {
-  title: "Aviso de privacidad | LEVANTIR",
+  title: "Aviso de privacidad",
   description:
     "Consulta el Aviso de privacidad de LEVANTIR y conoce cómo tratamos y protegemos los datos personales.",
   alternates: {

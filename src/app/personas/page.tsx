@@ -10,7 +10,7 @@ import { ServiceMethodologySection } from "@/components/service/ServiceMethodolo
 import { CTASection } from "@/components/service/CTASection";
 
 export const metadata: Metadata = {
-  title: "Seguros para Personas y Patrimonio | LEVANTIR",
+  title: "Seguros para Personas y Patrimonio",
   description: "Protege tu salud, tu familia y tu futuro financiero. En LEVANTIR estructuramos soluciones integrales de seguros para personas con criterio independiente.",
   alternates: { canonical: "https://levantir.com/personas" },
 };
