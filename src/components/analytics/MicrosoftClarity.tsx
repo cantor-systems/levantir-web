@@ -15,12 +15,17 @@ declare global {
   }
 }
 
-export function MicrosoftClarity() {
+export interface MicrosoftClarityProps {
+  isPreview?: boolean;
+}
+
+export function MicrosoftClarity({ isPreview = false }: MicrosoftClarityProps) {
+  const isBlocked = isPreview;
   const { consent, hydrated } = useConsent();
   const prevConsentRef = useRef<string>("unknown");
 
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated || isBlocked) return;
 
     const current = consent;
     const prev = prevConsentRef.current;
@@ -47,10 +52,10 @@ export function MicrosoftClarity() {
         window.clarity("stop");
       }
     }
-  }, [consent, hydrated]);
+  }, [consent, hydrated, isBlocked]);
 
-  // Do not insert script until consent is granted.
-  if (!hydrated || consent !== "granted") {
+  // Do not insert script until consent is granted, and never in preview.
+  if (!hydrated || consent !== "granted" || isBlocked) {
     return null;
   }
 

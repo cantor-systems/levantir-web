@@ -62,6 +62,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isPreview = process.env.VERCEL_ENV === "preview";
+
   return (
     <html lang={siteConfig.locale}>
       <body className={`${playfair.variable} ${montserrat.variable}`}>
@@ -82,9 +84,9 @@ export default function RootLayout({
               <AdvisoryModal />
             </Suspense>
             <ConsentBanner />
-            <GoogleAnalytics />
+            <GoogleAnalytics isPreview={isPreview} />
             <GoogleTagManager />
-            <MicrosoftClarity />
+            <MicrosoftClarity isPreview={isPreview} />
           </div>
         </ConsentProvider>
       </body>

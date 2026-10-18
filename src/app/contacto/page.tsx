@@ -21,7 +21,7 @@ import { useConsent } from '@/components/analytics/ConsentProvider';
 const DEFAULT_TOPIC: GeneralTopicId = "asesoria-integral";
 
 function ContactForm() {
-  const { consent, hydrated, analyticsReady } = useConsent();
+  const { consent, marketingConsent, hydrated } = useConsent();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -39,8 +39,8 @@ function ContactForm() {
 
   // Sync eligibility for async handlers (H-02)
   useEffect(() => {
-    eligibleRef.current = Boolean(hydrated && consent === "granted" && analyticsReady);
-  }, [hydrated, consent, analyticsReady]);
+    eligibleRef.current = Boolean(hydrated && (consent === "granted" || marketingConsent === "granted"));
+  }, [hydrated, consent, marketingConsent]);
 
   // Analytics context base — no PII, no product
   const analyticsContext = () => ({
@@ -61,15 +61,15 @@ function ContactForm() {
     }
   };
 
-  // PASO 5 — lead_form_view: fire once when Analytics is ready
+  // PASO 5 — lead_form_view: fire once when tracking is eligible
   useEffect(() => {
-    if (!hydrated || consent !== "granted" || !analyticsReady) return;
+    if (!hydrated || !(consent === "granted" || marketingConsent === "granted")) return;
     if (viewFiredRef.current) return;
 
     viewFiredRef.current = true;
     safeTrackEvent("lead_form_view", analyticsContext());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hydrated, consent, analyticsReady]);
+  }, [hydrated, consent, marketingConsent]);
 
   // PASO 6 — lead_form_start: fire once on first significant user interaction
   const trackFormStartOnce = () => {

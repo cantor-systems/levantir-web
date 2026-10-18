@@ -115,14 +115,14 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, anal
 
   // ── Lead analytics (inert unless `analytics` prop is supplied) ─────────────
   const pathname = usePathname();
-  const { consent, hydrated, analyticsReady } = useConsent();
-  const analyticsEligible = hydrated && consent === "granted" && analyticsReady;
+  const { consent, marketingConsent, hydrated } = useConsent();
+  const isTrackingEligible = hydrated && (consent === "granted" || marketingConsent === "granted");
 
   // Ref mirror so async handlers read the latest eligibility, not a stale closure.
   const eligibleRef = useRef(false);
   useEffect(() => {
-    eligibleRef.current = analyticsEligible;
-  }, [analyticsEligible]);
+    eligibleRef.current = isTrackingEligible;
+  }, [isTrackingEligible]);
 
   const viewFiredRef = useRef(false);
   const startFiredRef = useRef(false);
@@ -145,7 +145,7 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, anal
 
   // lead_form_view — real exposure of the form card, once per mount.
   useEffect(() => {
-    if (!analytics || !analyticsEligible) return;
+    if (!analytics || !isTrackingEligible) return;
     if (viewFiredRef.current) return;
     if (typeof IntersectionObserver === "undefined") return;
     const el = formSectionRef.current;
@@ -170,7 +170,7 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, anal
 
     return () => observer.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [analytics, analyticsEligible, pathname]);
+  }, [analytics, isTrackingEligible, pathname]);
 
   // lead_form_start — bubbling form-level change; honeypot excluded.
   const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {

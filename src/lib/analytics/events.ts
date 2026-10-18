@@ -1,5 +1,5 @@
 import type { LeadAnalyticsEventMap } from "./types";
-import { isMarketingConsentGranted } from "./consent";
+import { isMarketingConsentGranted, isAnalyticsConsentGranted } from "./consent";
 
 /**
  * Normalizes a pathname to accept only local pathnames,
@@ -94,12 +94,12 @@ export function trackLeadEvent<E extends keyof LeadAnalyticsEventMap>(
     safeParams.error_type = params.error_type;
   }
 
-  // 1. Dispatch directly to GA4 if gtag is available
+  // 1. Dispatch directly to GA4 ONLY IF analytics consent is granted AND gtag is genuinely available
   // PREVIEW PROTECTION (GA4): When simulated, dispatch as "lead_submit_simulated"
   // instead of "lead_submit_success" so that GA4 Key Events (commercial conversions)
   // are never triggered by test submissions, while preserving QA visibility in DebugView.
   // Real submissions (isSimulated === false) dispatch unaltered "lead_submit_success".
-  if (typeof window.gtag === "function") {
+  if (isAnalyticsConsentGranted() && typeof window.gtag === "function") {
     const gaEventName =
       eventName === "lead_submit_success" && isSimulated
         ? "lead_submit_simulated"

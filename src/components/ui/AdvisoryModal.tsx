@@ -64,14 +64,14 @@ export function AdvisoryModal() {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   // ── Lead analytics ──────────────────────────────────────────────────────────
-  const { consent, hydrated, analyticsReady } = useConsent();
-  const analyticsEligible = hydrated && consent === "granted" && analyticsReady;
+  const { consent, marketingConsent, hydrated } = useConsent();
+  const isTrackingEligible = hydrated && (consent === "granted" || marketingConsent === "granted");
 
   // Ref mirror so async handlers read the latest eligibility, not a stale closure.
   const eligibleRef = useRef(false);
   useEffect(() => {
-    eligibleRef.current = analyticsEligible;
-  }, [analyticsEligible]);
+    eligibleRef.current = isTrackingEligible;
+  }, [isTrackingEligible]);
 
   // Latest effective topic (synced with the selector), readable from effects/handlers.
   const topicRef = useRef<GeneralTopicId>(DEFAULT_TOPIC);
@@ -127,10 +127,10 @@ export function AdvisoryModal() {
       startFiredRef.current = false;
       return;
     }
-    if (!analyticsEligible || viewFiredRef.current) return;
+    if (!isTrackingEligible || viewFiredRef.current) return;
     viewFiredRef.current = true;
     emitLeadEvent((base) => trackLeadEvent("lead_form_view", base));
-  }, [isOpen, analyticsEligible, emitLeadEvent]);
+  }, [isOpen, isTrackingEligible, emitLeadEvent]);
 
   // lead_form_start — bubbling form-level change; honeypot excluded.
   const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {

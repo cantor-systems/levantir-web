@@ -91,7 +91,12 @@ function enableGa(measurementId: string): void {
 // Component
 // ---------------------------------------------------------------------------
 
-export function GoogleAnalytics() {
+export interface GoogleAnalyticsProps {
+  isPreview?: boolean;
+}
+
+export function GoogleAnalytics({ isPreview = false }: GoogleAnalyticsProps) {
+  const isBlocked = isPreview;
   const { consent, hydrated, setAnalyticsReady } = useConsent();
 
   // Guards — using refs avoids setState-in-effect issues.
@@ -99,7 +104,7 @@ export function GoogleAnalytics() {
   const prevConsentRef = useRef<string>("unknown");
 
   useEffect(() => {
-    if (!hydrated || !MEASUREMENT_ID) return;
+    if (!hydrated || !MEASUREMENT_ID || isBlocked) return;
 
     const prev = prevConsentRef.current;
     const current = consent;
@@ -124,7 +129,7 @@ export function GoogleAnalytics() {
       setAnalyticsReady(false);
     }
     // consent === "unknown": no action.
-  }, [hydrated, consent, setAnalyticsReady]);
+  }, [hydrated, consent, setAnalyticsReady, isBlocked]);
 
   // Derive rendering purely from context state — no additional React state.
   // The <Script> tag is rendered whenever consent is "granted" and hydrated.
@@ -132,7 +137,7 @@ export function GoogleAnalytics() {
   // but we prevent it anyway by only rendering when conditions are met.
   // If the user revokes consent, the script is no longer rendered on future
   // navigations; the ga-disable flag handles the current session.
-  if (!hydrated || consent !== "granted" || !MEASUREMENT_ID) {
+  if (!hydrated || consent !== "granted" || !MEASUREMENT_ID || isBlocked) {
     return null;
   }
 
