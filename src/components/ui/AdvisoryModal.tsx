@@ -224,14 +224,26 @@ export function AdvisoryModal() {
       });
 
       if (response.ok) {
+        const data = await response.json().catch(() => ({}));
+        const isSimulated = data?.simulated === true;
         if (isHuman) {
-          emitLeadEvent((base) => trackLeadEvent("lead_submit_success", base), ctx, topic);
-          for (const product of toValidProductIds(ctx)) {
-            emitLeadEvent(
-              (base) => trackLeadEvent("lead_product_interest", { ...base, product }),
-              ctx,
-              topic
-            );
+          emitLeadEvent(
+            (base) =>
+              trackLeadEvent("lead_submit_success", {
+                ...base,
+                simulated: isSimulated,
+              }),
+            ctx,
+            topic
+          );
+          if (!isSimulated) {
+            for (const product of toValidProductIds(ctx)) {
+              emitLeadEvent(
+                (base) => trackLeadEvent("lead_product_interest", { ...base, product }),
+                ctx,
+                topic
+              );
+            }
           }
         }
         // Success: show confirmation screen.

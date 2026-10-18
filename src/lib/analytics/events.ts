@@ -52,11 +52,15 @@ export const GTM_MARKETING_EVENT_MAP: Record<keyof LeadAnalyticsEventMap, string
  *
  * Separation & Privacy:
  *   1. GA4: Dispatched directly via window.gtag("event", eventName, safeParams)
- *      Preserves existing GA4 event names without modification.
+ *      Preserves existing GA4 event names without modification for real leads.
+ *      PREVIEW PROTECTION (GA4): Simulated submissions dispatch as "lead_submit_simulated"
+ *      to ensure GA4 Key Events (commercial conversions) are not contaminated by preview tests.
  *   2. GTM / Marketing: Dispatched to window.dataLayer.push({ event: gtmEvent, ... })
  *      Uses distinct namespaced event names (mkt_*) to avoid collision with GA4.
  *      STRICTLY gated by runtime check of marketing consent (isMarketingConsentGranted).
  *      If marketing consent is unknown, denied or was revoked, dataLayer push is omitted.
+ *      PREVIEW PROTECTION (GTM): Simulated leads (Preview dry-run) NEVER dispatch
+ *      mkt_lead_submit_success or commercial conversion events to prevent false conversions.
  *   3. Constructs exactly the allowed safe payload to guarantee zero PII leakage.
  */
 export function trackLeadEvent<E extends keyof LeadAnalyticsEventMap>(
@@ -66,6 +70,9 @@ export function trackLeadEvent<E extends keyof LeadAnalyticsEventMap>(
   if (typeof window === "undefined") {
     return;
   }
+
+  // Detect whether this event belongs to a simulated submission (explicitly passed)
+  const isSimulated = params.simulated === true;
 
   // Build the safe base payload explicitly. No uncontrolled spread. No PII.
   const safeParams: Record<string, unknown> = {
@@ -87,14 +94,30 @@ export function trackLeadEvent<E extends keyof LeadAnalyticsEventMap>(
     safeParams.error_type = params.error_type;
   }
 
-  // 1. Dispatch directly to GA4 if gtag is available (unaltered functional behavior)
+  // 1. Dispatch directly to GA4 if gtag is available
+  // PREVIEW PROTECTION (GA4): When simulated, dispatch as "lead_submit_simulated"
+  // instead of "lead_submit_success" so that GA4 Key Events (commercial conversions)
+  // are never triggered by test submissions, while preserving QA visibility in DebugView.
+  // Real submissions (isSimulated === false) dispatch unaltered "lead_submit_success".
   if (typeof window.gtag === "function") {
-    window.gtag("event", eventName, safeParams);
+    const gaEventName =
+      eventName === "lead_submit_success" && isSimulated
+        ? "lead_submit_simulated"
+        : eventName;
+
+    const gaParams = isSimulated ? { ...safeParams, simulated: true } : safeParams;
+    window.gtag("event", gaEventName, gaParams);
   }
 
   // 2. Dispatch to GTM dataLayer ONLY if marketing consent is actively granted at runtime
   // Uses exclusive namespaced events (mkt_*) to isolate GTM marketing tags from GA4 events.
+  // CRITICAL: Simulated lead submissions NEVER dispatch mkt_lead_submit_success to GTM.
   if (isMarketingConsentGranted()) {
+    if (isSimulated && (eventName === "lead_submit_success" || eventName === "lead_product_interest")) {
+      // Omit commercial conversion events for simulated leads
+      return;
+    }
+
     const gtmEvent = GTM_MARKETING_EVENT_MAP[eventName] || `mkt_${eventName}`;
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({

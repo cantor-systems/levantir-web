@@ -56,7 +56,13 @@ export async function POST(request: Request) {
       console.error("Lead acknowledgement email failed; internal notification was already sent successfully");
     }
 
-    return NextResponse.json({ ok: true }, { status: 200 });
+    const isPreview = process.env.VERCEL_ENV === "preview";
+    const responsePayload: { ok: true; simulated?: true } = { ok: true };
+    if (isPreview) {
+      responsePayload.simulated = true;
+    }
+
+    return NextResponse.json(responsePayload, { status: 200 });
 
   } catch {
     // Return generic internal error without leaking details

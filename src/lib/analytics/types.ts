@@ -14,6 +14,8 @@ export interface LeadAnalyticsBase {
   form_id: LeadFormId;
   source_path: string;
   topic?: GeneralTopicId;
+  /** Optional flag indicating a simulated submission (e.g. Vercel Preview dry-run). */
+  simulated?: boolean;
 }
 
 export type LeadAnalyticsErrorType = "network" | "server";

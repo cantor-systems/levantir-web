@@ -14,6 +14,24 @@ import { GENERAL_TOPICS } from "./config";
 export async function sendLeadEmail(
   lead: ValidatedLead
 ): Promise<{ ok: true } | { ok: false }> {
+  // Preview isolation: intercept before calling Resend
+  if (process.env.VERCEL_ENV === "preview") {
+    // Simulated server error for controlled QA test domains
+    if (lead.email.endsWith("@error.test") || lead.email.endsWith("@fail.test")) {
+      console.warn("[PREVIEW SIMULATION] Controlled simulated failure for test domain. Resend bypassed.");
+      return { ok: false };
+    }
+
+    // Zero PII logged - only non-sensitive operational metadata
+    console.info(
+      "[PREVIEW DRY RUN] Lead notification intercepted. Resend bypassed. Vertical:",
+      lead.vertical,
+      "Form ID:",
+      lead.formId
+    );
+    return { ok: true };
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   const fromEmail = process.env.LEADS_FROM_EMAIL;
   const toEmail = process.env.LEADS_TO_EMAIL;
@@ -198,6 +216,13 @@ function buildAcknowledgementHtml(safeName: string): string {
 export async function sendLeadAcknowledgementEmail(
   lead: ValidatedLead
 ): Promise<{ ok: true } | { ok: false }> {
+  // Preview isolation: intercept before calling Resend
+  if (process.env.VERCEL_ENV === "preview") {
+    // Zero PII logged
+    console.info("[PREVIEW DRY RUN] Prospect acknowledgement intercepted. Resend bypassed.");
+    return { ok: true };
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   const fromEmail = process.env.LEADS_FROM_EMAIL;
   const replyToEmail = process.env.LEADS_TO_EMAIL;

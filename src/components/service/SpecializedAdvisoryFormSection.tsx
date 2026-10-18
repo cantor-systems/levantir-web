@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData, AdvisoryFormAnalyticsConfig } from "./AdvisoryFormSection";
+import { AdvisoryFormSection, AdvisoryFormConfig, AdvisoryFormSubmitData, AdvisoryFormAnalyticsConfig, AdvisoryFormSubmitResult } from "./AdvisoryFormSection";
 
 const SPECIALIZED_ANALYTICS: AdvisoryFormAnalyticsConfig = {
   vertical: "sectores-especializados",
@@ -44,7 +44,7 @@ const CONFIG: AdvisoryFormConfig = {
 export function SpecializedAdvisoryFormSection() {
   const pathname = usePathname();
 
-  const handleSubmitAsync = async (data: AdvisoryFormSubmitData): Promise<string[]> => {
+  const handleSubmitAsync = async (data: AdvisoryFormSubmitData): Promise<AdvisoryFormSubmitResult> => {
     // Map visual product IDs to controlled backend IDs
     const PRODUCT_MAP: Record<string, string> = {
       specialized_liability: "responsabilidad-civil-especializada",
@@ -95,8 +95,11 @@ export function SpecializedAdvisoryFormSection() {
       throw new Error("Endpoint logic error");
     }
 
-    // Controlled backend ProductIds, used by the shared form for analytics only.
-    return mappedProducts;
+    // Controlled backend ProductIds and simulation flag from HTTP response
+    return {
+      products: mappedProducts,
+      simulated: result.simulated === true,
+    };
   };
 
   return (

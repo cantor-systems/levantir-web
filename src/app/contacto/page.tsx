@@ -117,9 +117,14 @@ function ContactForm() {
       });
 
       if (response.ok) {
+        const data = await response.json().catch(() => ({}));
+        const isSimulated = data?.simulated === true;
         // PASO 10 — lead_submit_success: fire before UI transition, only for humans
         if (isHuman && eligibleRef.current) {
-          safeTrackEvent("lead_submit_success", analyticsContext());
+          safeTrackEvent("lead_submit_success", {
+            ...analyticsContext(),
+            simulated: isSimulated,
+          });
         }
         // Success: show confirmation and reset form
         setIsSubmitted(true);

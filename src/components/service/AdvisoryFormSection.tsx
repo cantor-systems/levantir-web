@@ -59,14 +59,19 @@ export interface AdvisoryFormAnalyticsConfig {
   formId: LeadFormId;
 }
 
+export interface AdvisoryFormSubmitResult {
+  products?: string[];
+  simulated?: boolean;
+}
+
 export interface AdvisoryFormSectionProps {
   config: AdvisoryFormConfig;
   contextFields: (idPrefix: string, onRegisterReset: (fn: () => void) => void) => ReactNode;
   /**
-   * May resolve with the controlled ProductIds that were submitted
-   * (used only for lead_product_interest analytics after success).
+   * May resolve with the controlled ProductIds that were submitted, or an AdvisoryFormSubmitResult object
+   * (used for lead_product_interest analytics and simulated flag propagation after success).
    */
-  onSubmitAsync?: (data: AdvisoryFormSubmitData) => Promise<void | string[]>;
+  onSubmitAsync?: (data: AdvisoryFormSubmitData) => Promise<void | string[] | AdvisoryFormSubmitResult>;
   analytics?: AdvisoryFormAnalyticsConfig;
 }
 
@@ -242,11 +247,27 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, anal
         if (isOtherSelected && otherProductText.trim().length > 0) {
           submitData.otherProduct = otherProductText.trim();
         }
-        const submittedProducts = await onSubmitAsync(submitData);
+        const submitResult = await onSubmitAsync(submitData);
+        const isSimulated =
+          typeof submitResult === "object" && submitResult !== null && "simulated" in submitResult
+            ? submitResult.simulated === true
+            : false;
+
+        const submittedProducts: string[] =
+          Array.isArray(submitResult)
+            ? submitResult
+            : typeof submitResult === "object" && submitResult !== null && "products" in submitResult && Array.isArray(submitResult.products)
+            ? submitResult.products
+            : [];
 
         if (isHuman) {
-          emitLeadEvent((base) => trackLeadEvent("lead_submit_success", base));
-          if (Array.isArray(submittedProducts)) {
+          emitLeadEvent((base) =>
+            trackLeadEvent("lead_submit_success", {
+              ...base,
+              simulated: isSimulated,
+            })
+          );
+          if (!isSimulated && Array.isArray(submittedProducts)) {
             for (const product of toValidProductIds(submittedProducts)) {
               emitLeadEvent((base) =>
                 trackLeadEvent("lead_product_interest", {
