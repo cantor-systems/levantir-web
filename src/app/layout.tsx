@@ -9,6 +9,7 @@ import { AdvisoryModal } from "@/components/ui/AdvisoryModal";
 import { ConsentProvider } from "@/components/analytics/ConsentProvider";
 import { ConsentBanner } from "@/components/analytics/ConsentBanner";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import { GoogleTagManager } from "@/components/analytics/GoogleTagManager";
 import { MicrosoftClarity } from "@/components/analytics/MicrosoftClarity";
 
 const playfair = Playfair_Display({
@@ -82,6 +83,7 @@ export default function RootLayout({
             </Suspense>
             <ConsentBanner />
             <GoogleAnalytics />
+            <GoogleTagManager />
             <MicrosoftClarity />
           </div>
         </ConsentProvider>

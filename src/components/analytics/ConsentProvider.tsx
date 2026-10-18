@@ -3,15 +3,8 @@
 /**
  * ConsentProvider
  *
- * Global client-side provider for analytics consent state.
- * Manages the AnalyticsConsent lifecycle without loading GA4.
- *
- * Hydration strategy:
- *   - On the server (and before client mount), state is "unknown".
- *   - After mount, localStorage is read exactly once.
- *   - If a stored value exists ("granted" or "denied"), it is applied.
- *   - If no stored value, state stays "unknown" → banner is shown.
- *   - The `hydrated` flag gates banner rendering to avoid SSR mismatch.
+ * Global client-side provider for analytics and marketing consent state (v2).
+ * Supports granular preferences, cross-tab synchronization, and v1 migration.
  */
 
 import React, {
@@ -23,8 +16,10 @@ import React, {
   useState,
 } from "react";
 import {
-  type AnalyticsConsent,
-  CONSENT_STORAGE_KEY,
+  type ConsentPreferences,
+  type ConsentStatus,
+  CONSENT_STORAGE_KEY_V1,
+  CONSENT_STORAGE_KEY_V2,
   readConsentFromStorage,
   writeConsentToStorage,
 } from "@/lib/analytics/consent";
@@ -34,16 +29,30 @@ import {
 // ---------------------------------------------------------------------------
 
 interface ConsentContextValue {
-  /** Current consent state. "unknown" until hydrated. */
-  consent: AnalyticsConsent;
-  /** True once the client has read localStorage and resolved the initial state. */
+  /** Analytics consent status ("granted" | "denied" | "unknown"). Used by GA4 and Clarity. */
+  consent: ConsentStatus;
+  /** Explicit analytics consent status. */
+  analyticsConsent: ConsentStatus;
+  /** Explicit marketing consent status ("granted" | "denied" | "unknown"). Used by GTM / Meta Pixel. */
+  marketingConsent: ConsentStatus;
+  /** Full preferences object. */
+  preferences: ConsentPreferences;
+  /** True once client has hydrated and read localStorage. */
   hydrated: boolean;
-  /** Whether the banner is explicitly open (e.g. user clicked "Preferencias"). */
+  /** Whether the preferences modal is explicitly open. */
   preferencesOpen: boolean;
+  /** Accept all categories (analytics + marketing). */
+  acceptAll: () => void;
+  /** Reject all optional categories (analytics + marketing). */
+  rejectAll: () => void;
+  /** Save granular preferences. */
+  updatePreferences: (custom: { analytics: boolean; marketing: boolean }) => void;
+  /** Legacy helpers for backward compatibility. */
   acceptAnalytics: () => void;
   rejectAnalytics: () => void;
   openPreferences: () => void;
-  /** True when GA4 is fully initialized and can accept events. */
+  closePreferences: () => void;
+  /** True when GA4 is initialized. */
   analyticsReady: boolean;
   setAnalyticsReady: (ready: boolean) => void;
 }
@@ -51,7 +60,7 @@ interface ConsentContextValue {
 const ConsentContext = createContext<ConsentContextValue | null>(null);
 
 // ---------------------------------------------------------------------------
-// Hook for consumers
+// Hook
 // ---------------------------------------------------------------------------
 
 export function useConsent(): ConsentContextValue {
@@ -71,7 +80,10 @@ interface ConsentProviderProps {
 }
 
 export function ConsentProvider({ children }: ConsentProviderProps) {
-  const [consent, setConsent] = useState<AnalyticsConsent>("unknown");
+  const [preferences, setPreferences] = useState<ConsentPreferences>({
+    analytics: "unknown",
+    marketing: "unknown",
+  });
   const [hydrated, setHydrated] = useState(false);
   const [preferencesOpen, setPreferencesOpen] = useState(false);
   const [analyticsReady, setAnalyticsReady] = useState(false);
@@ -79,25 +91,25 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
   // Guard to prevent double-read in React Strict Mode
   const hydrationDoneRef = useRef(false);
 
-  // Read localStorage exactly once after mount
+  // Read localStorage exactly once after client mount
   useEffect(() => {
     if (hydrationDoneRef.current) return;
     hydrationDoneRef.current = true;
 
     const stored = readConsentFromStorage();
-    setConsent(stored);
+    setPreferences(stored);
     setHydrated(true);
   }, []);
 
-  // Listen for changes from other tabs
+  // Listen for storage changes from other tabs
   useEffect(() => {
     const handleStorage = (event: StorageEvent) => {
-      if (event.key === CONSENT_STORAGE_KEY) {
-        if (event.newValue === "granted" || event.newValue === "denied") {
-          setConsent(event.newValue as AnalyticsConsent);
-        } else if (event.newValue === null) {
-          setConsent("unknown");
-        }
+      if (
+        event.key === CONSENT_STORAGE_KEY_V2 ||
+        event.key === CONSENT_STORAGE_KEY_V1
+      ) {
+        const stored = readConsentFromStorage();
+        setPreferences(stored);
       }
     };
 
@@ -105,15 +117,54 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
+  const acceptAll = useCallback(() => {
+    const newPrefs = { analytics: "granted" as const, marketing: "granted" as const };
+    writeConsentToStorage(newPrefs);
+    setPreferences(newPrefs);
+    setPreferencesOpen(false);
+  }, []);
+
+  const rejectAll = useCallback(() => {
+    const newPrefs = { analytics: "denied" as const, marketing: "denied" as const };
+    writeConsentToStorage(newPrefs);
+    setPreferences(newPrefs);
+    setPreferencesOpen(false);
+  }, []);
+
+  const updatePreferences = useCallback(
+    (custom: { analytics: boolean; marketing: boolean }) => {
+      const newPrefs: ConsentPreferences = {
+        analytics: custom.analytics ? "granted" : "denied",
+        marketing: custom.marketing ? "granted" : "denied",
+      };
+      writeConsentToStorage(newPrefs);
+      setPreferences(newPrefs);
+      setPreferencesOpen(false);
+    },
+    []
+  );
+
   const acceptAnalytics = useCallback(() => {
-    writeConsentToStorage("granted");
-    setConsent("granted");
+    setPreferences((prev) => {
+      const newPrefs: ConsentPreferences = {
+        analytics: "granted",
+        marketing: prev.marketing,
+      };
+      writeConsentToStorage(newPrefs);
+      return newPrefs;
+    });
     setPreferencesOpen(false);
   }, []);
 
   const rejectAnalytics = useCallback(() => {
-    writeConsentToStorage("denied");
-    setConsent("denied");
+    setPreferences((prev) => {
+      const newPrefs: ConsentPreferences = {
+        analytics: "denied",
+        marketing: prev.marketing,
+      };
+      writeConsentToStorage(newPrefs);
+      return newPrefs;
+    });
     setPreferencesOpen(false);
   }, []);
 
@@ -121,15 +172,26 @@ export function ConsentProvider({ children }: ConsentProviderProps) {
     setPreferencesOpen(true);
   }, []);
 
+  const closePreferences = useCallback(() => {
+    setPreferencesOpen(false);
+  }, []);
+
   return (
     <ConsentContext.Provider
       value={{
-        consent,
+        consent: preferences.analytics,
+        analyticsConsent: preferences.analytics,
+        marketingConsent: preferences.marketing,
+        preferences,
         hydrated,
         preferencesOpen,
+        acceptAll,
+        rejectAll,
+        updatePreferences,
         acceptAnalytics,
         rejectAnalytics,
         openPreferences,
+        closePreferences,
         analyticsReady,
         setAnalyticsReady,
       }}
