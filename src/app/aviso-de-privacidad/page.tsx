@@ -139,17 +139,16 @@ export default function AvisoDePrivacidadPage() {
                 className="font-display text-xl sm:text-2xl text-[#0B2D58] font-medium leading-snug"
                 style={displayFont}
               >
-                4. Almacenamiento y proveedores tecnológicos
+                4. Tratamiento de datos y proveedores tecnológicos
               </h2>
               <p>
-                La información recibida a través del sitio puede enviarse al correo electrónico utilizado por LEVANTIR y registrarse en un sistema CRM propio que utiliza infraestructura de{" "}
-                <strong className="text-[#0B2D58] font-semibold">Supabase</strong>.
+                La información recibida a través de los formularios y canales de contacto del sitio web se transmite de forma segura para la recepción, canalización y seguimiento de las solicitudes de orientación y servicios.
               </p>
               <p>
-                Asimismo, podrán intervenir proveedores tecnológicos necesarios para la operación del sitio, las comunicaciones y la gestión de información, bajo las condiciones contractuales y de protección de datos aplicables.
+                Para la operación continua del sitio, la transmisión de mensajes y el envío de notificaciones y confirmaciones por correo electrónico, LEVANTIR utiliza servicios de infraestructura tecnológica y plataformas de comunicación electrónica que operan bajo estándares de confidencialidad y medidas de seguridad adecuadas.
               </p>
               <p>
-                La ubicación de almacenamiento, las condiciones de acceso y las medidas de seguridad correspondientes deberán verificarse con base en la configuración real de los servicios utilizados.
+                Los proveedores tecnológicos que intervengan en el tratamiento de datos personales estarán sujetos a las condiciones de privacidad, confidencialidad y protección de datos que correspondan, conforme a los servicios prestados y a la legislación aplicable.
               </p>
             </section>
 
@@ -249,13 +248,29 @@ export default function AvisoDePrivacidadPage() {
                 className="font-display text-xl sm:text-2xl text-[#0B2D58] font-medium leading-snug"
                 style={displayFont}
               >
-                9. Cookies y herramientas de análisis
+                9. Cookies y tecnologías de medición
               </h2>
               <p>
-                El sitio podrá utilizar cookies y tecnologías similares para su funcionamiento y, cuando estén habilitadas, para analizar su uso y mejorar la experiencia de navegación.
+                Este sitio web utiliza cookies y tecnologías de medición para garantizar su correcto funcionamiento, comprender la navegación de los visitantes y optimizar la comunicación de sus servicios. Estas tecnologías se dividen en las siguientes categorías:
+              </p>
+              <ul className="space-y-2 pl-5 list-disc marker:text-[#D4A737]">
+                <li>
+                  <strong className="text-[#0B2D58] font-semibold">Técnicas o necesarias:</strong> indispensables para permitir la navegación básica, la seguridad del sitio y recordar las preferencias de privacidad del usuario. No requieren consentimiento y no pueden desactivarse.
+                </li>
+                <li>
+                  <strong className="text-[#0B2D58] font-semibold">Analítica y rendimiento:</strong> permiten conocer de forma agregada cómo interactúan los usuarios con el sitio, qué secciones resultan de mayor interés y detectar posibles mejoras en la experiencia de navegación.
+                </li>
+                <li>
+                  <strong className="text-[#0B2D58] font-semibold">Marketing y publicidad:</strong> permiten evaluar la efectividad de campañas informativas y comerciales, facilitando que los mensajes relevantes se dirijan a personas con interés en los servicios ofrecidos.
+                </li>
+              </ul>
+              <p>
+                Las herramientas en las categorías de analítica y marketing son enteramente opcionales y solo se activan cuando el usuario otorga su consentimiento previo e informado a través del panel de configuración.
               </p>
               <p>
-                Las herramientas concretas utilizadas, las categorías de cookies y las opciones disponibles para el usuario deberán describirse conforme a la configuración real del sitio.
+                Los usuarios pueden consultar, ajustar o revocar su consentimiento en cualquier momento mediante la opción{" "}
+                <strong className="text-[#0B2D58] font-semibold">«Preferencias de privacidad»</strong>{" "}
+                ubicada en el pie de página de este sitio web.
               </p>
             </section>
 
