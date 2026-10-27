@@ -66,8 +66,8 @@ export function MetaPixel() {
       return;
     }
 
-    // 2. Handle re-grant if previously revoked in same session (denied -> granted)
-    if (prevConsent === "denied" && currentConsent === "granted") {
+    // 2. Handle grant (first authorization or re-grant)
+    if (currentConsent === "granted" && prevConsent !== "granted") {
       if (typeof window !== "undefined" && typeof window.fbq === "function") {
         window.fbq("consent", "grant");
       }
@@ -103,6 +103,7 @@ t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s);
 n('init', '${META_PIXEL_ID}');
+n('consent', 'grant');
 })(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');`,
       }}
@@ -114,6 +115,7 @@ n('init', '${META_PIXEL_ID}');
           typeof window !== "undefined" &&
           typeof window.fbq === "function"
         ) {
+          window.fbq("consent", "grant");
           lastTrackedPathRef.current = pathname;
           window.fbq("track", "PageView");
         }
