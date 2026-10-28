@@ -1,125 +1,120 @@
 "use client";
 
 /**
- * MetaPixel
+ * MetaPixel (Meta Conversions API Client Dispatcher)
  *
- * Direct client-side integration for Meta Pixel (Facebook Pixel).
- * Replaces the dependency on GTM for Meta Pixel tracking.
+ * Minimal client component that observes route changes via `usePathname()`
+ * and dispatches first-party `PageView` events to `/api/analytics/meta`
+ * (Meta Conversions API) exclusively when `marketingConsent === "granted"`.
  *
- * Privacy & Security rules:
- *   - Only loads and executes when:
- *       hydrated === true AND marketingConsent === "granted"
- *   - Automatic history tracking (pushState / replaceState) is disabled:
- *       fbq.disablePushState = true
- *     This avoids duplicate PageView events on Next.js App Router client transitions.
- *   - Route changes are tracked explicitly via usePathname(), ensuring
- *     exactly one PageView per unique route.
- *   - PageView emission is deduplicated through lastTrackedPathRef so that
- *     the inline script and route change effect never fire simultaneously.
- *   - Initialized exactly once per page session (fbq.init is guarded by if(f.fbq)return).
- *   - No PII (names, emails, phones, form inputs) or sensitive parameters
- *     are passed to fbq('init') or fbq('track').
- *   - Mid-session revocation (granted -> denied):
- *       Calls fbq('consent', 'revoke') and prevents any further event tracking.
- *   - Independent from GA4 and Microsoft Clarity.
+ * Privacy & Architecture rules:
+ *   - Eliminates dependence on `fbevents.js` SPA history tracking.
+ *   - Single source of truth for `PageView` events (CAPI only; no browser
+ *     Pixel `PageView` or custom `LEVANTIR_PageVisit` duplicates).
+ *   - AbortController cancels pending in-flight HTTP requests upon consent
+ *     revocation, route replacement, or component unmount.
+ *   - Synchronizes a first-party `levantir_marketing_consent` cookie so the
+ *     server Route Handler can independently verify marketing consent.
+ *   - Deduplicates consecutive visits to the same route via `lastTrackedPathRef`
+ *     and generates a unique `eventId` per visit.
+ *   - Sends only `{ path, eventId, consent }` — zero PII, zero tokens on client.
+ *   - Independent from GA4, GTM, and Microsoft Clarity.
  */
 
-import React, { useEffect, useRef } from "react";
-import Script from "next/script";
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { type ConsentStatus } from "@/lib/analytics/consent";
+import { isMarketingConsentGranted } from "@/lib/analytics/consent";
 import { useConsent } from "./ConsentProvider";
 
-declare global {
-  interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fbq?: (...args: any[]) => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    _fbq?: any;
+const CONSENT_COOKIE_NAME = "levantir_marketing_consent";
+
+function syncMarketingConsentCookie(granted: boolean): void {
+  if (typeof document === "undefined") return;
+  if (granted) {
+    document.cookie = `${CONSENT_COOKIE_NAME}=granted; Path=/; SameSite=Strict`;
+  } else {
+    document.cookie = `${CONSENT_COOKIE_NAME}=denied; Path=/; Max-Age=0; SameSite=Strict`;
   }
 }
 
-const META_PIXEL_ID =
-  process.env.NEXT_PUBLIC_META_PIXEL_ID || "1783451359594330";
+function createEventId(): string {
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.randomUUID === "function"
+  ) {
+    return crypto.randomUUID();
+  }
+  return `pv_${Date.now()}_${Math.random().toString(36).slice(2, 12)}`;
+}
 
 export function MetaPixel() {
   const { marketingConsent, hydrated } = useConsent();
   const pathname = usePathname();
-
-  // Track the last path where PageView was sent to prevent duplicate events
   const lastTrackedPathRef = useRef<string | null>(null);
-  const prevConsentRef = useRef<ConsentStatus>("unknown");
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     if (!hydrated) return;
 
-    const currentConsent = marketingConsent;
-    const prevConsent = prevConsentRef.current;
-    prevConsentRef.current = currentConsent;
-
-    // 1. Handle mid-session revocation (granted -> denied)
-    if (prevConsent === "granted" && currentConsent === "denied") {
-      if (typeof window !== "undefined" && typeof window.fbq === "function") {
-        window.fbq("consent", "revoke");
+    if (marketingConsent !== "granted" || !isMarketingConsentGranted()) {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
       }
+      syncMarketingConsentCookie(false);
       lastTrackedPathRef.current = null;
       return;
     }
 
-    // 2. Handle grant (first authorization or re-grant)
-    if (currentConsent === "granted" && prevConsent !== "granted") {
-      if (typeof window !== "undefined" && typeof window.fbq === "function") {
-        window.fbq("consent", "grant");
-      }
+    syncMarketingConsentCookie(true);
+
+    if (!pathname || lastTrackedPathRef.current === pathname) {
+      return;
     }
 
-    // 3. Track PageView when marketing consent is granted and path has changed
-    if (currentConsent === "granted" && pathname) {
-      if (lastTrackedPathRef.current !== pathname) {
-        if (typeof window !== "undefined" && typeof window.fbq === "function") {
-          lastTrackedPathRef.current = pathname;
-          window.fbq("track", "PageView");
-        }
-      }
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
     }
+
+    lastTrackedPathRef.current = pathname;
+    const eventId = createEventId();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    void fetch("/api/analytics/meta", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Levantir-Consent": "granted",
+      },
+      credentials: "same-origin",
+      signal: controller.signal,
+      body: JSON.stringify({
+        path: pathname,
+        eventId,
+        consent: "granted",
+      }),
+    })
+      .catch((err: unknown) => {
+        // Silently ignore aborts and network errors so user navigation is never disrupted
+        if (err instanceof Error && err.name === "AbortError") {
+          return;
+        }
+      })
+      .finally(() => {
+        if (abortControllerRef.current === controller) {
+          abortControllerRef.current = null;
+        }
+      });
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+    };
   }, [marketingConsent, hydrated, pathname]);
 
-  // Strict Basic Consent gate: do not inject script into DOM unless granted
-  if (!hydrated || marketingConsent !== "granted" || !META_PIXEL_ID) {
-    return null;
-  }
-
-  return (
-    <Script
-      id="meta-pixel-init"
-      strategy="afterInteractive"
-      dangerouslySetInnerHTML={{
-        __html: `(function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];n.disablePushState=true;
-t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s);
-n('init', '${META_PIXEL_ID}');
-n('consent', 'grant');
-})(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');`,
-      }}
-      onLoad={() => {
-        // Ensure initial PageView fires if useEffect ran before script was ready
-        if (
-          pathname &&
-          lastTrackedPathRef.current !== pathname &&
-          typeof window !== "undefined" &&
-          typeof window.fbq === "function"
-        ) {
-          window.fbq("consent", "grant");
-          lastTrackedPathRef.current = pathname;
-          window.fbq("track", "PageView");
-        }
-      }}
-    />
-  );
+  return null;
 }
