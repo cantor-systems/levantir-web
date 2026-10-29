@@ -10,6 +10,7 @@ import { ConsentProvider } from "@/components/analytics/ConsentProvider";
 import { ConsentBanner } from "@/components/analytics/ConsentBanner";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { GoogleTagManager } from "@/components/analytics/GoogleTagManager";
+import { MetaPixel } from "@/components/analytics/MetaPixel";
 import { MicrosoftClarity } from "@/components/analytics/MicrosoftClarity";
 
 const playfair = Playfair_Display({
@@ -86,6 +87,7 @@ export default function RootLayout({
             <ConsentBanner />
             <GoogleAnalytics isPreview={isPreview} />
             <GoogleTagManager />
+            <MetaPixel />
             <MicrosoftClarity isPreview={isPreview} />
           </div>
         </ConsentProvider>
