@@ -504,6 +504,42 @@ export async function POST(request: Request) {
     });
 
     if (!metaResponse.ok) {
+      const errorJson = (await metaResponse.json().catch(() => null)) as {
+        error?: {
+          code?: unknown;
+          error_subcode?: unknown;
+          subcode?: unknown;
+          type?: unknown;
+          fbtrace_id?: unknown;
+        };
+      } | null;
+
+      const metaError = errorJson?.error;
+      const code =
+        typeof metaError?.code === "number" || typeof metaError?.code === "string"
+          ? metaError.code
+          : null;
+      const subcode =
+        typeof metaError?.error_subcode === "number" ||
+        typeof metaError?.error_subcode === "string"
+          ? metaError.error_subcode
+          : typeof metaError?.subcode === "number" ||
+            typeof metaError?.subcode === "string"
+          ? metaError.subcode
+          : null;
+      const type =
+        typeof metaError?.type === "string" ? metaError.type : null;
+      const fbtraceId =
+        typeof metaError?.fbtrace_id === "string" ? metaError.fbtrace_id : null;
+
+      console.error("[Meta CAPI] Upstream Graph API rejection:", {
+        status: metaResponse.status,
+        code,
+        subcode,
+        type,
+        fbtrace_id: fbtraceId,
+      });
+
       return NextResponse.json(
         { ok: false, error: "UPSTREAM_META_ERROR" },
         { status: 502 }
