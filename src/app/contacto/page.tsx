@@ -16,6 +16,7 @@ import { Section } from '@/components/layout/Section';
 import { siteConfig } from '@/config/site';
 import { GENERAL_TOPICS, type GeneralTopicId } from '@/lib/leads/config';
 import { trackLeadEvent } from '@/lib/analytics/events';
+import { trackMetaLead, trackMetaContact } from '@/lib/analytics/meta-capi';
 import { useConsent } from '@/components/analytics/ConsentProvider';
 
 const DEFAULT_TOPIC: GeneralTopicId = "asesoria-integral";
@@ -36,10 +37,12 @@ function ContactForm() {
   const viewFiredRef = useRef(false);
   const startFiredRef = useRef(false);
   const eligibleRef = useRef(false);
+  const marketingEligibleRef = useRef(false);
 
   // Sync eligibility for async handlers (H-02)
   useEffect(() => {
     eligibleRef.current = Boolean(hydrated && (consent === "granted" || marketingConsent === "granted"));
+    marketingEligibleRef.current = Boolean(hydrated && marketingConsent === "granted");
   }, [hydrated, consent, marketingConsent]);
 
   // Analytics context base — no PII, no product
@@ -116,13 +119,22 @@ function ContactForm() {
         body: JSON.stringify(payload),
       });
 
-      if (response.ok) {
-        const data = await response.json().catch(() => ({}));
-        const isSimulated = data?.simulated === true;
+      const data = response.ok ? await response.json().catch(() => null) : null;
+      if (response.ok && data?.ok === true) {
+        const isSimulated = data.simulated === true;
+
         // PASO 10 — lead_submit_success: fire before UI transition, only for humans
         if (isHuman && eligibleRef.current) {
           safeTrackEvent("lead_submit_success", {
             ...analyticsContext(),
+            simulated: isSimulated,
+          });
+        }
+        if (isHuman && !isSimulated && marketingEligibleRef.current) {
+          trackMetaLead({
+            path: "/contacto",
+            vertical: "general",
+            formId: "contact-form",
             simulated: isSimulated,
           });
         }
@@ -458,6 +470,7 @@ export default function ContactoPage() {
               {hasPhone && (
                 <a 
                   href={`tel:${phone.replace(/[^0-9+]/g, '')}`}
+                  onClick={() => trackMetaContact("phone", { path: "/contacto", href: `tel:${phone.replace(/[^0-9+]/g, '')}` })}
                   className="bg-white/5 border border-white/10 p-8 rounded-[2px] text-center hover:bg-white/10 transition-colors block group"
                 >
                   <div className="w-12 h-12 mx-auto bg-white/10 rounded-full flex items-center justify-center text-[#D4A737] mb-5 group-hover:scale-105 transition-transform">
@@ -472,6 +485,7 @@ export default function ContactoPage() {
               {hasWhatsapp && (
                 <a 
                   href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`}
+                  onClick={() => trackMetaContact("whatsapp", { path: "/contacto", href: `https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}` })}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-white/5 border border-white/10 p-8 rounded-[2px] text-center hover:bg-white/10 transition-colors block group"
@@ -488,6 +502,7 @@ export default function ContactoPage() {
               {hasEmail && (
                 <a 
                   href={`mailto:${email}`}
+                  onClick={() => trackMetaContact("email", { path: "/contacto", href: `mailto:${email}` })}
                   className="bg-white/5 border border-white/10 p-8 rounded-[2px] text-center hover:bg-white/10 transition-colors block group"
                 >
                   <div className="w-12 h-12 mx-auto bg-white/10 rounded-full flex items-center justify-center text-[#D4A737] mb-5 group-hover:scale-105 transition-transform">
@@ -562,6 +577,7 @@ export default function ContactoPage() {
                 {hasWhatsapp && (
                   <a
                     href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`}
+                  onClick={() => trackMetaContact("whatsapp", { path: "/contacto", href: `https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}` })}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2 border border-white/25 hover:border-white text-white px-6 py-4 text-xs sm:text-[0.82rem] font-semibold tracking-[0.12em] uppercase rounded-[2px] transition-colors whitespace-nowrap"

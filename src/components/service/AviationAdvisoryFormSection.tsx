@@ -98,6 +98,7 @@ export function AviationAdvisoryFormSection() {
     // Controlled backend ProductIds and simulation flag from HTTP response
     return {
       products: mappedProducts,
+      ok: result.ok === true,
       simulated: result.simulated === true,
     };
   };

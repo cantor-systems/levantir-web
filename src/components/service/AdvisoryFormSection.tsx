@@ -8,6 +8,7 @@ import { Container } from "../layout/Container";
 import { Section } from "../layout/Section";
 import { useConsent } from "@/components/analytics/ConsentProvider";
 import { trackLeadEvent } from "@/lib/analytics/events";
+import { trackMetaLead } from "@/lib/analytics/meta-capi";
 import type { LeadAnalyticsErrorType } from "@/lib/analytics/types";
 import { PRODUCTS_BY_VERTICAL, type LeadVertical, type ProductId } from "@/lib/leads/config";
 import { isValidProductId } from "@/lib/leads/context";
@@ -60,6 +61,7 @@ export interface AdvisoryFormAnalyticsConfig {
 }
 
 export interface AdvisoryFormSubmitResult {
+  ok?: boolean;
   products?: string[];
   simulated?: boolean;
 }
@@ -117,6 +119,11 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, anal
   const pathname = usePathname();
   const { consent, marketingConsent, hydrated } = useConsent();
   const isTrackingEligible = hydrated && (consent === "granted" || marketingConsent === "granted");
+  const isMarketingEligible = hydrated && marketingConsent === "granted";
+  const marketingEligibleRef = useRef(false);
+  useEffect(() => {
+    marketingEligibleRef.current = isMarketingEligible;
+  }, [isMarketingEligible]);
 
   // Ref mirror so async handlers read the latest eligibility, not a stale closure.
   const eligibleRef = useRef(false);
@@ -248,6 +255,20 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, anal
           submitData.otherProduct = otherProductText.trim();
         }
         const submitResult = await onSubmitAsync(submitData);
+        if (
+          typeof submitResult === "object" &&
+          submitResult !== null &&
+          "ok" in submitResult &&
+          (submitResult as { ok?: unknown }).ok !== true
+        ) {
+          throw new Error("Endpoint logic error");
+        }
+        const isConfirmedOk =
+          typeof submitResult === "object" &&
+          submitResult !== null &&
+          "ok" in submitResult &&
+          (submitResult as { ok?: unknown }).ok === true;
+
         const isSimulated =
           typeof submitResult === "object" && submitResult !== null && "simulated" in submitResult
             ? submitResult.simulated === true
@@ -267,6 +288,14 @@ export function AdvisoryFormSection({ config, contextFields, onSubmitAsync, anal
               simulated: isSimulated,
             })
           );
+          if (isConfirmedOk && !isSimulated && marketingEligibleRef.current) {
+            trackMetaLead({
+              path: pathname || "/",
+              vertical: analytics?.vertical,
+              formId: analytics?.formId,
+              simulated: isSimulated,
+            });
+          }
           if (!isSimulated && Array.isArray(submittedProducts)) {
             for (const product of toValidProductIds(submittedProducts)) {
               emitLeadEvent((base) =>
