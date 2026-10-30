@@ -1,4 +1,7 @@
+"use client";
+
 import React from 'react';
+import { trackMetaContact } from "@/lib/analytics/meta-capi";
 import { AdvisoryLink as Link } from "@/components/ui/AdvisoryLink";
 import { ArrowRight, MessageCircle } from 'lucide-react';
 import { Container } from '../layout/Container';
@@ -38,6 +41,12 @@ export function FinalCTA() {
 
               <a
                 href="https://wa.me/5213322082896?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20orientaci%C3%B3n%20sobre%20seguros%20en%20LEVANTIR"
+                onClick={() =>
+                  trackMetaContact("whatsapp", {
+                    path: "/",
+                    href: "https://wa.me/5213322082896?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20orientaci%C3%B3n%20sobre%20seguros%20en%20LEVANTIR",
+                  })
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 border border-white/25 hover:border-white text-white px-6 py-4 text-xs sm:text-[0.82rem] font-semibold tracking-[0.12em] uppercase rounded-[2px] transition-colors whitespace-nowrap"

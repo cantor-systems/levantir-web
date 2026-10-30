@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server";
 import { siteConfig } from "@/config/site";
 import { GUIAS_BASE_PATH, guiasDeSeguros } from "@/content/guias-de-seguros";
+import { VERTICALS } from "@/lib/leads/config";
 
 /**
  * Meta Conversions API (CAPI) Route Handler
  *
- * Receives first-party PageView notifications from the client when marketing
- * consent is granted, validates origin, consent, path allowlist, bot/rate
- * limits, and forwards a single deduplicated PageView event to Meta Graph API
- * with an explicit server-constructed `event_source_url`.
+ * Receives first-party `PageView`, `Lead`, and `Contact` notifications from
+ * the client when marketing consent is granted, validates origin, consent,
+ * path allowlist, event-specific schema, bot/rate limits, and forwards a
+ * single deduplicated event to Meta Graph API with an explicit
+ * server-constructed `event_source_url`.
  *
  * Security & Privacy:
  *   - Access token is read exclusively from server env `META_CAPI_ACCESS_TOKEN`.
@@ -53,10 +55,40 @@ const VALID_LEVANTIR_PATHS: ReadonlySet<string> = new Set<string>([
   ...guiasDeSeguros.map((guia) => `${GUIAS_BASE_PATH}/${guia.slug}`),
 ]);
 
+type AllowedMetaEventName = "PageView" | "Lead" | "Contact";
+
+const ALLOWED_EVENT_NAMES: ReadonlySet<AllowedMetaEventName> =
+  new Set<AllowedMetaEventName>(["PageView", "Lead", "Contact"]);
+
+const ALLOWED_CONTACT_CHANNELS: ReadonlySet<string> = new Set<string>([
+  "whatsapp",
+  "phone",
+  "email",
+]);
+
+const ALLOWED_LEAD_VERTICALS: ReadonlySet<string> = new Set<string>(
+  VERTICALS
+);
+
+const ALLOWED_LEAD_FORM_IDS: ReadonlySet<string> = new Set<string>([
+  "auto-advisory",
+  "personal-advisory",
+  "pymes-advisory",
+  "mercancias-advisory",
+  "aviation-advisory",
+  "specialized-advisory",
+  "contact-form",
+  "advisory-modal",
+]);
+
 const ALLOWED_BODY_KEYS: ReadonlySet<string> = new Set([
+  "eventName",
   "path",
   "eventId",
   "consent",
+  "channel",
+  "vertical",
+  "formId",
 ]);
 
 const EVENT_ID_REGEX = /^[a-zA-Z0-9_-]{8,128}$/;
@@ -399,7 +431,91 @@ export async function POST(request: Request) {
       );
     }
 
-    // 7. Validate LEVANTIR route allowlist (never accept external URLs)
+    // 7. Validate eventName allowlist ("PageView" | "Lead" | "Contact")
+    let resolvedEventName: AllowedMetaEventName = "PageView";
+    if (bodyRecord.eventName !== undefined) {
+      if (
+        typeof bodyRecord.eventName !== "string" ||
+        !ALLOWED_EVENT_NAMES.has(bodyRecord.eventName as AllowedMetaEventName)
+      ) {
+        return NextResponse.json(
+          { ok: false, error: "INVALID_EVENT_NAME" },
+          { status: 400 }
+        );
+      }
+      resolvedEventName = bodyRecord.eventName as AllowedMetaEventName;
+    }
+
+    // 8. Validate event-specific controlled fields (zero PII, zero free text)
+    let validatedChannel: string | undefined;
+    let validatedVertical: string | undefined;
+    let validatedFormId: string | undefined;
+
+    if (resolvedEventName === "PageView") {
+      if (
+        bodyRecord.channel !== undefined ||
+        bodyRecord.vertical !== undefined ||
+        bodyRecord.formId !== undefined
+      ) {
+        return NextResponse.json(
+          { ok: false, error: "INVALID_REQUEST" },
+          { status: 400 }
+        );
+      }
+    } else if (resolvedEventName === "Lead") {
+      if (bodyRecord.channel !== undefined) {
+        return NextResponse.json(
+          { ok: false, error: "INVALID_REQUEST" },
+          { status: 400 }
+        );
+      }
+      if (bodyRecord.vertical !== undefined) {
+        if (
+          typeof bodyRecord.vertical !== "string" ||
+          !ALLOWED_LEAD_VERTICALS.has(bodyRecord.vertical)
+        ) {
+          return NextResponse.json(
+            { ok: false, error: "INVALID_REQUEST" },
+            { status: 400 }
+          );
+        }
+        validatedVertical = bodyRecord.vertical;
+      }
+      if (bodyRecord.formId !== undefined) {
+        if (
+          typeof bodyRecord.formId !== "string" ||
+          !ALLOWED_LEAD_FORM_IDS.has(bodyRecord.formId)
+        ) {
+          return NextResponse.json(
+            { ok: false, error: "INVALID_REQUEST" },
+            { status: 400 }
+          );
+        }
+        validatedFormId = bodyRecord.formId;
+      }
+    } else if (resolvedEventName === "Contact") {
+      if (
+        bodyRecord.vertical !== undefined ||
+        bodyRecord.formId !== undefined
+      ) {
+        return NextResponse.json(
+          { ok: false, error: "INVALID_REQUEST" },
+          { status: 400 }
+        );
+      }
+      if (
+        typeof bodyRecord.channel !== "string" ||
+        !ALLOWED_CONTACT_CHANNELS.has(bodyRecord.channel)
+      ) {
+        return NextResponse.json(
+          { ok: false, error: "INVALID_CONTACT_CHANNEL" },
+          { status: 400 }
+        );
+      }
+      validatedChannel = bodyRecord.channel;
+    }
+
+    // 9. Validate LEVANTIR route allowlist (never accept external URLs)
     const validatedPath = normalizeAndValidatePath(bodyRecord.path);
     if (!validatedPath) {
       return NextResponse.json(
@@ -408,7 +524,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 8. Validate unique eventId
+    // 10. Validate unique eventId
     const eventId =
       typeof bodyRecord.eventId === "string" ? bodyRecord.eventId.trim() : "";
     if (!EVENT_ID_REGEX.test(eventId)) {
@@ -425,14 +541,22 @@ export async function POST(request: Request) {
         : trustedOrigin;
     const eventSourceUrl = `${canonicalBase}${validatedPath}`;
 
-    // 9. Deduplication check (by event_id and by short-window IP+path burst)
+    // 11. Deduplication check (by event_id and by event-scoped IP+path burst)
+    //     Scoped by eventName (and channel for Contact) so a nearby PageView
+    //     never suppresses a legitimate Lead or Contact on the same route,
+    //     and vice versa.
     pruneDeduplicationStores(now);
-    const burstKey = `${rateLimitKey}:${validatedPath}`;
+    const burstScope =
+      resolvedEventName === "Contact"
+        ? `Contact:${validatedChannel}`
+        : resolvedEventName;
+    const burstKey = `${rateLimitKey}:${burstScope}:${validatedPath}`;
     if (recentEventIds.has(eventId) || recentPathBursts.has(burstKey)) {
       return NextResponse.json(
         {
           ok: true,
           deduplicated: true,
+          event_name: resolvedEventName,
           event_id: eventId,
           event_source_url: eventSourceUrl,
         },
@@ -440,7 +564,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 10. Read server-only Meta CAPI credentials
+    // 12. Read server-only Meta CAPI credentials
     const accessToken = process.env.META_CAPI_ACCESS_TOKEN?.trim();
     const pixelId = process.env.META_PIXEL_ID?.trim() || DEFAULT_PIXEL_ID;
     const testEventCode =
@@ -460,7 +584,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 11. Build minimal technical user_data (zero PII)
+    // 13. Build minimal technical user_data (zero PII)
     const cookies = parseCookieHeader(request.headers.get("cookie"));
     const userData: Record<string, string> = {
       client_user_agent: userAgent,
@@ -476,15 +600,30 @@ export async function POST(request: Request) {
       userData.fbc = cookies._fbc;
     }
 
+    let customData: Record<string, string> | undefined;
+    if (resolvedEventName === "Contact" && validatedChannel) {
+      customData = {
+        contact_channel: validatedChannel,
+      };
+    } else if (resolvedEventName === "Lead") {
+      if (validatedVertical || validatedFormId) {
+        customData = {
+          ...(validatedVertical ? { content_category: validatedVertical } : {}),
+          ...(validatedFormId ? { content_name: validatedFormId } : {}),
+        };
+      }
+    }
+
     const capiPayload: Record<string, unknown> = {
       data: [
         {
-          event_name: "PageView",
+          event_name: resolvedEventName,
           event_time: Math.floor(now / 1000),
           event_id: eventId,
           action_source: "website",
           event_source_url: eventSourceUrl,
           user_data: userData,
+          ...(customData ? { custom_data: customData } : {}),
         },
       ],
       ...(testEventCode ? { test_event_code: testEventCode } : {}),
