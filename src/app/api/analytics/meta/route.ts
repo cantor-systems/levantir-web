@@ -95,7 +95,7 @@ const EVENT_ID_REGEX = /^[a-zA-Z0-9_-]{8,128}$/;
 const BOT_USER_AGENT_REGEX =
   /bot|crawler|spider|headless|scrapy|curl|wget|python-requests|httpclient|axios|postman|insomnia/i;
 const FBP_REGEX = /^fb\.\d+\.\d+\.\d+$/;
-const FBC_REGEX = /^fb\.\d+\.\d+\.[A-Za-z0-9_-]+$/;
+const FBC_REGEX = /^fb\.\d+\.\d+\.[A-Za-z0-9_-]{8,500}$/;
 const IPV4_REGEX = /^(?:\d{1,3}\.){3}\d{1,3}$/;
 const IPV6_REGEX = /^[0-9a-fA-F:]+$/;
 const VERCEL_PREVIEW_HOST_REGEX =
@@ -593,10 +593,18 @@ export async function POST(request: Request) {
     if (clientIp) {
       userData.client_ip_address = clientIp;
     }
-    if (cookies._fbp && FBP_REGEX.test(cookies._fbp)) {
+    if (
+      cookies._fbp &&
+      cookies._fbp.length <= 128 &&
+      FBP_REGEX.test(cookies._fbp)
+    ) {
       userData.fbp = cookies._fbp;
     }
-    if (cookies._fbc && FBC_REGEX.test(cookies._fbc)) {
+    if (
+      cookies._fbc &&
+      cookies._fbc.length <= 550 &&
+      FBC_REGEX.test(cookies._fbc)
+    ) {
       userData.fbc = cookies._fbc;
     }
 

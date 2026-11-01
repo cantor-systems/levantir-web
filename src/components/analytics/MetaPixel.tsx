@@ -13,8 +13,9 @@
  *     Pixel `PageView` or custom `LEVANTIR_PageVisit` duplicates).
  *   - AbortController cancels pending in-flight HTTP requests upon consent
  *     revocation, route replacement, or component unmount.
- *   - Synchronizes a first-party `levantir_marketing_consent` cookie so the
- *     server Route Handler can independently verify marketing consent.
+ *   - Uses shared `syncMetaMarketingCookies` to synchronize first-party
+ *     `levantir_marketing_consent`, `_fbp`, and `_fbc` cookies synchronously
+ *     before dispatching `PageView`, and expires them upon revocation.
  *   - Deduplicates consecutive visits to the same route via `lastTrackedPathRef`
  *     and generates a unique `eventId` per visit.
  *   - Sends only `{ path, eventId, consent }` — zero PII, zero tokens on client.
@@ -24,18 +25,8 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { isMarketingConsentGranted } from "@/lib/analytics/consent";
+import { syncMetaMarketingCookies } from "@/lib/analytics/meta-capi";
 import { useConsent } from "./ConsentProvider";
-
-const CONSENT_COOKIE_NAME = "levantir_marketing_consent";
-
-function syncMarketingConsentCookie(granted: boolean): void {
-  if (typeof document === "undefined") return;
-  if (granted) {
-    document.cookie = `${CONSENT_COOKIE_NAME}=granted; Path=/; SameSite=Strict`;
-  } else {
-    document.cookie = `${CONSENT_COOKIE_NAME}=denied; Path=/; Max-Age=0; SameSite=Strict`;
-  }
-}
 
 function createEventId(): string {
   if (
@@ -61,12 +52,12 @@ export function MetaPixel() {
         abortControllerRef.current.abort();
         abortControllerRef.current = null;
       }
-      syncMarketingConsentCookie(false);
+      syncMetaMarketingCookies(false);
       lastTrackedPathRef.current = null;
       return;
     }
 
-    syncMarketingConsentCookie(true);
+    syncMetaMarketingCookies(true);
 
     if (!pathname || lastTrackedPathRef.current === pathname) {
       return;
