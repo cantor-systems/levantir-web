@@ -40,7 +40,10 @@ export const ALLOWED_META_CONTACT_CHANNELS: ReadonlySet<MetaContactChannel> =
 export const CONSENT_COOKIE_NAME = "levantir_marketing_consent";
 export const FBP_COOKIE_NAME = "_fbp";
 export const FBC_COOKIE_NAME = "_fbc";
+export const CANONICAL_PRODUCTION_COOKIE_DOMAIN = "levantir.com";
 export const META_COOKIE_MAX_AGE_SECONDS = 90 * 24 * 60 * 60; // 7,776,000s (90 days)
+export const MAX_FBP_COOKIE_LENGTH = 128;
+export const MAX_FBC_COOKIE_LENGTH = 550;
 
 export const FBP_COOKIE_REGEX = /^fb\.\d+\.\d+\.\d+$/;
 export const FBC_COOKIE_REGEX = /^fb\.\d+\.\d+\.[A-Za-z0-9_-]{8,500}$/;
@@ -53,6 +56,9 @@ const PLACEHOLDER_EMAIL_REGEX = /@(example\.com|test\.com|placeholder\.com|domai
 const CLIENT_DEDUP_WINDOW_MS = 1_500;
 const recentClientDispatches = new Map<string, number>();
 const ownedMetaCookies = new Set<typeof FBP_COOKIE_NAME | typeof FBC_COOKIE_NAME>();
+const normalizedMetaCookiesInSession = new Set<
+  typeof FBP_COOKIE_NAME | typeof FBC_COOKIE_NAME
+>();
 
 export interface MetaCookieIdentifiers {
   fbp?: string;
@@ -62,6 +68,113 @@ export interface MetaCookieIdentifiers {
 export function resetMetaCapiClientDedupForTests(): void {
   recentClientDispatches.clear();
   ownedMetaCookies.clear();
+  normalizedMetaCookiesInSession.clear();
+}
+
+/**
+ * Resolves the canonical cookie `Domain` attribute for a given hostname.
+ *
+ * - On `levantir.com` and any subdomain `*.levantir.com` (e.g. `www.levantir.com`),
+ *   returns `"levantir.com"` so `_fbp` and `_fbc` share a single canonical domain scope.
+ * - On Vercel Preview (`*.vercel.app`), `localhost`, `127.0.0.1`, or unknown hosts,
+ *   returns `null` so cookies remain strictly host-only without a `Domain` attribute.
+ */
+export function resolveCanonicalCookieDomain(
+  explicitHostname?: string | null
+): string | null {
+  const rawHost =
+    explicitHostname !== undefined && explicitHostname !== null
+      ? explicitHostname
+      : typeof window !== "undefined" && window.location?.hostname
+      ? window.location.hostname
+      : "";
+
+  const host = rawHost.trim().toLowerCase().replace(/\.$/, "");
+  if (!host) {
+    return null;
+  }
+
+  if (
+    host === CANONICAL_PRODUCTION_COOKIE_DOMAIN ||
+    host.endsWith(`.${CANONICAL_PRODUCTION_COOKIE_DOMAIN}`)
+  ) {
+    return CANONICAL_PRODUCTION_COOKIE_DOMAIN;
+  }
+
+  return null;
+}
+
+/**
+ * Extracts the millisecond creation timestamp (`parts[2]`) from a validated
+ * Meta cookie (`fb.<version>.<creationTimeMs>.<suffix>`).
+ */
+function extractMetaCookieCreationTime(validCookieValue: string): number {
+  const parts = validCookieValue.split(".");
+  const rawTs = parts[2] ? Number(parts[2]) : NaN;
+  if (Number.isSafeInteger(rawTs) && rawTs > 0) {
+    return rawTs;
+  }
+  return Number.MAX_SAFE_INTEGER;
+}
+
+/**
+ * Deterministic, order-independent selector for `_fbp` and `_fbc` cookie values.
+ *
+ * Policy:
+ *   1. Filters out empty, overlong, or regex-invalid values so an invalid duplicate
+ *      cookie never overwrites a valid one.
+ *   2. Deduplicates identical valid strings.
+ *   3. When multiple distinct valid values exist (e.g. host-only `levantir.com` and
+ *      domain-scoped `.levantir.com`), selects the identifier with the earliest valid
+ *      creation timestamp (`fb.1.<timestamp>.*`) to preserve original attribution,
+ *      breaking ties by deterministic ASCII code-point order.
+ *   4. Never relies on `document.cookie` or HTTP `Cookie` header serialization order.
+ */
+export function selectCanonicalMetaCookieValue(
+  candidates: readonly string[] | undefined,
+  regex: RegExp,
+  maxLength: number
+): string | null {
+  if (!candidates || candidates.length === 0) {
+    return null;
+  }
+
+  const uniqueValid: string[] = [];
+  const seen = new Set<string>();
+
+  for (const raw of candidates) {
+    if (typeof raw !== "string") continue;
+    const trimmed = raw.trim();
+    if (
+      trimmed.length === 0 ||
+      trimmed.length > maxLength ||
+      !regex.test(trimmed)
+    ) {
+      continue;
+    }
+    if (!seen.has(trimmed)) {
+      seen.add(trimmed);
+      uniqueValid.push(trimmed);
+    }
+  }
+
+  if (uniqueValid.length === 0) {
+    return null;
+  }
+  if (uniqueValid.length === 1) {
+    return uniqueValid[0]!;
+  }
+
+  uniqueValid.sort((a, b) => {
+    const tsA = extractMetaCookieCreationTime(a);
+    const tsB = extractMetaCookieCreationTime(b);
+    if (tsA !== tsB) {
+      return tsA - tsB;
+    }
+    return a < b ? -1 : a > b ? 1 : 0;
+  });
+
+  return uniqueValid[0]!;
 }
 
 /**
@@ -84,8 +197,12 @@ function generateSecureRandomFbpSuffix(): string {
   return String(Math.floor(1_000_000_000 + Math.random() * 9_000_000_000));
 }
 
-function readDocumentCookies(): Record<string, string> {
-  const result: Record<string, string> = {};
+/**
+ * Reads all cookies from `document.cookie`, preserving multiple values for the
+ * same cookie name when both host-only and domain-scoped variants coexist.
+ */
+function readAllDocumentCookies(): Map<string, string[]> {
+  const result = new Map<string, string[]>();
   if (typeof document === "undefined" || typeof document.cookie !== "string") {
     return result;
   }
@@ -94,11 +211,58 @@ function readDocumentCookies(): Record<string, string> {
     if (eqIdx <= 0) continue;
     const key = part.slice(0, eqIdx).trim();
     const val = part.slice(eqIdx + 1).trim();
-    if (key) {
-      result[key] = val;
+    if (!key) continue;
+    const existing = result.get(key);
+    if (existing) {
+      existing.push(val);
+    } else {
+      result.set(key, [val]);
     }
   }
   return result;
+}
+
+function formatMetaCookieString(
+  name: string,
+  value: string,
+  canonicalDomain: string | null,
+  maxAgeSeconds: number
+): string {
+  const domainSegment = canonicalDomain ? `; Domain=${canonicalDomain}` : "";
+  return `${name}=${value}${domainSegment}; Path=/; Max-Age=${maxAgeSeconds}; SameSite=Lax; Secure`;
+}
+
+function expireMetaCookieAllScopes(
+  name: string,
+  canonicalDomain: string | null
+): void {
+  // Always expire the host-only variant first
+  document.cookie = `${name}=; Path=/; Max-Age=0; SameSite=Lax; Secure`;
+  if (canonicalDomain) {
+    document.cookie = `${name}=; Domain=${canonicalDomain}; Path=/; Max-Age=0; SameSite=Lax; Secure`;
+    document.cookie = `${name}=; Domain=.${canonicalDomain}; Path=/; Max-Age=0; SameSite=Lax; Secure`;
+  }
+}
+
+function writeNormalizedMetaCookie(
+  name: typeof FBP_COOKIE_NAME | typeof FBC_COOKIE_NAME,
+  value: string,
+  canonicalDomain: string | null,
+  hadExistingCookies: boolean
+): void {
+  if (canonicalDomain && hadExistingCookies) {
+    // Expire any host-only variant before writing the domain-scoped cookie
+    // so normalization collapses duplicates into a single cookie.
+    document.cookie = `${name}=; Path=/; Max-Age=0; SameSite=Lax; Secure`;
+  }
+  document.cookie = formatMetaCookieString(
+    name,
+    value,
+    canonicalDomain,
+    META_COOKIE_MAX_AGE_SECONDS
+  );
+  ownedMetaCookies.add(name);
+  normalizedMetaCookiesInSession.add(name);
 }
 
 /**
@@ -151,31 +315,34 @@ export function syncMetaMarketingCookies(
 
   try {
     const activeConsent = Boolean(granted && isMarketingConsentGranted());
-    const cookies = readDocumentCookies();
+    const allCookies = readAllDocumentCookies();
+    const canonicalDomain = resolveCanonicalCookieDomain();
+    const consentValues = allCookies.get(CONSENT_COOKIE_NAME) ?? [];
+    const fbpCandidates = allCookies.get(FBP_COOKIE_NAME) ?? [];
+    const fbcCandidates = allCookies.get(FBC_COOKIE_NAME) ?? [];
 
     if (!activeConsent) {
       const wasActiveInIntegration =
-        ownedMetaCookies.size > 0 || cookies[CONSENT_COOKIE_NAME] === "granted";
+        ownedMetaCookies.size > 0 || consentValues.includes("granted");
 
-      if (cookies[CONSENT_COOKIE_NAME] || wasActiveInIntegration) {
+      if (consentValues.length > 0 || wasActiveInIntegration) {
         document.cookie = `${CONSENT_COOKIE_NAME}=denied; Path=/; Max-Age=0; SameSite=Strict`;
+        if (canonicalDomain) {
+          document.cookie = `${CONSENT_COOKIE_NAME}=denied; Domain=${canonicalDomain}; Path=/; Max-Age=0; SameSite=Strict`;
+          document.cookie = `${CONSENT_COOKIE_NAME}=denied; Domain=.${canonicalDomain}; Path=/; Max-Age=0; SameSite=Strict`;
+        }
       }
 
-      if (
-        (ownedMetaCookies.has(FBP_COOKIE_NAME) || wasActiveInIntegration) &&
-        cookies[FBP_COOKIE_NAME]
-      ) {
-        document.cookie = `${FBP_COOKIE_NAME}=; Path=/; Max-Age=0; SameSite=Lax; Secure`;
+      if (ownedMetaCookies.has(FBP_COOKIE_NAME) || fbpCandidates.length > 0) {
+        expireMetaCookieAllScopes(FBP_COOKIE_NAME, canonicalDomain);
       }
 
-      if (
-        (ownedMetaCookies.has(FBC_COOKIE_NAME) || wasActiveInIntegration) &&
-        cookies[FBC_COOKIE_NAME]
-      ) {
-        document.cookie = `${FBC_COOKIE_NAME}=; Path=/; Max-Age=0; SameSite=Lax; Secure`;
+      if (ownedMetaCookies.has(FBC_COOKIE_NAME) || fbcCandidates.length > 0) {
+        expireMetaCookieAllScopes(FBC_COOKIE_NAME, canonicalDomain);
       }
 
       ownedMetaCookies.clear();
+      normalizedMetaCookiesInSession.clear();
       return {};
     }
 
@@ -185,49 +352,126 @@ export function syncMetaMarketingCookies(
     const now = Date.now();
     const identifiers: MetaCookieIdentifiers = {};
 
-    // 1. _fbp: reuse existing valid cookie or generate a new one once
-    const existingFbp = cookies[FBP_COOKIE_NAME];
-    if (
-      existingFbp &&
-      existingFbp.length <= 128 &&
-      FBP_COOKIE_REGEX.test(existingFbp)
-    ) {
-      identifiers.fbp = existingFbp;
-      ownedMetaCookies.add(FBP_COOKIE_NAME);
+    // 1. _fbp: deterministically select existing valid cookie (even if duplicates exist),
+    //    or generate a new one once; normalize to canonical domain scope on levantir.com.
+    const selectedFbp = selectCanonicalMetaCookieValue(
+      fbpCandidates,
+      FBP_COOKIE_REGEX,
+      MAX_FBP_COOKIE_LENGTH
+    );
+
+    if (selectedFbp) {
+      const needsFbpNormalization =
+        fbpCandidates.length > 1 ||
+        (canonicalDomain !== null &&
+          !normalizedMetaCookiesInSession.has(FBP_COOKIE_NAME));
+
+      if (needsFbpNormalization) {
+        writeNormalizedMetaCookie(
+          FBP_COOKIE_NAME,
+          selectedFbp,
+          canonicalDomain,
+          fbpCandidates.length > 0
+        );
+      } else {
+        ownedMetaCookies.add(FBP_COOKIE_NAME);
+        normalizedMetaCookiesInSession.add(FBP_COOKIE_NAME);
+      }
+      identifiers.fbp = selectedFbp;
     } else {
       const fbpValue = `fb.1.${now}.${generateSecureRandomFbpSuffix()}`;
-      document.cookie = `${FBP_COOKIE_NAME}=${fbpValue}; Path=/; Max-Age=${META_COOKIE_MAX_AGE_SECONDS}; SameSite=Lax; Secure`;
+      writeNormalizedMetaCookie(
+        FBP_COOKIE_NAME,
+        fbpValue,
+        canonicalDomain,
+        fbpCandidates.length > 0
+      );
       identifiers.fbp = fbpValue;
-      ownedMetaCookies.add(FBP_COOKIE_NAME);
     }
 
     // 2. _fbc: create/update ONLY when a valid fbclid is present in current URL;
-    //    otherwise preserve any existing valid _fbc without inventing one.
+    //    otherwise preserve and normalize any existing valid _fbc without inventing one.
     const currentSearch =
       typeof window !== "undefined" && window.location
         ? window.location.search
         : "";
     const validFbclid = extractValidFbclidFromSearch(currentSearch);
-    const existingFbc = cookies[FBC_COOKIE_NAME];
-    const hasValidExistingFbc = Boolean(
-      existingFbc &&
-        existingFbc.length <= 550 &&
-        FBC_COOKIE_REGEX.test(existingFbc)
+    const selectedFbc = selectCanonicalMetaCookieValue(
+      fbcCandidates,
+      FBC_COOKIE_REGEX,
+      MAX_FBC_COOKIE_LENGTH
     );
 
     if (validFbclid) {
-      if (hasValidExistingFbc && existingFbc!.endsWith(`.${validFbclid}`)) {
-        identifiers.fbc = existingFbc;
-        ownedMetaCookies.add(FBC_COOKIE_NAME);
+      if (selectedFbc && selectedFbc.endsWith(`.${validFbclid}`)) {
+        const needsFbcNormalization =
+          fbcCandidates.length > 1 ||
+          (canonicalDomain !== null &&
+            !normalizedMetaCookiesInSession.has(FBC_COOKIE_NAME));
+
+        if (needsFbcNormalization) {
+          writeNormalizedMetaCookie(
+            FBC_COOKIE_NAME,
+            selectedFbc,
+            canonicalDomain,
+            fbcCandidates.length > 0
+          );
+        } else {
+          ownedMetaCookies.add(FBC_COOKIE_NAME);
+          normalizedMetaCookiesInSession.add(FBC_COOKIE_NAME);
+        }
+        identifiers.fbc = selectedFbc;
       } else {
         const fbcValue = `fb.1.${now}.${validFbclid}`;
-        document.cookie = `${FBC_COOKIE_NAME}=${fbcValue}; Path=/; Max-Age=${META_COOKIE_MAX_AGE_SECONDS}; SameSite=Lax; Secure`;
+        writeNormalizedMetaCookie(
+          FBC_COOKIE_NAME,
+          fbcValue,
+          canonicalDomain,
+          fbcCandidates.length > 0
+        );
         identifiers.fbc = fbcValue;
-        ownedMetaCookies.add(FBC_COOKIE_NAME);
       }
-    } else if (hasValidExistingFbc) {
-      identifiers.fbc = existingFbc;
-      ownedMetaCookies.add(FBC_COOKIE_NAME);
+    } else if (selectedFbc) {
+      const needsFbcNormalization =
+        fbcCandidates.length > 1 ||
+        (canonicalDomain !== null &&
+          !normalizedMetaCookiesInSession.has(FBC_COOKIE_NAME));
+
+      if (needsFbcNormalization) {
+        writeNormalizedMetaCookie(
+          FBC_COOKIE_NAME,
+          selectedFbc,
+          canonicalDomain,
+          fbcCandidates.length > 0
+        );
+      } else {
+        ownedMetaCookies.add(FBC_COOKIE_NAME);
+        normalizedMetaCookiesInSession.add(FBC_COOKIE_NAME);
+      }
+      identifiers.fbc = selectedFbc;
+    } else if (fbcCandidates.length > 0) {
+      // Only invalid/malformed _fbc values exist and no valid fbclid is present:
+      // expire invalid cookies without inventing a replacement.
+      expireMetaCookieAllScopes(FBC_COOKIE_NAME, canonicalDomain);
+    }
+
+    // 3. Explicitly verify the post-normalization cookie state in the browser
+    const verifiedCookies = readAllDocumentCookies();
+    const verifiedFbp = selectCanonicalMetaCookieValue(
+      verifiedCookies.get(FBP_COOKIE_NAME),
+      FBP_COOKIE_REGEX,
+      MAX_FBP_COOKIE_LENGTH
+    );
+    if (verifiedFbp) {
+      identifiers.fbp = verifiedFbp;
+    }
+    const verifiedFbc = selectCanonicalMetaCookieValue(
+      verifiedCookies.get(FBC_COOKIE_NAME),
+      FBC_COOKIE_REGEX,
+      MAX_FBC_COOKIE_LENGTH
+    );
+    if (verifiedFbc) {
+      identifiers.fbc = verifiedFbc;
     }
 
     return identifiers;
