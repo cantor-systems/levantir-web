@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import { siteConfig } from "@/config/site";
 import { GUIAS_BASE_PATH, guiasDeSeguros } from "@/content/guias-de-seguros";
 import { VERTICALS } from "@/lib/leads/config";
+import {
+  MAX_FBP_COOKIE_LENGTH,
+  MAX_FBC_COOKIE_LENGTH,
+  selectCanonicalMetaCookieValue,
+} from "@/lib/analytics/meta-capi";
 
 /**
  * Meta Conversions API (CAPI) Route Handler
@@ -171,8 +176,14 @@ function resolveTrustedOrigin(request: Request): string | null {
   return null;
 }
 
-function parseCookieHeader(cookieHeader: string | null): Record<string, string> {
-  const result: Record<string, string> = {};
+/**
+ * Parses all cookie values from the HTTP `Cookie` header without overwriting
+ * duplicate cookie names, allowing order-independent validation and selection.
+ */
+function parseCookieHeaderAll(
+  cookieHeader: string | null
+): Map<string, string[]> {
+  const result = new Map<string, string[]>();
   if (!cookieHeader) return result;
 
   const pairs = cookieHeader.split(";");
@@ -181,8 +192,12 @@ function parseCookieHeader(cookieHeader: string | null): Record<string, string> 
     if (eqIdx === -1) continue;
     const key = pair.slice(0, eqIdx).trim();
     const val = pair.slice(eqIdx + 1).trim();
-    if (key) {
-      result[key] = val;
+    if (!key) continue;
+    const existing = result.get(key);
+    if (existing) {
+      existing.push(val);
+    } else {
+      result.set(key, [val]);
     }
   }
   return result;
@@ -190,19 +205,23 @@ function parseCookieHeader(cookieHeader: string | null): Record<string, string> 
 
 function verifyServerConsent(
   request: Request,
-  bodyConsent: unknown
+  bodyConsent: unknown,
+  cookies: Map<string, string[]>
 ): boolean {
   if (bodyConsent !== "granted") {
     return false;
   }
 
-  const cookies = parseCookieHeader(request.headers.get("cookie"));
-  const cookieConsent = cookies["levantir_marketing_consent"];
+  const consentCookieValues = cookies.get("levantir_marketing_consent") ?? [];
   const headerConsent = request.headers.get("x-levantir-consent")?.trim();
 
   // X-Levantir-Consent alone is NEVER accepted as valid proof of consent.
-  // The first-party cookie `levantir_marketing_consent=granted` is required.
-  if (cookieConsent !== "granted") {
+  // The first-party cookie `levantir_marketing_consent=granted` is required,
+  // and no revoked ("denied") consent cookie may be present.
+  if (
+    !consentCookieValues.includes("granted") ||
+    consentCookieValues.includes("denied")
+  ) {
     return false;
   }
 
@@ -424,7 +443,8 @@ export async function POST(request: Request) {
     }
 
     // 6. Verify marketing consent on the server
-    if (!verifyServerConsent(request, bodyRecord.consent)) {
+    const cookies = parseCookieHeaderAll(request.headers.get("cookie"));
+    if (!verifyServerConsent(request, bodyRecord.consent, cookies)) {
       return NextResponse.json(
         { ok: false, error: "CONSENT_REQUIRED" },
         { status: 403 }
@@ -585,7 +605,9 @@ export async function POST(request: Request) {
     }
 
     // 13. Build minimal technical user_data (zero PII)
-    const cookies = parseCookieHeader(request.headers.get("cookie"));
+    //     Uses deterministic, order-independent selection so an invalid duplicate
+    //     cookie never overwrites a valid one and multiple valid cookies resolve
+    //     to the earliest valid creation timestamp regardless of header order.
     const userData: Record<string, string> = {
       client_user_agent: userAgent,
     };
@@ -593,19 +615,23 @@ export async function POST(request: Request) {
     if (clientIp) {
       userData.client_ip_address = clientIp;
     }
-    if (
-      cookies._fbp &&
-      cookies._fbp.length <= 128 &&
-      FBP_REGEX.test(cookies._fbp)
-    ) {
-      userData.fbp = cookies._fbp;
+
+    const canonicalFbp = selectCanonicalMetaCookieValue(
+      cookies.get("_fbp"),
+      FBP_REGEX,
+      MAX_FBP_COOKIE_LENGTH
+    );
+    if (canonicalFbp) {
+      userData.fbp = canonicalFbp;
     }
-    if (
-      cookies._fbc &&
-      cookies._fbc.length <= 550 &&
-      FBC_REGEX.test(cookies._fbc)
-    ) {
-      userData.fbc = cookies._fbc;
+
+    const canonicalFbc = selectCanonicalMetaCookieValue(
+      cookies.get("_fbc"),
+      FBC_REGEX,
+      MAX_FBC_COOKIE_LENGTH
+    );
+    if (canonicalFbc) {
+      userData.fbc = canonicalFbc;
     }
 
     let customData: Record<string, string> | undefined;
